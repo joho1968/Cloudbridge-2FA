@@ -1,17 +1,10 @@
-=== Cloudbridge 2FA ===
-Contributors: joho68, webbplatsen
-Donate link: https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
-Tags: security, 2fa, passwords
-Requires at least: 5.4.0
-Tested up to: 6.4.2
-Requires PHP: 7.4
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.2\+](https://img.shields.io/badge/PHP-7.2-blue?style=flat-square)](https://php.net) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![WordPress 5](https://img.shields.io/badge/WordPress-6.4-orange?style=flat-square)](https://wordpress.org)
+
+# Cloudbridge 2FA
 
 Uncomplicated 2FA plugin for WordPress. Tested with WordPress 5.5+ and PHP 7.4+.
 
-== Description ==
+## Description
 ![Cloudbridge 2FA banner](/banner/Cloudbridge-2FA-banner-1544x500.png?raw=true "Cloudbridge 2FA banner")
 
 This plugin provides uncomplicated 2FA plugin for WordPress. It will allow you
@@ -41,7 +34,7 @@ someone, for example, has access to your WordPress installation by means of FTP
 or similar, the plugin files can be physically removed (or moved out of your
 WordPress installation), which basically deactivates the plugin as well.
 
-== Installation ==
+## Installation
 
 This section describes how to install the plugin and get it working.
 
@@ -49,11 +42,11 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Configure the plugin settings
 
-= Is the plugin locale aware =
+## Is the plugin locale aware
 
 Cloudbridge 2FA uses standard WordPress functionality to handle localization/locale. The native language localization of the plugin is English. It has been translated to Swedish by the author.
 
-= Are there any incompatibilities =
+## Are there any incompatibilities
 
 This is a hard question to answer. There are no known incompatibilities.
 
@@ -111,5 +104,3 @@ These links are not here for any sort of endorsement or marketing, they're purel
 * Kudos to Kev Quirk for [Simple CSS](https://simplecss.org/)
 
 Stay safe!
-
-
