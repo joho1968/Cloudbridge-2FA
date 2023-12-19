@@ -298,6 +298,9 @@ msgstr "Inkludera engångskoden i e-postmeddelandets ämnesrad"
 msgid "OTP code entry text"
 msgstr "Text vid inmatningen av engångskoden"
 
+msgid "OTP code e-mail text"
+msgstr "Text i e-postmeddelandet med engångskoden"
+
 #: cloudbridge-2fa.php:853
 msgid "Cookie lifetime"
 msgstr "Giltighetstid för kaka"

@@ -278,6 +278,9 @@ msgstr ""
 msgid "OTP code entry text"
 msgstr ""
 
+msgid "OTP code e-mail text"
+msgstr ""
+
 #: cloudbridge-2fa.php:853
 msgid "Cookie lifetime"
 msgstr ""
