@@ -1,0 +1,170 @@
+/**
+ * CB2FA Admin CSS
+ */
+.cb2fa-is-hidden {
+    display:none !important;
+}
+.cb2fa-is-visible-block {
+    display:block !important;
+}
+.cb2fa-inline-notice {
+    font-size: 14px;
+    font-weight: bold;
+}
+.cb2fa-notice-error {
+    padding: 16px 8px 16px 8px;
+    border-left: 3px #d9534f solid;
+    background-color: #f8d7da;
+    color: #d9534f;
+}
+.cb2fa-notice-success {
+    padding: 16px 8px 16px 8px;
+    border-left: 3px green solid;
+    background-color: lightgreen;
+    color: green;
+}
+
+.cb2fa-tab:hover {
+    cursor:pointer;
+}
+.cb2fa-center {
+    text-align: center !important;
+}
+
+div.rolegrid {
+    width:60%;
+    max-width:700px !important;
+    min-width:350px !important;
+    background-color: #eeeeee;
+    margin-left:30px !important;
+    border:1px solid #606060;
+    border-radius: 5px;
+}
+div.rolegridrow {
+    display: flex;
+    flex-direction: row;
+    align-content: start;
+    justify-content: space-evenly;
+    min-width:300px !important;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+div.admingridrow {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    flex-direction: row;
+    align-content: start;
+    justify-content: space-between;
+    min-width:300px !important;
+    margin:5px;
+}
+div.rolegridheader {
+    align-self:stretch;
+    min-width:100px !important;
+    font-weight:bold;
+    text-align:center;
+ }
+div.admingridheader {
+    font-weight:bold;
+    text-align:center;
+    padding:5px;
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+}
+ div.rolegridcol {
+   align-self:stretch;
+   min-width:100px !important;
+   text-align:center;
+   border:1px solid #808080;
+   background-color: #ffffff;
+   color: #000000;
+   padding:5px;
+ }
+div.admingridcol {
+    border:1px solid #808080;
+    background-color: #ffffff;
+    color: #000000;
+    padding:10px;
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+}
+div.admingridcol-current {
+    border: 2px solid darkorange !important;
+}
+div.admingridcol-current-active {
+    border: 2px solid limegreen !important;
+}
+.cb2fa-role-option {
+    display: inline;
+    float: left;
+    padding-right: 5px;
+}
+.cb2fa-settings-checkboxes {
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    align-content:flex-start;
+    justify-content:flex-start;
+}
+.cb2fa-settings-checkboxes div {
+    margin-right:10px;
+}
+.cb2fa-config-header {
+    padding: 20px 10px;
+    border-top: 5px solid #35537a;
+    background: #fff;
+}
+.cb2fa-config-section {
+    margin-top: 15px;
+    padding: 25px 10px;
+    color: #000;
+    background: #fff;
+}
+.cb2fa-ext-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight:bold;
+}
+p.cb2fa-warning {
+    color: #d9534f;
+    font-weight: bold;
+}
+div.cb2fa-error {
+    padding: 16px 8px 16px 8px;
+    font-size: 16px;
+    font-weight: bold;
+    border-left: 3px #d9534f solid;
+    background-color: #f8d7da;
+    color: #d9534f;
+}
+img.cb2fa-wps-logo {
+    display: inline-block;
+    float: left;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    margin-left: 10px;
+    max-width: 100px;
+    height: auto;
+}
+div.cb2fa-row {
+    margin-top: 5px;
+}
+.cb2fa-textarea-importexport {
+    width:100%;
+    height:250px;
+    font-family:monospace;
+    font-size:0.9em;
+}
+.cb2fa-copytext-export {
+    overflow:auto;
+    font-family:monospace;
+    font-size:1.0em;
+    width:100%;
+    background-color: #eeeeee;
+}
+div.cb2fa-admin-notice {
+    width:100%;
+    font-size:1.1rem !important;
+    padding:5px;
+}
