@@ -1,4 +1,4 @@
-[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.2\+](https://img.shields.io/badge/PHP-7.2-blue?style=flat-square)](https://php.net) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![WordPress 5](https://img.shields.io/badge/WordPress-6.4-orange?style=flat-square)](https://wordpress.org)
+[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.2\+](https://img.shields.io/badge/PHP-7.2-blue?style=flat-square)](https://php.net) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![PHP 8.0\+](https://img.shields.io/badge/PHP-8.0-blue?style=flat-square)](https://php.net) [![PHP 8.1\+](https://img.shields.io/badge/PHP-8.1-blue?style=flat-square)](https://php.net) [![WordPress 5](https://img.shields.io/badge/WordPress-6.4-orange?style=flat-square)](https://wordpress.org)
 
 # Cloudbridge 2FA
 
@@ -57,6 +57,7 @@ This is a hard question to answer. There are no known incompatibilities.
 
 ## Screenshots
 ![Cloudbridge 2FA login screen](/screenshots/cloudbridge-2fa-screenshot-login.png?raw=true "Cloudbridge 2FA login screen")
+
 ![Cloudbridge 2FA OTP code e-mail](/screenshots/cloudbridge-2fa-screenshot-email.png?raw=true "Cloudbridge 2FA OTP e-mail")
 
 ## License
