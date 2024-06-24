@@ -7,8 +7,8 @@ Uncomplicated 2FA plugin for WordPress. Tested with WordPress 5.5+ and PHP 7.4+.
 ## Description
 ![Cloudbridge 2FA banner](/banner/Cloudbridge-2FA-banner-1544x500.png?raw=true "Cloudbridge 2FA banner")
 
-This plugin provides uncomplicated 2FA plugin for WordPress. It will allow you
-to require a second, one time password or OTP, code to be entered when certain
+This plugin provides uncomplicated 2FA functionality for WordPress. It will allow
+you to require a second, one time password or OTP, code to be entered when certain
 (or all) users attempt to log in to WordPress.
 
 It will send a six-digit code via e-mail to the user attempting to log in. The
@@ -51,6 +51,15 @@ Cloudbridge 2FA uses standard WordPress functionality to handle localization/loc
 This is a hard question to answer. There are no known incompatibilities.
 
 ## Changelog
+
+### 1.0.3
+* Fix some incorrect links in plugin and `README.md`
+
+### 1.0.2
+* Fix of minor PHP warning
+
+### 1.0.1
+* Fix of minor PHP warning
 
 ### 1.0.0
 * Initial release
