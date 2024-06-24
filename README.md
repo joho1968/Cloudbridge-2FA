@@ -92,9 +92,9 @@ If you find this plugin useful, the author is happy to receive a donation, good 
 
 If there is something you feel to be missing from this plugin, or if you have found a problem with the code or a feature, please do not hesitate to reach out to support@webbplatsen.se.
 
-This plugin can also be downloaded from [code.webbplatsen.net](https://code.webbplatsen.net/wordpress/cb2fa/) and [GitHub](https://github.com/joho1968/Cloudbridge-2FA)
+This plugin can also be downloaded from [code.webbplatsen.net](https://code.webbplatsen.net/wordpress/cloudbridge-2fa/) and [GitHub](https://github.com/joho1968/Cloudbridge-2FA)
 
-More detailed documentation is available at [code.webbplatsen.net/documentation/cb2fa](https://code.webbplatsen.net/documentation/cb2fa/)
+More detailed documentation is available at [code.webbplatsen.net/documentation/cloudbridge-2fa](https://code.webbplatsen.net/documentation/cloudbridge-2fa/)
 
 ### External references
 
