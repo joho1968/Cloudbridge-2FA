@@ -1,6 +1,6 @@
 # Cloudbridge 2FA WordPress plugin <LANGUAGE> translation
 # Copyright (C) 2023 Joaquim Homrighausen
-# This file is distributed under the same license as the EasyMap package.
+# This file is distributed under the same license as the Cloudbridge 2FA package.
 # Joaquim Homrighausen <joho@webbplatsen.se>, 2023.
 #
 #, fuzzy

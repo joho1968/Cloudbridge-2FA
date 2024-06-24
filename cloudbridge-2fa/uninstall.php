@@ -8,7 +8,7 @@
  * @author  Joaquim Homrighausen <joho@webbplatsen.se>
  *
  * uninstall.php
- * Copyright (C) 2023 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -28,10 +28,6 @@
  *  51 Franklin Street, Fifth Floor
  *  Boston, MA  02110-1301, USA.
  */
-require_once( 'include/class_cb2fa_options.inc.php' );
-
-//  define( 'CB2FA_UNINSTALL_TRACE', true );
-
 // Don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 // If uninstall not called from WordPress, then exit
@@ -62,6 +58,11 @@ if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'delete_plugi
     }
     exit;
 }
+
+
+require_once( 'include/class_cb2fa_options.inc.php' );
+
+//  define( 'CB2FA_UNINSTALL_TRACE', true );
 
 // Figure out if an uninstall should remove plugin settings
 $remove_settings = get_option( 'cloudbridge2fa-settings-remove', '0' );

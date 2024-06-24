@@ -8,7 +8,7 @@
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
 *
  * class_cb2fa_login.php
- * Copyright (C) 2023 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -275,7 +275,7 @@ class Cloudbridge_2FA_Login {
             $email_subject .= ' ' . $this->blog_title;
         }
         $email_title = $email_subject;
-        $email_subject .= ' ' . __( 'OTP code', CB2FA_PLUGINNAME_SLUG );
+        $email_subject .= ' ' . __( 'OTP code', 'cloudbridge-2fa' );
         if ( $this->code_email_subject ) {
             $email_subject .= ': ' . $the_code;
         }
@@ -298,7 +298,7 @@ class Cloudbridge_2FA_Login {
                            esc_html( $email_title ) .
                        '</h3>' . "\n\n";
         $email_body .= '<h4 style="text-align:center !important;">' .
-                           esc_html__( 'Login OTP code', CB2FA_PLUGINNAME_SLUG ) . ':' .
+                           esc_html__( 'Login OTP code', 'cloudbridge-2fa' ) . ':' .
                            '<br/>' .
                            esc_html( $the_code ) .
                        '</h4>' . "\n\n";
@@ -312,18 +312,18 @@ class Cloudbridge_2FA_Login {
         $email_body .= esc_html__( 'Someone has requested that an OTP code be sent to the e-mail ' .
                                    'address associated with an account on this WordPress site. ' .
                                    'If this was not you, you should change your password on this ' .
-                                   'site as soon as possible', CB2FA_PLUGINNAME_SLUG );
+                                   'site as soon as possible', 'cloudbridge-2fa' );
         $email_body .= '</div><br/><br/>'. "\n\n";
         $email_body .= '<div class="notice" style="text-align:center !important;max-width:75% !important;margin:0 auto !important;">';
-        $email_body .= esc_html__( 'The OTP code is valid for', CB2FA_PLUGINNAME_SLUG ) .
+        $email_body .= esc_html__( 'The OTP code is valid for', 'cloudbridge-2fa' ) .
                        ' ' . (int)$this->code_lifetime . ' ' .
-                       esc_html__( 'minutes', CB2FA_PLUGINNAME_SLUG );
+                       esc_html__( 'minutes', 'cloudbridge-2fa' );
         $email_body .= '</div><br/><br/>' . "\n\n";
         if ( ! empty( $this->email_message ) ) {
             $email_body .= '<div class="notice" style="text-align:center !important;max-width:75% !important;margin:0 auto !important;">' . esc_html( $this->email_message ) . '</div><br/><br/>';
         }
         $email_body .= '<div style="text-align: center !important;"><small>';
-        $email_body .= esc_html__( '2FA provided by', CB2FA_PLUGINNAME_SLUG ) . ' ' . esc_html( CB2FA_PLUGINNAME_HUMAN );
+        $email_body .= esc_html__( '2FA provided by', 'cloudbridge-2fa' ) . ' ' . esc_html( CB2FA_PLUGINNAME_HUMAN );
         $email_body .= '</small></div>' . "\n\n";
         $email_body .= '</main></body></html>';
         // Handle WordPress quirks
@@ -350,7 +350,7 @@ class Cloudbridge_2FA_Login {
         }
         // Figure out a good place to "try again"
         if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-            $redirect_to = $_REQUEST['redirect_to'];
+            $redirect_to = sanitize_url( $_REQUEST['redirect_to'], array( 'http', 'https' ) );
         } else {
             $redirect_to = site_url();
         }
@@ -368,7 +368,8 @@ class Cloudbridge_2FA_Login {
                  '<title>' .
                      esc_html( 'CB2FA' ) . $title .
                  '</title>' .
-             '</head> ' .
+             '</head> ' . "\n" .
+             '<body>' . "\n" .
              '<script>' .
                  '
                   var cb2fa_form = null;
@@ -425,8 +426,7 @@ class Cloudbridge_2FA_Login {
                  } else {
                      document.addEventListener("DOMContentLoaded", cb2fa_setup);
                  }
-             </script>' .
-             '<body>';
+             </script>';
         if ( ! empty( $this->blog_title ) ) {
             echo '<h3 class="cb2fa-otp-site-header">' . esc_html( $this->blog_title ) . '</h3>';
         }
@@ -452,38 +452,43 @@ class Cloudbridge_2FA_Login {
         echo '<h4 class="cb2fa-otp-plugin-header">' . esc_html( CB2FA_PLUGINNAME_HUMAN ) . '</h4>';
         echo '<div class="notice">';
         if ( $basic_checks_failed ) {
-            echo '<h5 class="cb2fa-error-message">' . esc_html__( 'An error occurred, please try again', CB2FA_PLUGINNAME_SLUG ) . '</h5>';
+            echo '<h5 class="cb2fa-error-message">' . esc_html__( 'An error occurred, please try again', 'cloudbridge-2fa' ) . '</h5>';
             echo '<div class="cb2fa-center"><a class="cb2fa-link" href="' . esc_url( $redirect_to ) . '">' . esc_html( $redirect_to ) . '</a></div>';
         } else {
             if ( ! empty( $this->error_message ) ) {
                 echo '<h5 class="cb2fa-center">' . esc_html( $this->error_message ) . '</h5>';
             } else {
                 echo '<div class="cb2fa-center">';
-                echo '<p>' . esc_html__( 'An OTP code has been sent to the e-mail address associated with the account', CB2FA_PLUGINNAME_SLUG ) . '.</p>';
-                echo '<p>' . esc_html__( 'The code is valid for', CB2FA_PLUGINNAME_SLUG ) .
-                             ' ' . $this->code_lifetime . ' ' .
-                             esc_html__( 'minute(s)', CB2FA_PLUGINNAME_SLUG ) .
+                echo '<p>' . esc_html__( 'An OTP code has been sent to the e-mail address associated with the account', 'cloudbridge-2fa' ) . '.</p>';
+                echo '<p>' . esc_html__( 'The code is valid for', 'cloudbridge-2fa' ) .
+                             ' ' . esc_html( $this->code_lifetime ) . ' ' .
+                             esc_html__( 'minute(s)', 'cloudbridge-2fa' ) .
                     '.</p>';
                 echo '</div>';
             }
             echo '<div class="cb2fa-center">';
             echo '<form id="cb2fa_form" method="post" action="' . esc_url( $this->our_url ) . '">';
-            if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-                echo '<input type="hidden" name="redirect_to" value="' . esc_html( $_REQUEST['redirect_to'] ) . '" />';
+            if ( ! empty( $redirect_to ) ) {
+                echo '<input type="hidden" name="redirect_to" value="' . esc_url( $redirect_to ) . '" />';
             }
             echo '<input type="hidden" name="cb2fa_nonce" value="' . esc_html( $this->nonce ) . '" />';
             echo '<input type="hidden" name="cb2fa_timer" value="' . esc_html( time() ) . '" />';
             echo '<input type="hidden" name="cb2fa_user" value="' . esc_html( $this->username ) . '" />';
-            echo '<label for="cb2fa_pincode" style="margin-top:48px;">' . esc_html__( 'Code', CB2FA_PLUGINNAME_SLUG ) . ':</label>';
+            echo '<label for="cb2fa_pincode" style="margin-top:48px;">' . esc_html__( 'Code', 'cloudbridge-2fa' ) . ':</label>';
             echo '<input type="text" tabindex="1" name="cb2fa_pincode" id="cb2fa_pincode" size="6" maxlength="128" class="cb2fa-center" value="" />';
             echo '<div style="margin-top:48px;"><input type="button" name="cb2fa_submit" id="cb2fa_submit" value="OK" /></div>';
             if ( $this->allow_cookie ) {
-                $cookie_checked = ( ! empty( $_POST['cb2fa_cookie'] ) && $_POST['cb2fa_cookie'] == 'cb2fa_cookie' ? 'checked ':'' );
+                if ( ! empty( $_POST['cb2fa_cookie'] ) ) {
+                    $our_cookie = sanitize_text_field( $_POST['cb2fa_cookie'] );
+                } else {
+                    $our_cookie = '';
+                }
+                $cookie_checked = ( ! empty( $our_cookie ) && $our_cookie == 'cb2fa_cookie' ? 'checked ':'' );
                 echo '<div style="margin-top:24px;">';
                 echo '<input tabindex="2" aria-description="' .
-                         esc_html__( 'Enable checkbox to avoid having to enter an OTP code for future logins', CB2FA_PLUGINNAME_SLUG ) .
+                         esc_html__( 'Enable checkbox to avoid having to enter an OTP code for future logins', 'cloudbridge-2fa' ) .
                      '" type="checkbox" name="cb2fa_cookie" id="cb2fa_cookie" value="cb2fa_cookie" ' . $cookie_checked . '/>&nbsp;';
-                echo '<label for="cb2fa_cookie">' . esc_html__( 'Remember me in this browser', CB2FA_PLUGINNAME_SLUG ) . '</label>';
+                echo '<label for="cb2fa_cookie">' . esc_html__( 'Remember me in this browser', 'cloudbridge-2fa' ) . '</label>';
                 echo '</div>';
             }
             echo '</form>';
@@ -494,9 +499,9 @@ class Cloudbridge_2FA_Login {
             }
             echo '<small>' .
                  '<p style="max-width:75% !important;margin: 0 auto !important;"><strong>' .
-                  esc_html__( 'If the e-mail message with the code does not arrive, you may attempt to login again by clicking on the below link', CB2FA_PLUGINNAME_SLUG ) .
+                  esc_html__( 'If the e-mail message with the code does not arrive, you may attempt to login again by clicking on the below link', 'cloudbridge-2fa' ) .
                   '</strong><br/>' .
-                  '<a tabindex="3" class="cb2fa-link" href="' . esc_url( $redirect_to ) . '">' . esc_html__( 'WordPress Login', CB2FA_PLUGINNAME_SLUG ) . '</a>' .
+                  '<a tabindex="3" class="cb2fa-link" href="' . esc_url( $redirect_to ) . '">' . esc_html__( 'WordPress Login', 'cloudbridge-2fa' ) . '</a>' .
                   '</small></p>';
             echo '</div>';
         }

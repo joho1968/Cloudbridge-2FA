@@ -1,6 +1,6 @@
 # Cloudbridge 2FA WordPress plugin <sv_SE> translation
 # Copyright (C) 2023 Joaquim Homrighausen
-# This file is distributed under the same license as the EasyMap package.
+# This file is distributed under the same license as the Cloudbridge 2FA package.
 # Joaquim Homrighausen <joho@webbplatsen.se>, 2023.
 #
 #, fuzzy
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: cloudbridge-2fa 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-18 09:15+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2024-03-12 07:56+0100\n"
 "Last-Translator: Joaquim Homrighausen <joho@webbplatsen.se>\n"
 "Language-Team: SWEDISH <LL@li.org>\n"
 "Language: \n"
@@ -230,7 +230,7 @@ msgstr "Kommersiell support och anpassningar av till채gget 채r tillg채ngligt fr�
 
 #: cloudbridge-2fa.php:777
 msgid "in Stockholm, Sweden. We speak Swedish and English"
-msgstr "i Stockhol, Sverige. Vi pratar svenska och engelska"
+msgstr "i Stockholm, Sverige. Vi pratar svenska och engelska"
 
 #: cloudbridge-2fa.php:779
 msgid ""
@@ -282,7 +282,7 @@ msgstr ""
 
 #: cloudbridge-2fa.php:803
 msgid "Plugin that provides uncomplicated map functionality"
-msgstr "Ett till채gg som tillhandah책ller okomplicerar kartfunktionalitet"
+msgstr "Ett till채gg som tillhandah책ller okomplicerad kartfunktionalitet"
 
 #: cloudbridge-2fa.php:850
 msgid "OTP code lifetime"

@@ -1,7 +1,7 @@
 'use strict';
 /**
  * cb2fa-admin.js
- * Copyright (C) 2023 Joaquim Homrighausen <joho@webbplatsen.se>
+ * Copyright (C) 2024 Joaquim Homrighausen <joho@webbplatsen.se>
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.

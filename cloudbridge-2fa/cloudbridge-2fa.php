@@ -11,7 +11,7 @@
  * Plugin Name:       Cloudbridge 2FA
  * Plugin URI:        https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
  * Description:       Uncomplicated 2FA plugin for WordPress
- * Version:           1.0.0
+ * Version:           1.0.3
  * Author:            WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
  * Author URI:        https://webbplatsen.se/
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@
  * Domain Path:       /languages
  *
  * cloudbridge-2fa.php
- * Copyright (C) 2023 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -55,7 +55,6 @@ define( 'CB2FA_WORDPRESS_PLUGIN',         true                    );
 define( 'CB2FA_VERSION',                  '1.0.0'                 );
 define( 'CB2FA_REV',                      1                       );
 define( 'CB2FA_PLUGINNAME_HUMAN',         'Cloudbridge 2FA'       );
-define( 'CB2FA_PLUGINNAME_SLUG',          'cloudbridge-2fa'       );
 define( 'CB2FA_DEFAULT_PREFIX',           'cloudbridge2fa'        );
 define( 'CB2FA_TRANSIENT_PREFIX',         'cloudbridge2fa'        );
 define( 'CB2FA_TRANSIENT_EXPIRE_DEFAULT', 15                      );
@@ -270,7 +269,7 @@ class Cloudbridge_2FA {
         }
         unset( $_GET );
         return( $plugins );
-	}
+    }
     /**
      * Display admin alerts.
      *
@@ -280,7 +279,7 @@ class Cloudbridge_2FA {
      */
     public function cb2fa_admin_alert_missing_mbstring() : void {
         echo '<div class="notice notice-error cb2fa-admin-notice"><br/>'.
-             '<p>' . CB2FA_PLUGINNAME_HUMAN . ': ' .
+             '<p>' . esc_html( CB2FA_PLUGINNAME_HUMAN ) . ': ' .
              esc_html__( 'mbstring-extensions are missing, contact server administrator to enable them', 'cloudbridge-2fa' ) .
              '!' .
              '<br/><br/></p>';
@@ -289,7 +288,7 @@ class Cloudbridge_2FA {
     public function cb2fa_admin_alert_plugin_activated() : void {
         $plugin_settings_url = add_query_arg( 'page', 'cloudbridge-2fa', get_admin_url() . 'admin.php');
         echo '<div class="notice notice-success cb2fa-admin-notice"><br/>'.
-            '<p>' . CB2FA_PLUGINNAME_HUMAN . ': ' .
+            '<p>' . esc_html( CB2FA_PLUGINNAME_HUMAN ) . ': ' .
             esc_html__( 'Plugin activated, please take a moment and go through the', 'cloudbridge-2fa' ) . '&nbsp;' .
             '<a href="' . esc_url( $plugin_settings_url ) . '#general">' .
             esc_html__( 'settings', 'cloudbridge-2fa' ) . '</a>' . '<br/><br/></p>';
@@ -322,10 +321,10 @@ class Cloudbridge_2FA {
      * @since 1.0.0
      */
     public function cb2fa_setup_admin_css() : void {
-        wp_enqueue_style( CB2FA_PLUGINNAME_SLUG, plugin_dir_url( __FILE__ ) . 'css/cb2fa-admin.css',
+        wp_enqueue_style( 'cloudbridge-2fa', plugin_dir_url( __FILE__ ) . 'css/cb2fa-admin.css',
                           array(),
                           $this->cb2fa_resource_mtime( dirname(__FILE__) . '/css/cb2fa-admin.css' ), 'all' );
-        wp_enqueue_script( CB2FA_PLUGINNAME_SLUG,
+        wp_enqueue_script( 'cloudbridge-2fa',
                            plugin_dir_url( __FILE__ ) . 'js/cb2fa-admin.js',
                            array(),
                            $this->cb2fa_resource_mtime( dirname( __FILE__ ) . '/js/cb2fa-admin.js' ),
@@ -337,14 +336,14 @@ class Cloudbridge_2FA {
      * @since 1.0.0
      */
     public function cb2fa_setup_public_css() : void {
-        wp_enqueue_style( CB2FA_PLUGINNAME_SLUG, plugin_dir_url( __FILE__ ) . 'css/cb2fa-public.css',
+        wp_enqueue_style( 'cloudbridge-2fa', plugin_dir_url( __FILE__ ) . 'css/cb2fa-public.css',
                           array(),
                           $this->cb2fa_resource_mtime( dirname(__FILE__).'/css/cb2fa-public.css' ),
                           'all' );
         if ( @ filesize( dirname( __FILE__ ) . '/css/cb2fa-public-custom.css' ) !== false ) {
             // Enqueue custom CSS for front-end if it exists and size >0
-            wp_enqueue_style( CB2FA_PLUGINNAME_SLUG . '-Custom', plugin_dir_url( __FILE__ ) . 'css/cb2fa-public-custom.css',
-                              array( CB2FA_PLUGINNAME_SLUG ),
+            wp_enqueue_style( 'cloudbridge-2fa' . '-Custom', plugin_dir_url( __FILE__ ) . 'css/cb2fa-public-custom.css',
+                              array( 'cloudbridge-2fa' ),
                               $this->cb2fa_resource_mtime( dirname( __FILE__ ) . '/css/cb2fa-public-custom.css' ),
                               'all' );
         } elseif ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -416,34 +415,34 @@ class Cloudbridge_2FA {
             return;
         }
         // Add our menu entry (stand-alone menu)
-        add_menu_page( esc_html__( CB2FA_PLUGINNAME_HUMAN, 'cloudbridge-2fa' ),
-                       esc_html__( CB2FA_PLUGINNAME_HUMAN, 'cloudbridge-2fa' ),
+        add_menu_page( esc_html( CB2FA_PLUGINNAME_HUMAN ),
+                       esc_html( CB2FA_PLUGINNAME_HUMAN ),
                        'manage_options',
-                       CB2FA_PLUGINNAME_SLUG,
+                       'cloudbridge-2fa',
                        [ $this, 'cb2fa_admin_page' ],
                        'dashicons-lock'
                        // $position
                        //
                      );
         // The first sub-menu page is a "duplicate" of the parent, because ...
-        add_submenu_page ( CB2FA_PLUGINNAME_SLUG,
-                           esc_html__( CB2FA_PLUGINNAME_HUMAN, 'cloudbridge-2fa' ),
+        add_submenu_page ( 'cloudbridge-2fa',
+                           esc_html( CB2FA_PLUGINNAME_HUMAN ),
                            esc_html__( 'Settings', 'cloudbridge-2fa' ),
                            'manage_options',
-                           CB2FA_PLUGINNAME_SLUG,
+                           'cloudbridge-2fa',
                            [ $this, 'cb2fa_admin_page'] );
         // Add actual sub-menu items
-        add_submenu_page ( CB2FA_PLUGINNAME_SLUG,
-                           esc_html__( CB2FA_PLUGINNAME_HUMAN, 'cloudbridge-2fa' ) . ' - '.esc_html__( 'Export various data', 'cloudbridge-2fa' ),
+        add_submenu_page ( 'cloudbridge-2fa',
+                           esc_html( CB2FA_PLUGINNAME_HUMAN ) . ' - ' . esc_html__( 'Export various data', 'cloudbridge-2fa' ),
                            esc_html__( 'Export', 'cloudbridge-2fa' ),
                            'manage_options',
-                           CB2FA_PLUGINNAME_SLUG. '-export',
+                           'cloudbridge-2fa'. '-export',
                            [ $this, 'cb2fa_admin_export'] );
-        add_submenu_page ( CB2FA_PLUGINNAME_SLUG,
-                           esc_html__( CB2FA_PLUGINNAME_HUMAN, 'cloudbridge-2fa' ) . ' - '.esc_html__( 'Import external data', 'cloudbridge-2fa' ),
+        add_submenu_page ( 'cloudbridge-2fa',
+                           esc_html( CB2FA_PLUGINNAME_HUMAN ) . ' - ' . esc_html__( 'Import external data', 'cloudbridge-2fa' ),
                            esc_html__( 'Import', 'cloudbridge-2fa' ),
                            'manage_options',
-                           CB2FA_PLUGINNAME_SLUG. '-import',
+                           'cloudbridge-2fa'. '-import',
                            [ $this, 'cb2fa_admin_import'] );
     }
     /**
@@ -769,7 +768,7 @@ class Cloudbridge_2FA {
             $html .= '</div>';// cb2fa-access
             $html .= '<div id="cb2fa-about" class="cb2fa-tab-content cb2fa-is-hidden">';
             $html .= '<p>'.
-                         '<p>' . esc_html__( 'Thank you for installing', 'cloudbridge-2fa' ) .' ' . CB2FA_PLUGINNAME_HUMAN . '!' . ' '.
+                         '<p>' . esc_html__( 'Thank you for installing', 'cloudbridge-2fa' ) .' ' . esc_html( CB2FA_PLUGINNAME_HUMAN ) . '!' . ' '.
                          esc_html__( 'This WordPress plugin provides simple two factor authentication services for WordPress', 'cloudbridge-2fa' ) . '.' .
                          '</p>' .
                       '<p>'  . '<img class="cb2fa-wps-logo" alt="" src="' . plugin_dir_url( __FILE__ ) . 'img/webbplatsen_logo.png" />' .
@@ -783,8 +782,8 @@ class Cloudbridge_2FA {
                           esc_html__( 'If there is something you feel to be missing from this plugin, or if you have found a problem with the code or a feature, please do not hesitate to reach out to', 'cloudbridge-2fa' ) .
                                       ' <a class="cb2fa-ext-link" href="mailto:support@webbplatsen.se">support@webbplatsen.se</a>' . ' '.
                           esc_html__( 'There is more documentation available at', 'cloudbridge-2fa' ) . ' ' .
-                                      '<a class="cb2fa-ext-link" target="_blank" href="https://code.webbplatsen.net/documentation/cb2fa/">'.
-                                      'code.webbplatsen.net/documentation/cb2fa/</a>' .
+                                      '<a class="cb2fa-ext-link" target="_blank" href="https://code.webbplatsen.net/documentation/cloudbridge-2fa/">'.
+                                      'code.webbplatsen.net/documentation/cloudbridge-2fa/</a>' .
                       '</p>'.
                       '<p style="margin-top:20px;">' .
                           '<h3>' . esc_html__( 'Other plugins', 'cloudbridge-2fa' ) . '</h3>' .
@@ -1051,10 +1050,10 @@ class Cloudbridge_2FA {
             $html .= '<div class="tab-content">';
             $html .= '<div class="cb2fa-config-header">';
             $html .= '<div id="cb2fa-export-config" class="cb2fa-tab-content cb2fa-is-hidden">';
-            $query = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->get_blog_prefix() .
-                                         'options WHERE option_name LIKE "' . CB2FA_DEFAULT_PREFIX . '-%" ' .
-                                         'ORDER BY option_id', ARRAY_A );
-            if ( ! is_array( $query ) || ! is_array( $query[0] ) || empty( $query[0] ) ) {
+            $query = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->options WHERE option_name LIKE %s ORDER BY option_id",
+                                                         $wpdb->esc_like( CB2FA_DEFAULT_PREFIX . '-' ) . '%' ),
+                                        ARRAY_A );
+            if ( ! is_array( $query ) || empty( $query[0] ) || ! is_array( $query[0] ) ) {
                 $html .= '<div class="cb2fa-error">' .
                          esc_html__( 'Unable to fetch plugin configuration from the WordPress database', 'cloudbridge-2fa' ) .
                          '</div>';
@@ -1114,14 +1113,14 @@ class Cloudbridge_2FA {
                 } else {
                     $found_signature = false;
                     foreach( $json_data as $k => $v ) {
-                        if ( is_array( $v ) && ! empty( $v[CB2FA_PLUGINNAME_SLUG] ) ) {
+                        if ( is_array( $v ) && ! empty( $v['cloudbridge-2fa'] ) ) {
                             // We don't do any more validation than this at this point
                             $found_signature = true;
                         }
                     }
                     if ( ! $found_signature ) {
                         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                            error_log( '[CB2FA_DEBUG] ' . basename(__FILE__) . ' (' . __FUNCTION__ . '): json data doest not contain "' . CB2FA_PLUGINNAME_SLUG . '"' );
+                            error_log( '[CB2FA_DEBUG] ' . basename(__FILE__) . ' (' . __FUNCTION__ . '): json data doest not contain "' . 'cloudbridge-2fa' . '"' );
                             error_log( print_r( $json_data, true ) );
                         }
                         $form_error_message = __( 'The specified import data does not seem to contain an exported configuration', 'cloudbridge-2fa' );
@@ -1139,7 +1138,7 @@ class Cloudbridge_2FA {
                 if ( empty( $form_error_message ) ) {
                     $this->cb2fa_doing_import = true;
                     foreach( $json_data as $k => $v ) {
-                        if ( is_array( $v ) && empty( $v[CB2FA_PLUGINNAME_SLUG] ) ) {
+                        if ( is_array( $v ) && empty( $v['cloudbridge-2fa'] ) ) {
                             $option = array();
                             foreach( $v as $cfg_option => $cfg_value ) {
                                 $option[$cfg_option] = $cfg_value;
@@ -1153,7 +1152,7 @@ class Cloudbridge_2FA {
                                     $form_error_message = __( 'One or more unrecognized options were ignored', 'cloudbridge-2fa' ) . ':';
                                 }
                                 $skipped_options .= esc_html( $option['option_name'] ) . '<br/>';
-                            } elseif ( $option['option_name'] != CB2FA_PLUGINNAME_SLUG . '-form-tab' ) {
+                            } elseif ( $option['option_name'] != 'cloudbridge-2fa' . '-form-tab' ) {
                                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                                     error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Imported "' . $option['option_name'] . '" with value "' . print_r( $option['option_value'], true ) . '"' );
                                 }
@@ -1210,7 +1209,7 @@ class Cloudbridge_2FA {
         echo '<a data-toggle="cb2fa-import-config" href="#cb2fa-import-config" class="cb2fa-tab nav-tab">' . esc_html__( 'Configuration', 'cloudbridge-2fa' ) . '</a>';
         echo '</nav>';
 
-        echo '<form method="post" action="' . admin_url( 'admin.php' ) . '?page=' . CB2FA_PLUGINNAME_SLUG . '-import" id="cb2fa-tab-form">';
+        echo '<form method="post" action="' . esc_url( admin_url( 'admin.php' ) ) . '?page=' . 'cloudbridge-2fa' . '-import" id="cb2fa-tab-form">';
         echo '<div class="tab-content">';
         echo '<div class="cb2fa-config-header">';
         echo '<div id="cb2fa-import-config" class="cb2fa-tab-content cb2fa-is-hidden">';
@@ -1234,7 +1233,7 @@ class Cloudbridge_2FA {
             error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . ')' );
         }
         // Setup "global" nonce for ajax, etc.
-        $this->cb2fa_nonce = wp_create_nonce( CB2FA_PLUGINNAME_SLUG . CB2FA_VERSION );
+        $this->cb2fa_nonce = wp_create_nonce( 'cloudbridge-2fa' . CB2FA_VERSION );
         // Possibly enable debugging for these
         if ( defined( 'CB2FA_DEBUG_OPTIONS' ) && CB2FA_DEBUG_OPTIONS ) {
             add_action( 'add_option', [$this, 'cb2fa_admin_debug_add_option'], 10, 2 );
@@ -1293,7 +1292,7 @@ class Cloudbridge_2FA {
      * @since 1.0.0
      */
     public function setup_locale() {
-		if ( ! load_plugin_textdomain( CB2FA_PLUGINNAME_SLUG,
+        if ( ! load_plugin_textdomain( 'cloudbridge-2fa',
                                        false,
                                        dirname( plugin_basename( __FILE__ ) ) . '/languages' ) ) {
             /**
@@ -1343,13 +1342,13 @@ class Cloudbridge_2FA {
                 $login_name = 'unknown';
             }
             error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' Missing e-mail address for user "' . $login_name . '"' );
-            $user = new \WP_Error( 'CB2FA', __( 'Missing e-mail address for user, please try again', CB2FA_PLUGINNAME_SLUG ), 'This is CB2FA data' );
+            $user = new \WP_Error( 'CB2FA', __( 'Missing e-mail address for user, please try again', 'cloudbridge-2fa' ), 'This is CB2FA data' );
             return ( $user );
         }
         // Check for missing or invalid nonce
         if ( empty( $_REQUEST['cb2fa_nonce'] ) || $_REQUEST['cb2fa_nonce'] != $this->cb2fa_nonce ) {
             error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' Nonce mismatch, wanted "' . $this->cb2fa_nonce . '", got "' . $_REQUEST['cb2fa_nonce'] . '"' );
-            $user = new \WP_Error( 'CB2FA', __( 'Invalid form token, please try again', CB2FA_PLUGINNAME_SLUG ), 'This is CB2FA data' );
+            $user = new \WP_Error( 'CB2FA', __( 'Invalid form token, please try again', 'cloudbridge-2fa' ), 'This is CB2FA data' );
             return ( $user );
         }
         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -1369,7 +1368,7 @@ class Cloudbridge_2FA {
             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                 error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): No roles for user "' . $user->data->user_email . '"' );
             }
-            $user = new \WP_Error( 'CB2FA', __( 'No active roles found for this user on this website, please try again', CB2FA_PLUGINNAME_SLUG ), 'This is CB2FA data' );
+            $user = new \WP_Error( 'CB2FA', __( 'No active roles found for this user on this website, please try again', 'cloudbridge-2fa' ), 'This is CB2FA data' );
             return ( $user );
         }
         // Check if 2FA (and possibly cookie) is enabled for this user's role(s)
@@ -1454,7 +1453,7 @@ class Cloudbridge_2FA {
             }
             if ( ! empty( $_REQUEST['redirect_to'] ) ) {
                 ob_end_clean();
-                header( 'Location: ' . $_REQUEST['redirect_to'] );
+                header( 'Location: ' . sanitize_url( $_REQUEST['redirect_to'] ) );
                 die();
             }
         }

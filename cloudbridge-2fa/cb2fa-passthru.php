@@ -7,7 +7,7 @@
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
  *
  * cb2fa-passthru.php
- * Copyright (C) 2023 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -29,8 +29,11 @@
  */
 namespace cloudbridge2fa;
 
+// WPINC and ABSPATH are not defined at this point. We'll use DOCUMENT_ROOT
+// from $_SERVER, which is not reachable from the "outside"
+
 @ include $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php';
-// If this file is called directly, abort.
+
 if ( ! defined( 'WPINC' ) ) {
     die;
 }
@@ -53,7 +56,7 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
         if ( ! empty( $_REQUEST['cb2fa_user'] ) ) {
             $cb2fa_login->setUser( null, sanitize_text_field( $_REQUEST['cb2fa_user'] ) );
             if ( ! empty( $_REQUEST['cb2fa_timer'] ) && $_REQUEST['cb2fa_timer'] < time() ) {
-                $our_transient = get_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . $_REQUEST['cb2fa_nonce'] );
+                $our_transient = get_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( $_REQUEST['cb2fa_nonce'] ) );
                 if ( $our_transient !== false ) {
                     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                         error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Transient is "' . $our_transient . '"' );
@@ -67,7 +70,7 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                              * attempt to login user. Things may still not work
                              * out, but it's looking good.
                              */
-                            if ( set_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . $_REQUEST['cb2fa_nonce'], 'consumed', time() ) ) {
+                            if ( set_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( $_REQUEST['cb2fa_nonce'] ), 'consumed', time() ) ) {
                                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                                     error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Transient updated' );
                                 }
@@ -95,7 +98,7 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                                     } else {
                                         error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': get_user_by() returned unexpected value' );
                                     }
-                                    $cb2fa_login->setErrorMessage( __( 'Unable to fetch WordPress user', CB2FA_PLUGINNAME_SLUG ) );
+                                    $cb2fa_login->setErrorMessage( __( 'Unable to fetch WordPress user', 'cloudbridge-2fa' ) );
                                 }
                             } elseif ( empty( $wp_user->roles ) ) {
                                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -108,13 +111,14 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                                 foreach ( $wp_user->roles as $role ) {
                                     if ( $role == 'administrator' ) {
                                         $is_administrator = true;
+                                        break;
                                     }
                                 }// foreach
                                 // Figure out where to re-direct user
                                 if ( empty( $_REQUEST['redirect_to'] ) ) {
                                     $redirect_to = ( $is_administrator ? admin_url() : home_url() );
                                 } else {
-                                    $redirect_to = $_REQUEST['redirect_to'];
+                                    $redirect_to = sanitize_url( $_REQUEST['redirect_to'], array( 'http', 'https' ) );
                                 }
                                 // Possibly set our cookie
                                 $cookie_hash = $cb2fa_login->getCookieHash();
@@ -155,19 +159,19 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                                 error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': PIN code mismatch' );
                             }
-                            $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', CB2FA_PLUGINNAME_SLUG ) );
+                            $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', 'cloudbridge-2fa' ) );
                         }
                     } else {
                         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                             error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Invalid transient ' . print_r( $transient_parts, true ) );
                         }
-                        $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', CB2FA_PLUGINNAME_SLUG ) );
+                        $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', 'cloudbridge-2fa' ) );
                     }
                 } else {
                     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                         error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': No transient found' );
                     }
-                    $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', CB2FA_PLUGINNAME_SLUG ) );
+                    $cb2fa_login->setErrorMessage( __( 'Incorrect code, or code has expired', 'cloudbridge-2fa' ) );
                 }
             } else {
                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -188,7 +192,7 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
         error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': No PIN code' );
     }
-    $cb2fa_login->setErrorMessage( __( 'Please enter the code received by e-mail', CB2FA_PLUGINNAME_SLUG ) );
+    $cb2fa_login->setErrorMessage( __( 'Please enter the code received by e-mail', 'cloudbridge-2fa' ) );
 }
 
 // Draw form again
