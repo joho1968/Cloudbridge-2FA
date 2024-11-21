@@ -128,7 +128,7 @@ class Cloudbridge_2FA_Login {
             return( true );
         }
         if ( ! empty( $_SERVER['HTTP_CF_VISITOR'] ) ) {
-            $v = json_decode( $_SERVER['HTTP_CF_VISITOR'], true );
+            $v = json_decode( sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_VISITOR'] ) ), true );
             if ( is_array( $v ) && ! empty( $v['scheme'] ) && $v['scheme'] === 'https' ) {
                 return( true );
             }
@@ -344,13 +344,13 @@ class Cloudbridge_2FA_Login {
     public function drawForm() {
         // Use site title from WordPress
         if ( ! empty( $this->blog_title ) ) {
-            $title = ' &lsaquo; ' . esc_html( $this->blog_title );
+            $title = esc_html( $this->blog_title );
         } else {
             $title = '';
         }
         // Figure out a good place to "try again"
         if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-            $redirect_to = sanitize_url( $_REQUEST['redirect_to'], array( 'http', 'https' ) );
+            $redirect_to = sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ), array( 'http', 'https' ) );
         } else {
             $redirect_to = site_url();
         }
@@ -366,7 +366,7 @@ class Cloudbridge_2FA_Login {
                 '<link href="' . esc_url( plugins_url( 'css/cb2fa-public.css', dirname(__FILE__) ) ) .
                       '" rel="stylesheet" />' .
                  '<title>' .
-                     esc_html( 'CB2FA' ) . $title .
+                     esc_html( 'CB2FA' ) . ( ! empty( $title ) ? ' &lsaquo; ':'' ) . esc_html( $title ) .
                  '</title>' .
              '</head> ' . "\n" .
              '<body>' . "\n" .
@@ -479,7 +479,7 @@ class Cloudbridge_2FA_Login {
             echo '<div style="margin-top:48px;"><input type="button" name="cb2fa_submit" id="cb2fa_submit" value="OK" /></div>';
             if ( $this->allow_cookie ) {
                 if ( ! empty( $_POST['cb2fa_cookie'] ) ) {
-                    $our_cookie = sanitize_text_field( $_POST['cb2fa_cookie'] );
+                    $our_cookie = sanitize_text_field( wp_unslash( $_POST['cb2fa_cookie'] ) );
                 } else {
                     $our_cookie = '';
                 }
@@ -487,7 +487,7 @@ class Cloudbridge_2FA_Login {
                 echo '<div style="margin-top:24px;">';
                 echo '<input tabindex="2" aria-description="' .
                          esc_html__( 'Enable checkbox to avoid having to enter an OTP code for future logins', 'cloudbridge-2fa' ) .
-                     '" type="checkbox" name="cb2fa_cookie" id="cb2fa_cookie" value="cb2fa_cookie" ' . $cookie_checked . '/>&nbsp;';
+                     '" type="checkbox" name="cb2fa_cookie" id="cb2fa_cookie" value="cb2fa_cookie" ' . esc_html( $cookie_checked ) . '/>&nbsp;';
                 echo '<label for="cb2fa_cookie">' . esc_html__( 'Remember me in this browser', 'cloudbridge-2fa' ) . '</label>';
                 echo '</div>';
             }

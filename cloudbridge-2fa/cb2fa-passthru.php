@@ -54,9 +54,9 @@ if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
 if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
     if ( ! empty( $_REQUEST['cb2fa_nonce'] ) && $_REQUEST['cb2fa_nonce'] == $cb2fa->cb2fa_getnonce() ) {
         if ( ! empty( $_REQUEST['cb2fa_user'] ) ) {
-            $cb2fa_login->setUser( null, sanitize_text_field( $_REQUEST['cb2fa_user'] ) );
+            $cb2fa_login->setUser( null, sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_user'] ) ) );
             if ( ! empty( $_REQUEST['cb2fa_timer'] ) && $_REQUEST['cb2fa_timer'] < time() ) {
-                $our_transient = get_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( $_REQUEST['cb2fa_nonce'] ) );
+                $our_transient = get_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_nonce'] ) ) );
                 if ( $our_transient !== false ) {
                     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                         error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Transient is "' . $our_transient . '"' );
@@ -70,7 +70,7 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                              * attempt to login user. Things may still not work
                              * out, but it's looking good.
                              */
-                            if ( set_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( $_REQUEST['cb2fa_nonce'] ), 'consumed', time() ) ) {
+                            if ( set_transient( CB2FA_TRANSIENT_PREFIX . $cb2fa_login->getUsername() . sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_nonce'] ) ), 'consumed', time() ) ) {
                                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                                     error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Transient updated' );
                                 }
@@ -118,12 +118,12 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                                 if ( empty( $_REQUEST['redirect_to'] ) ) {
                                     $redirect_to = ( $is_administrator ? admin_url() : home_url() );
                                 } else {
-                                    $redirect_to = sanitize_url( $_REQUEST['redirect_to'], array( 'http', 'https' ) );
+                                    $redirect_to = sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ), array( 'http', 'https' ) );
                                 }
                                 // Possibly set our cookie
                                 $cookie_hash = $cb2fa_login->getCookieHash();
                                 $clear_cookie = true;
-                                $the_url = parse_url( get_site_url(), PHP_URL_HOST );
+                                $the_url = wp_parse_url( get_site_url(), PHP_URL_HOST );
                                 if ( $cb2fa_login->getAllowCookie() ) {
                                     if ( ! empty( $_POST['cb2fa_cookie'] ) && $_POST['cb2fa_cookie'] == 'cb2fa_cookie' ) {
                                         $clear_cookie = false;
@@ -133,7 +133,11 @@ if ( ! empty ( $_REQUEST['cb2fa_pincode'] ) ) {
                                                    '/',
                                                    $the_url, $cb2fa_login->isSSL(), true );
                                         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                                            error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ': Setting cookie "cb2fa_' . $cookie_hash . '" for "' . $the_url . '" with time "' . date( 'Y-m-d, H:i:s', $cb2fa_login->getCookieTime() ) . '"' );
+                                            error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) .
+                                                       ': Setting cookie "cb2fa_' . $cookie_hash .
+                                                       '" for "' . $the_url .
+                                                       '" with time "' .
+                                                       date( 'Y-m-d, H:i:s', $cb2fa_login->getCookieTime() ) . '"' );
                                         }
                                     }
                                 }

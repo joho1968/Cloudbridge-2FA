@@ -33,10 +33,16 @@ defined( 'ABSPATH' ) || die( '-1' );
 // If uninstall not called from WordPress, then exit
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
-        error_log( 'cb2fa-uninstall: init' );
+        error_log( 'cb2fa-uninstall: init, WP_UNINSTALL_PLUGIN not defined' );
     }
     exit;
 }
+
+/**
+ * We don't check these anymore.
+ * https://developer.wordpress.org/plugins/plugin-basics/uninstall-methods/
+ */
+/*
 // If action is not to uninstall, then exit
 if ( empty( $_REQUEST['action'] ) || $_REQUEST['action'] !== 'delete-plugin' ) {
     if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
@@ -58,6 +64,7 @@ if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'delete_plugi
     }
     exit;
 }
+*/
 
 
 require_once( 'include/class_cb2fa_options.inc.php' );

@@ -11,7 +11,7 @@
  * Plugin Name:       Cloudbridge 2FA
  * Plugin URI:        https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
  * Description:       Uncomplicated 2FA plugin for WordPress
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
  * Author URI:        https://webbplatsen.se/
  * License:           GPL-2.0+
@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'CB2FA_WORDPRESS_PLUGIN',         true                    );
-define( 'CB2FA_VERSION',                  '1.0.0'                 );
+define( 'CB2FA_VERSION',                  '1.0.4'                 );
 define( 'CB2FA_REV',                      1                       );
 define( 'CB2FA_PLUGINNAME_HUMAN',         'Cloudbridge 2FA'       );
 define( 'CB2FA_DEFAULT_PREFIX',           'cloudbridge2fa'        );
@@ -684,7 +684,7 @@ class Cloudbridge_2FA {
             $html .= '<div class="rolegrid">';
             $html .= '<div class="rolegridrow">';
             $html .= '<div class="rolegridheader">' .
-                          esc_html__( 'Role' ) .
+                          esc_html__( 'Role', 'default' ) .
                      '</div><div class="rolegridheader">' .
                           esc_html__( '2FA enabled', 'cloudbridge-2fa' ) .
                      '</div><div class="rolegridheader">' .
@@ -900,7 +900,7 @@ class Cloudbridge_2FA {
                 }
             }
         }
-        return( json_encode( $return_val ) );
+        return( wp_json_encode( $return_val ) );
     }
     public function cb2fa_setting_sanitize_admin_users( $input ) {
         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -921,7 +921,7 @@ class Cloudbridge_2FA {
                 }
             }
         }
-        return( json_encode( $return_val ) );
+        return( wp_json_encode( $return_val ) );
     }
     public function cb2fa_setting_sanitize_cookies( $input ) {
         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -944,7 +944,7 @@ class Cloudbridge_2FA {
                 }
             }
         }
-        return( json_encode( $return_val ) );
+        return( wp_json_encode( $return_val ) );
     }
     public function cb2fa_setting_sanitize_code_input_text_addon( $input ) {
         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -1062,7 +1062,7 @@ class Cloudbridge_2FA {
                 // Add our "signature", just for basic import validation
                 $query[] = array( 'cloudbridge-2fa' => CB2FA_VERSION );
                 $html .= '<textarea rows="10" cols="60" class="cb2fa-textarea-importexport" id="cb2fa-textarea-export" readonly>';
-                $html .= @ base64_encode( json_encode( $query, 0, 3 ) );
+                $html .= @ base64_encode( wp_json_encode( $query, 0, 3 ) );
                 $html .= '</textarea>';
                 $html .= '<p><input type="button" name="cb2facfgdoexport" id="cb2facfgdoexport" class="button button-primary" value="' . esc_html__( 'Export', 'cloudbridge-2fa' ) . '" />';
                 $html .= '<div id="cb2facfgexport-success" class="cb2fa-inline-notice cb2fa-notice-success cb2fa-is-hidden">' . esc_html__( 'Successfully copied to clipboard', 'cloudbridge-2fa' ) . '</div>';
@@ -1094,7 +1094,7 @@ class Cloudbridge_2FA {
         $import_count = 0;
         if ( ! empty( $_POST['cb2facfgdoimport'] ) ) {
             if ( ! empty( $_POST['cb2fa-textarea-import'] ) ) {
-                $cb2fa_json_importconfig = sanitize_text_field( $_POST['cb2fa-textarea-import'] );
+                $cb2fa_json_importconfig = sanitize_text_field( wp_unslash( $_POST['cb2fa-textarea-import'] ) );
             } else {
                 $cb2fa_json_importconfig = '';
             }
@@ -1167,7 +1167,7 @@ class Cloudbridge_2FA {
                                             $this->_cb2fa_is_plugin_admin = true;
                                             $admin_users_json[] = $current_user_login;
                                             $auto_added_admin_message = __( 'The currently logged in user has been added as an administrator, please check your settings', 'cloudbridge-2fa' );
-                                            $option['option_value'] = json_encode( array_unique( $admin_users_json ) );
+                                            $option['option_value'] = wp_json_encode( array_unique( $admin_users_json ) );
                                         }
                                     }
                                 }
@@ -1202,8 +1202,13 @@ class Cloudbridge_2FA {
         }
         //
         echo '<div class="wrap">' . wp_kses_post( $form_error_message );
-        echo '<h1>' . $this->cb2fa_make_icon_html( 'appicon' ) . '&nbsp;&nbsp;' . esc_html( CB2FA_PLUGINNAME_HUMAN ) .
-             ': <small>' . esc_html__( 'Import', 'cloudbridge-2fa' ) . '</small></h1>';
+        echo '<h1>' .
+             $this->cb2fa_make_icon_html( 'appicon' ) .
+             '&nbsp;&nbsp;' .
+             esc_html( CB2FA_PLUGINNAME_HUMAN ) .
+             ': <small>' .
+             esc_html__( 'Import', 'cloudbridge-2fa' ) .
+             '</small></h1>';
         echo '<p>' . esc_html__( 'Import data', 'cloudbridge-2fa' ) . '</p>';
         echo '<nav class="nav-tab-wrapper">';
         echo '<a data-toggle="cb2fa-import-config" href="#cb2fa-import-config" class="cb2fa-tab nav-tab">' . esc_html__( 'Configuration', 'cloudbridge-2fa' ) . '</a>';
@@ -1411,7 +1416,7 @@ class Cloudbridge_2FA {
             }
         }
         // Clean nonce, probably not needed, but it is external data
-        $the_nonce = sanitize_text_field( $_REQUEST['cb2fa_nonce'] );
+        $the_nonce = sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_nonce'] ) );
         // Create "random" six digit string
         $the_pin_code = '......';
         try {
@@ -1420,7 +1425,7 @@ class Cloudbridge_2FA {
             }
         } catch ( \Exception $e ) {
             for ( $i = 0; $i < 6; $i++ ) {
-                $the_pin_code[$i] = mt_rand( 0, 9 );
+                $the_pin_code[$i] = wp_rand( 0, 9 );
             }
         }
         // Create transient. We use whatever the user entered as a username to
@@ -1453,7 +1458,7 @@ class Cloudbridge_2FA {
             }
             if ( ! empty( $_REQUEST['redirect_to'] ) ) {
                 ob_end_clean();
-                header( 'Location: ' . sanitize_url( $_REQUEST['redirect_to'] ) );
+                header( 'Location: ' . sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ) ) );
                 die();
             }
         }
