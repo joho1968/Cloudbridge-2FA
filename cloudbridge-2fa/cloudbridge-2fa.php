@@ -11,7 +11,7 @@
  * Plugin Name:       Cloudbridge 2FA
  * Plugin URI:        https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
  * Description:       Uncomplicated 2FA plugin for WordPress
- * Version:           1.0.4
+ * Version:           1.0.5
  * Author:            WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
  * Author URI:        https://webbplatsen.se/
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@
  * Domain Path:       /languages
  *
  * cloudbridge-2fa.php
- * Copyright (C) 2024 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024, 2025 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'CB2FA_WORDPRESS_PLUGIN',         true                    );
-define( 'CB2FA_VERSION',                  '1.0.4'                 );
+define( 'CB2FA_VERSION',                  '1.0.5'                 );
 define( 'CB2FA_REV',                      1                       );
 define( 'CB2FA_PLUGINNAME_HUMAN',         'Cloudbridge 2FA'       );
 define( 'CB2FA_DEFAULT_PREFIX',           'cloudbridge2fa'        );
