@@ -11,7 +11,7 @@
  * Plugin Name:       Cloudbridge 2FA
  * Plugin URI:        https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
  * Description:       Uncomplicated 2FA plugin for WordPress
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
  * Author URI:        https://webbplatsen.se/
  * License:           GPL-2.0+
@@ -52,8 +52,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'CB2FA_WORDPRESS_PLUGIN',         true                    );
-define( 'CB2FA_VERSION',                  '2.0.0'                 );
-define( 'CB2FA_REV',                      1                       );
+define( 'CB2FA_VERSION',                  '2.0.1'                 );
+define( 'CB2FA_REV',                      2                       );
 define( 'CB2FA_PLUGINNAME_HUMAN',         'Cloudbridge 2FA'       );
 define( 'CB2FA_DEFAULT_PREFIX',           'cloudbridge2fa'        );
 define( 'CB2FA_TRANSIENT_PREFIX',         'cloudbridge2fa'        );
@@ -1014,10 +1014,13 @@ class Cloudbridge_2FA {
             settings_errors( 'cloudbridge-2fa' );
             $html .= ob_get_contents();
             ob_end_clean();
-            $html .= '<div id="cb2fa-general" class="cb2fa-tab-content cb2fa-is-hidden">';
             $html .= '<form method="post" action="options.php">';
             ob_start();
             settings_fields( 'cloudbridge-2fa' );
+            $html .= ob_get_contents();
+            ob_end_clean();
+            $html .= '<div id="cb2fa-general" class="cb2fa-tab-content cb2fa-is-hidden">';
+            ob_start();
             echo '<div class="cb2fa-settings-group">';
             echo '<h2>' . esc_html__( 'Authenticator apps', 'cloudbridge-2fa' ) . '</h2>';
             echo '<p class="cb2fa-section-intro">' . esc_html__( 'Allow standards-based TOTP authenticator apps for this site. Each user enables and manages their own authenticator app from their WordPress profile page.', 'cloudbridge-2fa' ) . '</p>';
@@ -1048,12 +1051,9 @@ class Cloudbridge_2FA {
             echo '</div>';
             $html .= ob_get_contents();
             ob_end_clean();
-            $html .= '</form>';
             $html .= '</div>';//cb2fa-general
             $html .= '<div id="cb2fa-email-otp" class="cb2fa-tab-content cb2fa-is-hidden">';
-            $html .= '<form method="post" action="options.php">';
             ob_start();
-            settings_fields( 'cloudbridge-2fa' );
             echo '<div class="cb2fa-settings-group">';
             echo '<h2>' . esc_html__( 'E-mail OTP', 'cloudbridge-2fa' ) . '</h2>';
             echo '<p class="cb2fa-section-intro">' . esc_html__( 'Configure the e-mail-based one-time code flow, including message behavior and helper text shown during login.', 'cloudbridge-2fa' ) . '</p>';
@@ -1064,14 +1064,9 @@ class Cloudbridge_2FA {
             echo '</div>';
             $html .= ob_get_contents();
             ob_end_clean();
-            $html .= '</form>';
             $html .= '</div>';//cb2fa-email-otp
             $html .= '<div id="cb2fa-roles" class="cb2fa-tab-content cb2fa-is-hidden">';
-            $html .= '<form method="post" action="options.php">';
             ob_start();
-            settings_fields( 'cloudbridge-2fa' );
-            $html .= ob_get_contents();
-            ob_end_clean();
             $html .= '<p>'  .
                      esc_html__( 'This page allows you to configure how 2FA should be enforced for different WordPress user roles', 'cloudbridge-2fa' ) . '. ' .
                      esc_html__( 'It is recommended that you enable 2FA at least for all roles with elevated privileges', 'cloudbridge-2fa' ) . '.' .
@@ -1108,6 +1103,8 @@ class Cloudbridge_2FA {
                 }
             }
             $html .= '<div class="rolegrid">';
+            $html .= '<input type="hidden" name="cloudbridge2fa-roles-config[]" value="" />';
+            $html .= '<input type="hidden" name="cloudbridge2fa-cookies-config[]" value="" />';
             $html .= '<div class="rolegridrow">';
             $html .= '<div class="rolegridheader">' .
                           esc_html__( 'Role', 'default' ) .
@@ -1134,14 +1131,8 @@ class Cloudbridge_2FA {
             $html .= ob_get_contents();
             ob_end_clean();
             $html .= '</div>';
-            $html .= '</form>';
             $html .= '</div>';// cb2fa-roles
             $html .= '<div id="cb2fa-access" class="cb2fa-tab-content cb2fa-is-hidden">';
-            $html .= '<form method="post" action="options.php">';
-            ob_start();
-            settings_fields( 'cloudbridge-2fa' );
-            $html .= ob_get_contents();
-            ob_end_clean();
             $admin_users = $this->cb2fa_get_wordpress_admin_users();
             $current_user = wp_get_current_user();
             $current_user_display = '';
@@ -1177,6 +1168,7 @@ class Cloudbridge_2FA {
                              '</strong></p>';
                 }
                 $html .= '<div class="rolegrid">';
+                $html .= '<input type="hidden" name="cloudbridge2fa-admin-users[]" value="" />';
                 $html .= '<div class="admingridrow">';
                 $html .= '<div class="admingridheader">' .
                          esc_html__( 'User', 'cloudbridge-2fa' ) .
@@ -1209,8 +1201,8 @@ class Cloudbridge_2FA {
             $html .= ob_get_contents();
             ob_end_clean();
             $html .= '</div>';
-            $html .= '</form>';
             $html .= '</div>';// cb2fa-access
+            $html .= '</form>';
             $html .= '<div id="cb2fa-bypass-2fa" class="cb2fa-tab-content cb2fa-is-hidden">';
             $html .= '<div class="cb2fa-settings-group">';
             $html .= '<h2>' . esc_html__( 'Bypass 2FA', 'cloudbridge-2fa' ) . '</h2>';
@@ -1473,6 +1465,7 @@ class Cloudbridge_2FA {
     public function cb2fa_setting_factor_email() : void {
         echo '<div class="cb2fa-setting-option">';
         echo '<label for="cloudbridge2fa-email-otp-enabled">';
+        echo '<input type="hidden" name="cloudbridge2fa-email-otp-enabled" value="0" />';
         echo '<input type="checkbox" name="cloudbridge2fa-email-otp-enabled" id="cloudbridge2fa-email-otp-enabled" value="1" ' . checked( $this->cb2fa_email_otp_enabled, 1, false ) . '/>';
         echo esc_html__( 'Send a one-time code by e-mail when e-mail is available for the user', 'cloudbridge-2fa' ) . '</label> ';
         echo '</div>';
@@ -1481,6 +1474,7 @@ class Cloudbridge_2FA {
     public function cb2fa_setting_factor_totp() : void {
         echo '<div class="cb2fa-setting-option">';
         echo '<label for="cloudbridge2fa-totp-enabled">';
+        echo '<input type="hidden" name="cloudbridge2fa-totp-enabled" value="0" />';
         echo '<input type="checkbox" name="cloudbridge2fa-totp-enabled" id="cloudbridge2fa-totp-enabled" value="1" ' . checked( $this->cb2fa_totp_enabled, 1, false ) . '/>';
         echo esc_html__( 'Allow users to set up an authenticator app on their WordPress profile page', 'cloudbridge-2fa' ) . '</label> ';
         echo '</div>';
@@ -1516,6 +1510,7 @@ class Cloudbridge_2FA {
     public function cb2fa_setting_code_email_subject() : void {
         echo '<div class="cb2fa-setting-option">';
         echo '<label for="cloudbridge2fa-code-email-subject">';
+        echo '<input type="hidden" name="cloudbridge2fa-code-email-subject" value="0" />';
         echo '<input type="checkbox" name="cloudbridge2fa-code-email-subject" id="cloudbridge2fa-code-email-subject" value="1" ' . ( checked( $this->cb2fa_code_email_subject, 1, false ) ) . '/>';
         echo esc_html__( 'Include OTP (one time password) in e-mail subject', 'cloudbridge-2fa' ) . '</label> ';
         echo '</div>';
@@ -1523,6 +1518,7 @@ class Cloudbridge_2FA {
     public function cb2fa_setting_remove() : void {
         echo '<div class="cb2fa-setting-option">';
         echo '<label for="cloudbridge2fa-settings-remove">';
+        echo '<input type="hidden" name="cloudbridge2fa-settings-remove" value="0" />';
         echo '<input type="checkbox" name="cloudbridge2fa-settings-remove" id="cloudbridge2fa-settings-remove" value="1" ' . ( checked( $this->cb2fa_settings_remove, 1, false ) ) . '/>';
         echo esc_html__( 'Remove all plugin settings and data when plugin is uninstalled', 'cloudbridge-2fa' ) . '</label> ';
         echo '</div>';

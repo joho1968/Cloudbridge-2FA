@@ -60,6 +60,12 @@ This is a hard question to answer. There are no known incompatibilities.
 
 ## Changelog
 
+### 2.0.1
+* Fixed a settings-page regression where saving one tab could unset values on another tab
+* Fixed the Bypass 2FA tab layout after the recent admin UI changes
+* Restored returning to the active settings tab after saving
+* Sent expired or stale login verification attempts back to the WordPress login screen so the user can start over cleanly
+
 ### 2.0.0
 * Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4
 * Added authenticator app support using standards-based TOTP

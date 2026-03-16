@@ -55,6 +55,21 @@ function cb2faSettingTabClick(e) {
     }
 }
 
+function cb2faGetActiveTabHash() {
+    let activeTab = document.querySelector('.cb2fa-tab.nav-tab-active');
+    if (!activeTab) {
+        return '';
+    }
+    return activeTab.hash || '';
+}
+
+function cb2faPersistActiveTab() {
+    let activeHash = cb2faGetActiveTabHash();
+    if (activeHash) {
+        window.localStorage.setItem(cb2faTabStorageKey, activeHash);
+    }
+}
+
 function selectAllExportText(e) {
     e.target.select();
     e.target.focus();
@@ -68,10 +83,15 @@ function cb2faShowTab(e) {
         if (visibleBlock !== null) {
             visibleBlock.classList.add('cb2fa-is-visible-block');
             visibleBlock.classList.remove('cb2fa-is-hidden');
+            cb2faPersistActiveTab();
         } else {
             console.log('Unable to fetch ID for '+e.getAttribute('data-toggle'));
         }
     }
+}
+
+function cb2faPrepareSubmit() {
+    cb2faPersistActiveTab();
 }
 
 /* Copy export text to clipboard */
@@ -125,8 +145,9 @@ function cb2faRenderTotpQr() {
 var cb2faSetup = function(){
     cb2faAllTabs = document.getElementsByClassName('cb2fa-tab');
     cb2faAllTabContent = document.getElementsByClassName('cb2fa-tab-content');
-    let isFirstTab = true;
     let firstElement = null;
+    let savedElement = null;
+    let hashElement = null;
     let savedTabHash = window.localStorage.getItem(cb2faTabStorageKey) || '';
     /*console.log(window.location);*/
     Array.from(cb2faAllTabs).forEach(function(e) {
@@ -134,24 +155,19 @@ var cb2faSetup = function(){
             firstElement = e;
         }
         e.addEventListener('click', cb2faPartial(cb2faSettingTabClick, e));
-        if (! window.location.hash) {
-            if (isFirstTab && savedTabHash === e.hash) {
-                cb2faShowTab(e);
-                isFirstTab = false;
-            }
+        if (savedTabHash && savedTabHash === e.hash) {
+            savedElement = e;
         }
-        if (! window.location.hash) {
-            if (isFirstTab) {
-                cb2faShowTab(e);
-                isFirstTab = false;
-            }
-        } else if (window.location.hash === e.hash) {
-            cb2faShowTab(e);
-            isFirstTab = false;
+        if (window.location.hash && window.location.hash === e.hash) {
+            hashElement = e;
         }
     });
 
-    if (isFirstTab) {
+    if (hashElement !== null) {
+        cb2faShowTab(hashElement);
+    } else if (savedElement !== null) {
+        cb2faShowTab(savedElement);
+    } else if (firstElement !== null) {
         cb2faShowTab(firstElement);
     }
     let e = document.getElementById('cb2fa-textarea-export');
@@ -166,6 +182,9 @@ var cb2faSetup = function(){
     if (e) {
         e.addEventListener('click', copyTextToClipboard);
     }
+    Array.from(document.getElementsByTagName('form')).forEach(function(formElement) {
+        formElement.addEventListener('submit', cb2faPrepareSubmit);
+    });
     cb2faRenderTotpQr();
 };
 

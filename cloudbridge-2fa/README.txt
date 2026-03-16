@@ -5,7 +5,7 @@ Tags: security, 2fa, passwords
 Requires at least: 5.4.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,12 @@ This is a hard question to answer. There are no known incompatibilities.
 2. Sample OTP code entry form when logging into WordPress
 
 == Changelog ==
+
+= 2.0.1 =
+* Fixed a settings-page regression where saving one tab could unset values on another tab
+* Fixed the Bypass 2FA tab layout after the recent admin UI changes
+* Restored returning to the active settings tab after saving
+* Sent expired or stale login verification attempts back to the WordPress login screen so the user can start over cleanly
 
 = 2.0.0 =
 * Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4

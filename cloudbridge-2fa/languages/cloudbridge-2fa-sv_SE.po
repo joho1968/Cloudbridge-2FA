@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cloudbridge-2fa 2.0.0\n"
+"Project-Id-Version: cloudbridge-2fa 2.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-18 09:15+0100\n"
-"PO-Revision-Date: 2026-03-16 12:30+0100\n"
+"PO-Revision-Date: 2026-03-16 16:45+0100\n"
 "Last-Translator: Joaquim Homrighausen <joho@webbplatsen.se>\n"
 "Language-Team: SWEDISH <LL@li.org>\n"
 "Language: sv_SE\n"
