@@ -8,7 +8,7 @@
  * @author  Joaquim Homrighausen <joho@webbplatsen.se>
  *
  * uninstall.php
- * Copyright (C) 2024, 2025 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -68,25 +68,34 @@ if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'delete_plugi
 
 
 require_once( 'include/class_cb2fa_options.inc.php' );
+require_once( 'include/class_cb2fa_totp.inc.php' );
 
 //  define( 'CB2FA_UNINSTALL_TRACE', true );
 
-// Figure out if an uninstall should remove plugin settings
-$remove_settings = get_option( 'cloudbridge2fa-settings-remove', '0' );
+function cb2fa_run_uninstall() : void {
+    $cb2fa_remove_settings = get_option( 'cloudbridge2fa-settings-remove', '0' );
 
-if ( $remove_settings == '1' ) {
-    if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
-        error_log( 'cb2fa-uninstall: uninstalling' );
-    }
-    $cb2fa_all_options = \cloudbridge2fa\Cloudbridge_2FA_Options::cb2fa_our_options();
-    foreach( $cb2fa_all_options as $option ) {
-        delete_option( $option );
-    }
-    if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
-        error_log( 'cb2fa-uninstall: ' . __FILE__ . ' end' );
-    }
-} else {
-    if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
-        error_log( 'cb2fa-uninstall: $remove_settings = ' . var_export( $remove_settings, true ) );
+    if ( $cb2fa_remove_settings == '1' ) {
+        if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
+            error_log( 'cb2fa-uninstall: uninstalling' );
+        }
+        $cb2fa_all_options = \cloudbridge2fa\Cloudbridge_2FA_Options::cb2fa_our_options();
+        foreach( $cb2fa_all_options as $cb2fa_option ) {
+            delete_option( $cb2fa_option );
+        }
+        $cb2fa_all_user_meta = \cloudbridge2fa\Cloudbridge_2FA_TOTP::cb2fa_user_meta_keys();
+        foreach ( $cb2fa_all_user_meta as $cb2fa_meta_key ) {
+            delete_metadata( 'user', 0, $cb2fa_meta_key, '', true );
+        }
+        delete_metadata( 'user', 0, 'cloudbridge2fa_bypass', '', true );
+        if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
+            error_log( 'cb2fa-uninstall: ' . __FILE__ . ' end' );
+        }
+    } else {
+        if ( defined( 'CB2FA_UNINSTALL_TRACE' ) ) {
+            error_log( 'cb2fa-uninstall: $cb2fa_remove_settings = ' . var_export( $cb2fa_remove_settings, true ) );
+        }
     }
 }
+
+cb2fa_run_uninstall();

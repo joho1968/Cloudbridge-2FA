@@ -8,7 +8,7 @@
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
  *
  * class_2b2fa_util.inc.php
- * Copyright (C) 2024, 2025 Joaquim Homrighausen where applicable
+ * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -83,9 +83,9 @@ class Cloudbridge_2FA_Utility {
             return( mb_substr( $str, $start ) );
         }
         if ( $len >= 0 ) {
-            return( mb_substr( $str, $start, $len ) );
+            return( substr( $str, $start, $len ) );
         }
-        return( mb_substr( $str, $start ) );
+        return( substr( $str, $start ) );
     }
     /**
      * Wrapper for mb_strpos().

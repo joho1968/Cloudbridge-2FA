@@ -5,21 +5,29 @@ Tags: security, 2fa, passwords
 Requires at least: 5.4.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Uncomplicated 2FA plugin for WordPress. Tested with WordPress 5.5+ and PHP 7.4+.
+Uncomplicated 2FA plugin for WordPress with e-mail OTP and authenticator app support.
 
 == Description ==
 
-This plugin provides uncomplicated 2FA plugin for WordPress. It will allow you
-to require a second, one time password or OTP, code to be entered when certain
-(or all) users attempt to log in to WordPress.
+This plugin provides uncomplicated 2FA functionality for WordPress. It will
+allow you to require a second, one time password or OTP, code to be entered
+when certain (or all) users attempt to log in to WordPress.
 
-It will send a six-digit code via e-mail to the user attempting to log in. The
-code has a limited lifetime (defaults to 15 minutes). Once a code has been
-consumed, it is considered invalid.
+The plugin supports two factor methods:
+
+* six-digit codes sent by e-mail
+* standards-based authenticator apps using TOTP
+
+The e-mail code has a limited lifetime (defaults to 15 minutes). Once a code
+has been consumed, it is considered invalid.
+
+Authenticator app setup is handled from the user's own profile page. The plugin
+provides a QR code, a manual setup key, and recovery codes for when the
+authenticator app is not available.
 
 You may configure that only certain roles are required to use 2FA, and it is
 recommended that you enable 2FA for those users with privileged access.
@@ -63,6 +71,15 @@ This is a hard question to answer. There are no known incompatibilities.
 
 == Changelog ==
 
+= 2.0.0 =
+* Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4
+* Added authenticator app support using standards-based TOTP
+* Added recovery codes for authenticator-enabled accounts
+* Added QR code and manual setup key support to the user profile
+* Reworked the admin settings so authenticator-app and e-mail OTP settings are easier to find
+* Hardened redirect handling in login and OTP completion flows
+* Added CSRF protection to configuration import
+
 = 1.0.5 =
 * Verified with WordPress 6.8 and 6.9
 
@@ -100,3 +117,5 @@ This plugin can also be downloaded from [code.webbplatsen.net](https://code.webb
 More detailed documentation is available at [https://code.webbplatsen.net/documentation/cloudbridge-2fa/](https://code.webbplatsen.net/documentation/cloudbridge-2fa/)
 
 Kudos to Kev Quirk for [Simple CSS](https://simplecss.org/)
+
+QR code setup on the authenticated profile page uses QR Code Generator for JavaScript by Kazuhiko Arase (MIT license).

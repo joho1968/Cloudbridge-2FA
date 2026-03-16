@@ -8,7 +8,7 @@
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
 *
  * class_cb2fa_login.php
- * Copyright (C) 2024, 2025 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -53,49 +53,53 @@ class Cloudbridge_2FA_Login {
     protected string $blog_title;
     protected string $our_url;
     protected string $nonce;
+    protected bool $code_email_subject;
     protected string $error_message;
     protected string $form_message;
     protected string $email_message;
+    protected array $challenge;
     protected int $code_lifetime;
     protected int $cookie_lifetime;
-    protected int $isFromWordPress;
+    protected bool $isFromWordPress;
     protected bool $allow_cookie;
 
-    public static function getInstance( string $nonce, $allow_cookie = false ) {
+    public static function getInstance( string $nonce, bool $allow_cookie = false ) {
         null === self::$instance AND self::$instance = new self( $nonce, $allow_cookie );
         return( self::$instance );
     }
     public function __construct( string $nonce, bool $allow_cookie = false ) {
+        $form_message = get_option( 'cloudbridge2fa-code-input-text-addon', null );
+        if ( $form_message === null ) {
+            $form_message = '';
+        } else {
+            $form_message = sanitize_textarea_field( $form_message );
+        }
+        $email_message = get_option( 'cloudbridge2fa-code-email-text-addon', null );
+        if ( $email_message === null ) {
+            $email_message = '';
+        } else {
+            $email_message = sanitize_textarea_field( $email_message );
+        }
+        $code_lifetime = get_option( 'cloudbridge2fa-code-lifetime', null );
+        if ( $code_lifetime === null || $code_lifetime < 1 || $code_lifetime > 60 ) {
+            $code_lifetime = CB2FA_TRANSIENT_EXPIRE_DEFAULT;
+        }
+        $cookie_lifetime = get_option( 'cloudbridge2fa-cookie-lifetime', null );
+        if ( $cookie_lifetime === null || $cookie_lifetime < 0 || $cookie_lifetime > 365 ) {
+            $cookie_lifetime = CB2FA_COOKIE_EXPIRE_DEFAULT;
+        }
         $this->our_url = plugins_url( 'cb2fa-passthru.php', dirname( __FILE__ ) );
-        $this->code_lifetime = get_option( 'cloudbridge2fa-code-lifetime', null );
-        if ( $this->code_lifetime === null || $this->code_lifetime < 1 || $this->code_lifetime > 60 ) {
-            $this->code_lifetime = CB2FA_TRANSIENT_EXPIRE_DEFAULT;
-        }
-        $this->cookie_lifetime = get_option( 'cloudbridge2fa-cookie-lifetime', null );
-        if ( $this->cookie_lifetime === null || $this->cookie_lifetime < 0 || $this->cookie_lifetime > 365 ) {
-            $this->cookie_lifetime = CB2FA_COOKIE_EXPIRE_DEFAULT;
-        }
-        $this->code_email_subject = get_option( 'cloudbridge2fa-code-email-subject', false );
-        if ( ! empty( $this->code_email_subject ) ) {
-            $this->code_email_subject = true;
-        }
-        $this->form_message = get_option( 'cloudbridge2fa-code-input-text-addon', null );
-        if ( $this->form_message === null ) {
-            $this->form_message = '';
-        } else {
-            $this->form_message = sanitize_textarea_field( $this->form_message );
-        }
-        $this->email_message = get_option( 'cloudbridge2fa-code-email-text-addon', null );
-        if ( $this->email_message === null ) {
-            $this->email_message = '';
-        } else {
-            $this->email_message = sanitize_textarea_field( $this->email_message );
-        }
+        $this->code_lifetime = (int)$code_lifetime;
+        $this->cookie_lifetime = (int)$cookie_lifetime;
+        $this->code_email_subject = ! empty( get_option( 'cloudbridge2fa-code-email-subject', false ) );
+        $this->form_message = $form_message;
+        $this->email_message = $email_message;
         $this->allow_cookie = $allow_cookie;
         $this->nonce = $nonce;
         $this->blog_title = get_bloginfo( 'name' );
         $this->setErrorMessage( '' );
         $this->isFromWordPress = false;
+        $this->challenge = [];
     }
 
     /**
@@ -116,6 +120,48 @@ class Cloudbridge_2FA_Login {
      */
     public function setFromWordPress( bool $fromWordPress ) {
         $this->isFromWordPress = $fromWordPress;
+    }
+
+    public function setChallenge( array $challenge ) {
+        $this->challenge = $challenge;
+    }
+
+    protected function getActiveFactor() : string {
+        if ( ! empty( $this->challenge['active_factor'] ) && is_string( $this->challenge['active_factor'] ) ) {
+            return( $this->challenge['active_factor'] );
+        }
+        return( 'email' );
+    }
+
+    protected function getAvailableFactors() : array {
+        if ( ! empty( $this->challenge['available_factors'] ) && is_array( $this->challenge['available_factors'] ) ) {
+            return( $this->challenge['available_factors'] );
+        }
+        return( ['email'] );
+    }
+
+    protected function getFactorLabel( string $factor ) : string {
+        switch ( $factor ) {
+            case 'totp':
+                return( __( 'Authenticator app', 'cloudbridge-2fa' ) );
+            case 'recovery':
+                return( __( 'Recovery code', 'cloudbridge-2fa' ) );
+            case 'email':
+            default:
+                return( __( 'E-mail code', 'cloudbridge-2fa' ) );
+        }
+    }
+
+    protected function getFactorSwitchLabel( string $factor ) : string {
+        switch ( $factor ) {
+            case 'totp':
+                return( __( 'authenticator app', 'cloudbridge-2fa' ) );
+            case 'recovery':
+                return( __( 'recovery code', 'cloudbridge-2fa' ) );
+            case 'email':
+            default:
+                return( __( 'e-mail code', 'cloudbridge-2fa' ) );
+        }
     }
 
     /**
@@ -167,6 +213,27 @@ class Cloudbridge_2FA_Login {
      */
     public function getAllowCookie() {
         return( $this->allow_cookie );
+    }
+
+    /**
+     * Validate an incoming redirect target and keep it on-site.
+     *
+     * @param string $fallback_url
+     * @return string
+     */
+    protected function getSafeRedirectUrl( string $fallback_url = '' ) : string {
+        if ( empty( $fallback_url ) ) {
+            $fallback_url = site_url();
+        }
+        if ( empty( $_REQUEST['redirect_to'] ) ) {
+            return( $fallback_url );
+        }
+        $redirect_to = sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ), ['http', 'https'] );
+        $redirect_to = wp_validate_redirect( $redirect_to, $fallback_url );
+        if ( empty( $redirect_to ) ) {
+            return( $fallback_url );
+        }
+        return( $redirect_to );
     }
 
     /**
@@ -262,6 +329,27 @@ class Cloudbridge_2FA_Login {
         return( CB2FA_PLUGINNAME_HUMAN );
     }
 
+    /**
+     * Setup "address" portion in "From:" e-mail header.
+     *
+     * @return string
+     */
+    public function set_mail_from_address( $email = '' ) {
+        if ( ! empty( $email ) && is_email( $email ) ) {
+            return( $email );
+        }
+        $admin_email = sanitize_email( (string)get_option( 'admin_email', '' ) );
+        if ( ! empty( $admin_email ) && is_email( $admin_email ) ) {
+            return( $admin_email );
+        }
+        $site_host = (string)wp_parse_url( home_url(), PHP_URL_HOST );
+        $site_host = strtolower( preg_replace( '/[^a-z0-9.-]/i', '', $site_host ) );
+        if ( empty( $site_host ) || strpos( $site_host, '.' ) === false ) {
+            $site_host = 'localhost.localdomain';
+        }
+        return( 'wordpress@' . $site_host );
+    }
+
     public function send_2fa_code( string $the_code ) {
         if ( empty( $this->user->data->user_email ) ) {
             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
@@ -328,6 +416,7 @@ class Cloudbridge_2FA_Login {
         $email_body .= '</main></body></html>';
         // Handle WordPress quirks
         add_filter( 'wp_mail_content_type', [$this, 'set_html_mail_content_type'] );
+        add_filter( 'wp_mail_from', [$this, 'set_mail_from_address'] );
         add_filter( 'wp_mail_from_name', [$this, 'set_mail_from_name'] );
         // Send e-mail
         wp_mail( $this->user->data->user_email,
@@ -335,6 +424,7 @@ class Cloudbridge_2FA_Login {
                  $email_body );
         // "Unhandle" WordPress quirks ;-)
         remove_filter( 'wp_mail_from_name', [$this, 'set_mail_from_name'] );
+        remove_filter( 'wp_mail_from', [$this, 'set_mail_from_address'] );
         remove_filter( 'wp_mail_content_type', [$this, 'set_html_mail_content_type'] );
     }
 
@@ -348,12 +438,16 @@ class Cloudbridge_2FA_Login {
         } else {
             $title = '';
         }
-        // Figure out a good place to "try again"
-        if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-            $redirect_to = sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ), array( 'http', 'https' ) );
-        } else {
-            $redirect_to = site_url();
+        $redirect_to = $this->getSafeRedirectUrl( site_url() );
+        $login_url = wp_login_url( $redirect_to );
+        wp_enqueue_style( 'cb2fa-simple-public', plugins_url( 'css/simple.min.css', dirname(__FILE__) ), array(), CB2FA_VERSION );
+        wp_enqueue_style( 'cb2fa-public', plugins_url( 'css/cb2fa-public.css', dirname(__FILE__) ), array( 'cb2fa-simple-public' ), CB2FA_VERSION );
+        if ( @ filesize( dirname( __FILE__ ) . '/../css/cb2fa-public-custom.css' ) !== false ) {
+            wp_enqueue_style( 'cb2fa-public-custom', plugins_url( 'css/cb2fa-public-custom.css', dirname(__FILE__) ), array( 'cb2fa-public' ), CB2FA_VERSION );
         }
+        ob_start();
+        wp_print_styles( ['cb2fa-simple-public', 'cb2fa-public', 'cb2fa-public-custom'] );
+        $cb2fa_printed_styles = ob_get_clean();
         // Draw some basic HTML
         echo '<!DOCTYPE html>' .
              '<html>' .
@@ -361,20 +455,56 @@ class Cloudbridge_2FA_Login {
                  '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' .
                  '<meta charset="utf-8" />' .
                  '<meta name="viewport" content="width=device-width,initial-scale=1"/>' .
-                 '<link href="' . esc_url( plugins_url( 'css/simple.min.css', dirname(__FILE__) ) ) .
-                      '" rel="stylesheet" />' .
-                '<link href="' . esc_url( plugins_url( 'css/cb2fa-public.css', dirname(__FILE__) ) ) .
-                      '" rel="stylesheet" />' .
                  '<title>' .
                      esc_html( 'CB2FA' ) . ( ! empty( $title ) ? ' &lsaquo; ':'' ) . esc_html( $title ) .
                  '</title>' .
+             $cb2fa_printed_styles .
              '</head> ' . "\n" .
              '<body>' . "\n" .
              '<script>' .
                  '
-                  var cb2fa_form = null;
+                 var cb2fa_form = null;
                   var cb2fa_pincode = null;
                   var cb2fa_submit = null;
+                  var cb2fa_numeric_factors = ["email", "totp"];
+
+                  function cb2fa_get_active_factor() {
+                     if (!cb2fa_pincode) {
+                         return "";
+                     }
+                     return cb2fa_pincode.getAttribute("data-factor") || "";
+                  }
+                 function cb2fa_get_code_length() {
+                     if (!cb2fa_pincode) {
+                         return 0;
+                     }
+                     return parseInt(cb2fa_pincode.getAttribute("data-code-length") || "0", 10);
+                 }
+                 function cb2fa_is_numeric_factor() {
+                     return cb2fa_numeric_factors.indexOf(cb2fa_get_active_factor()) !== -1;
+                 }
+                 function cb2fa_normalize_pincode(value) {
+                     if (typeof value !== "string") {
+                         value = "";
+                     }
+                     if (cb2fa_is_numeric_factor()) {
+                         let codeLength = cb2fa_get_code_length();
+                         let normalizedValue = value.replace(/[^0-9]/g, "");
+                         if (codeLength > 0) {
+                             normalizedValue = normalizedValue.slice(0, codeLength);
+                         }
+                         return normalizedValue;
+                     }
+                     return value.replace(/\s+/g, "");
+                 }
+                 function cb2fa_maybe_submit_numeric_code() {
+                     if (!cb2fa_is_numeric_factor() || !cb2fa_form || !cb2fa_submit || !cb2fa_pincode) {
+                         return;
+                     }
+                     if (cb2fa_get_code_length() > 0 && cb2fa_pincode.value.length === cb2fa_get_code_length()) {
+                         cb2fa_submit.click();
+                     }
+                 }
 
                   function cb2fa_setup() {
                      cb2fa_form = document.getElementById("cb2fa_form");
@@ -391,6 +521,7 @@ class Cloudbridge_2FA_Login {
                      }
                      if (cb2fa_pincode) {
                          cb2fa_pincode.addEventListener("keydown", cb2fa_pincode_keydown);
+                         cb2fa_pincode.addEventListener("input", cb2fa_pincode_input);
                          cb2fa_pincode.addEventListener("paste", cb2fa_pincode_paste);
                          cb2fa_pincode.focus();
                      }
@@ -410,11 +541,26 @@ class Cloudbridge_2FA_Login {
                  }
                  function cb2fa_pincode_paste(e) {
                      var pasteData = e.clipboardData.getData("text/plain");
-                     cb2fa_pincode.value = pasteData.replace(/\s+/g, "");
+                     cb2fa_pincode.value = cb2fa_normalize_pincode(pasteData);
+                     cb2fa_maybe_submit_numeric_code();
                      e.preventDefault();
                  }
+                 function cb2fa_pincode_input() {
+                     var normalizedValue = cb2fa_normalize_pincode(cb2fa_pincode.value);
+                     if (cb2fa_pincode.value !== normalizedValue) {
+                         cb2fa_pincode.value = normalizedValue;
+                     }
+                     cb2fa_maybe_submit_numeric_code();
+                 }
                  function cb2fa_pincode_keydown(e) {
+                     if ((e.ctrlKey || e.metaKey) && ["a", "c", "v", "x"].indexOf((e.key || "").toLowerCase()) !== -1) {
+                         return(true);
+                     }
                      if (e.key == " " || e.key == "Spacebar") {
+                         e.preventDefault();
+                         return(false);
+                     }
+                     if (cb2fa_is_numeric_factor() && e.key && e.key.length === 1 && ! /[0-9]/.test(e.key)) {
                          e.preventDefault();
                          return(false);
                      }
@@ -430,19 +576,9 @@ class Cloudbridge_2FA_Login {
         if ( ! empty( $this->blog_title ) ) {
             echo '<h3 class="cb2fa-otp-site-header">' . esc_html( $this->blog_title ) . '</h3>';
         }
-        if ( empty( $_REQUEST['cb2fa_nonce'] ) || $_REQUEST['cb2fa_nonce'] != $this->nonce ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . '(' . __FUNCTION__ . '): Nonce mismatch, or no nonce' );
-            }
-            $basic_checks_failed = true;
-        } elseif ( empty( $this->username ) ) {
+        if ( empty( $this->username ) ) {
             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                 error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . '(' . __FUNCTION__ . '): No username' );
-            }
-            $basic_checks_failed = true;
-        } elseif ( ! $this->isFromWordPress && ( empty( $_REQUEST['cb2fa_timer'] ) || $_REQUEST['cb2fa_timer'] > time() ) ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . '(' . __FUNCTION__ . '): Timer mismatch' );
             }
             $basic_checks_failed = true;
         } else {
@@ -453,17 +589,30 @@ class Cloudbridge_2FA_Login {
         echo '<div class="notice">';
         if ( $basic_checks_failed ) {
             echo '<h5 class="cb2fa-error-message">' . esc_html__( 'An error occurred, please try again', 'cloudbridge-2fa' ) . '</h5>';
-            echo '<div class="cb2fa-center"><a class="cb2fa-link" href="' . esc_url( $redirect_to ) . '">' . esc_html( $redirect_to ) . '</a></div>';
+            echo '<div class="cb2fa-center"><a class="cb2fa-link" href="' . esc_url( $login_url ) . '">' . esc_html__( 'WordPress Login', 'cloudbridge-2fa' ) . '</a></div>';
         } else {
+            $active_factor = $this->getActiveFactor();
+            $available_factors = $this->getAvailableFactors();
             if ( ! empty( $this->error_message ) ) {
                 echo '<h5 class="cb2fa-center">' . esc_html( $this->error_message ) . '</h5>';
             } else {
                 echo '<div class="cb2fa-center">';
-                echo '<p>' . esc_html__( 'An OTP code has been sent to the e-mail address associated with the account', 'cloudbridge-2fa' ) . '.</p>';
-                echo '<p>' . esc_html__( 'The code is valid for', 'cloudbridge-2fa' ) .
-                             ' ' . esc_html( $this->code_lifetime ) . ' ' .
-                             esc_html__( 'minute(s)', 'cloudbridge-2fa' ) .
-                    '.</p>';
+                switch ( $active_factor ) {
+                    case 'totp':
+                        echo '<p>' . esc_html__( 'Enter the current six-digit code from your authenticator app.', 'cloudbridge-2fa' ) . '</p>';
+                        break;
+                    case 'recovery':
+                        echo '<p>' . esc_html__( 'Enter one of your recovery codes. Each code can be used once.', 'cloudbridge-2fa' ) . '</p>';
+                        break;
+                    case 'email':
+                    default:
+                        echo '<p>' . esc_html__( 'An OTP code has been sent to the e-mail address associated with the account', 'cloudbridge-2fa' ) . '.</p>';
+                        echo '<p>' . esc_html__( 'The code is valid for', 'cloudbridge-2fa' ) .
+                                     ' ' . esc_html( $this->code_lifetime ) . ' ' .
+                                     esc_html__( 'minute(s)', 'cloudbridge-2fa' ) .
+                            '.</p>';
+                        break;
+                }
                 echo '</div>';
             }
             echo '<div class="cb2fa-center">';
@@ -474,9 +623,29 @@ class Cloudbridge_2FA_Login {
             echo '<input type="hidden" name="cb2fa_nonce" value="' . esc_html( $this->nonce ) . '" />';
             echo '<input type="hidden" name="cb2fa_timer" value="' . esc_html( time() ) . '" />';
             echo '<input type="hidden" name="cb2fa_user" value="' . esc_html( $this->username ) . '" />';
-            echo '<label for="cb2fa_pincode" style="margin-top:48px;">' . esc_html__( 'Code', 'cloudbridge-2fa' ) . ':</label>';
-            echo '<input type="text" tabindex="1" name="cb2fa_pincode" id="cb2fa_pincode" size="6" maxlength="128" class="cb2fa-center" value="" />';
-            echo '<div style="margin-top:48px;"><input type="button" name="cb2fa_submit" id="cb2fa_submit" value="OK" /></div>';
+            echo '<input type="hidden" name="cb2fa_factor" value="' . esc_attr( $active_factor ) . '" />';
+            echo '<label for="cb2fa_pincode" style="margin-top:48px;">' . esc_html( $this->getFactorLabel( $active_factor ) ) . ':</label>';
+            $pincode_inputmode = '';
+            $pincode_pattern = '';
+            $pincode_autocomplete = 'off';
+            $pincode_maxlength = 128;
+            $pincode_code_length = 0;
+            if ( $active_factor === 'totp' ) {
+                $totp_helper = Cloudbridge_2FA_TOTP::getInstance();
+                if ( is_object( $totp_helper ) ) {
+                    $pincode_code_length = $totp_helper->cb2fa_get_digits();
+                }
+            } elseif ( $active_factor === 'email' ) {
+                $pincode_code_length = 6;
+            }
+            if ( $pincode_code_length > 0 ) {
+                $pincode_inputmode = ' inputmode="numeric"';
+                $pincode_pattern = ' pattern="[0-9]*"';
+                $pincode_autocomplete = 'one-time-code';
+                $pincode_maxlength = $pincode_code_length;
+            }
+            echo '<input type="text" tabindex="1" name="cb2fa_pincode" id="cb2fa_pincode" size="16" maxlength="' . esc_attr( $pincode_maxlength ) . '" class="cb2fa-center" value="" data-factor="' . esc_attr( $active_factor ) . '" data-code-length="' . esc_attr( $pincode_code_length ) . '" autocomplete="' . esc_attr( $pincode_autocomplete ) . '"' . $pincode_inputmode . $pincode_pattern . ' />';
+            echo '<div style="margin-top:48px;"><button type="button" name="cb2fa_submit" id="cb2fa_submit" class="cb2fa-submit-button">OK</button></div>';
             if ( $this->allow_cookie ) {
                 if ( ! empty( $_POST['cb2fa_cookie'] ) ) {
                     $our_cookie = sanitize_text_field( wp_unslash( $_POST['cb2fa_cookie'] ) );
@@ -491,6 +660,18 @@ class Cloudbridge_2FA_Login {
                 echo '<label for="cb2fa_cookie">' . esc_html__( 'Remember me in this browser', 'cloudbridge-2fa' ) . '</label>';
                 echo '</div>';
             }
+            if ( count( $available_factors ) > 1 ) {
+                echo '<div class="cb2fa-factor-switches">';
+                foreach( $available_factors as $factor ) {
+                    if ( $factor === $active_factor ) {
+                        continue;
+                    }
+                    echo '<button type="submit" class="cb2fa-factor-switch-link" name="cb2fa_switch_factor" value="' . esc_attr( $factor ) . '">' .
+                         esc_html( sprintf( __( 'Use %s', 'cloudbridge-2fa' ), $this->getFactorSwitchLabel( $factor ) ) ) .
+                         '</button>';
+                }
+                echo '</div>';
+            }
             echo '</form>';
             echo '</div>';
             echo '<div class="cb2fa-center" style="margin-top:48px;">';
@@ -499,9 +680,12 @@ class Cloudbridge_2FA_Login {
             }
             echo '<small>' .
                  '<p style="max-width:75% !important;margin: 0 auto !important;"><strong>' .
-                  esc_html__( 'If the e-mail message with the code does not arrive, you may attempt to login again by clicking on the below link', 'cloudbridge-2fa' ) .
+                  ( $active_factor === 'email'
+                        ? esc_html__( 'If the e-mail message with the code does not arrive, you may attempt to login again by clicking on the below link', 'cloudbridge-2fa' )
+                        : esc_html__( 'If you need to start over, you may return to the WordPress login screen by clicking on the below link', 'cloudbridge-2fa' )
+                  ) .
                   '</strong><br/>' .
-                  '<a tabindex="3" class="cb2fa-link" href="' . esc_url( $redirect_to ) . '">' . esc_html__( 'WordPress Login', 'cloudbridge-2fa' ) . '</a>' .
+                  '<a tabindex="3" class="cb2fa-link" href="' . esc_url( $login_url ) . '">' . esc_html__( 'WordPress Login', 'cloudbridge-2fa' ) . '</a>' .
                   '</small></p>';
             echo '</div>';
         }

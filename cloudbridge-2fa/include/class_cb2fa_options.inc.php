@@ -8,7 +8,7 @@
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
  *
  * class_cb2fa_options.php
- * Copyright (C) 2024, 2025 Joaquim Homrighausen; all rights reserved.
+ * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -35,6 +35,8 @@ class Cloudbridge_2FA_Options {
         'cloudbridge2fa-form-tab',
         'cloudbridge2fa-roles-config',
         'cloudbridge2fa-cookies-config',
+        'cloudbridge2fa-email-otp-enabled',
+        'cloudbridge2fa-totp-enabled',
         'cloudbridge2fa-code-lifetime',
         'cloudbridge2fa-cookie-lifetime',
         'cloudbridge2fa-code-input-text-addon',

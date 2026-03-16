@@ -3,16 +3,15 @@
 # This file is distributed under the same license as the Cloudbridge 2FA package.
 # Joaquim Homrighausen <joho@webbplatsen.se>, 2023.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: cloudbridge-2fa 1.0.0\n"
+"Project-Id-Version: cloudbridge-2fa 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-18 09:15+0100\n"
-"PO-Revision-Date: 2024-03-12 07:56+0100\n"
+"PO-Revision-Date: 2026-03-16 12:30+0100\n"
 "Last-Translator: Joaquim Homrighausen <joho@webbplatsen.se>\n"
 "Language-Team: SWEDISH <LL@li.org>\n"
-"Language: \n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -219,11 +218,11 @@ msgstr "Tack för att du installerat"
 
 #: cloudbridge-2fa.php:772
 msgid ""
-"This WordPress plugin provides simple two factor authentication services for "
-"WordPress"
+"This WordPress plugin provides two-factor authentication for WordPress, with "
+"support for e-mail OTP and authenticator app TOTP"
 msgstr ""
-"Det här WordPress-tillägget tillhandahåller enkel tvåfaktorsautentisering "
-"för din webbplats"
+"Det här WordPress-tillägget ger tvåfaktorsautentisering för WordPress, med "
+"stöd för OTP via e-post och TOTP via autentiseringsapp"
 #: cloudbridge-2fa.php:775
 msgid "Commercial support and customizations for this plugin is available from"
 msgstr "Kommersiell support och anpassningar av tillägget är tillgängligt från"
@@ -425,3 +424,262 @@ msgstr "Ogiltig engångskod"
 #: cb2fa-passthru.php:191
 msgid "Please enter the code received by e-mail"
 msgstr "Vänligen ange engångskoden från e-postmeddelandet"
+
+msgid "E-mail OTP"
+msgstr "E-post-OTP"
+
+msgid "Allow e-mail OTP"
+msgstr "Tillåt e-post-OTP"
+
+msgid "Send a one-time code by e-mail when e-mail is available for the user"
+msgstr "Skicka en engångskod via e-post när användaren har en e-postadress"
+
+msgid "Recommended to keep enabled as a fallback while authenticator apps are being rolled out."
+msgstr "Rekommenderas att vara aktiverad som reservlösning medan autentiseringsappar införs."
+
+msgid "Allow authenticator apps"
+msgstr "Tillåt autentiseringsappar"
+
+msgid "Allow users to set up an authenticator app on their WordPress profile page"
+msgstr "Tillåt användare att konfigurera en autentiseringsapp på sin WordPress-profil"
+
+msgid "Cloudbridge 2FA currently provisions authenticator apps using a manual setup key and recovery codes."
+msgstr "Cloudbridge 2FA konfigurerar för närvarande autentiseringsappar med en manuell installationsnyckel och återställningskoder."
+
+msgid "Cloudbridge 2FA"
+msgstr "Cloudbridge 2FA"
+
+msgid "Manage authenticator app setup, recovery codes, and factor availability for this account."
+msgstr "Hantera konfigurering av autentiseringsapp, återställningskoder och tillgängliga faktorer för detta konto."
+
+msgid "Available factors"
+msgstr "Tillgängliga faktorer"
+
+msgid "Authenticator app"
+msgstr "Autentiseringsapp"
+
+msgid "enabled"
+msgstr "aktiverad"
+
+msgid "disabled"
+msgstr "inaktiverad"
+
+msgid "Authenticator app setup works with standards-based TOTP apps such as Google Authenticator, Microsoft Authenticator, Bitwarden, 2FAS, Authy, Ente Auth, and Apple Passwords."
+msgstr "Konfigurering av autentiseringsapp fungerar med standardbaserade TOTP-appar som Google Authenticator, Microsoft Authenticator, Bitwarden, 2FAS, Authy, Ente Auth och Apple Passwords."
+
+msgid "Authenticator status"
+msgstr "Status för autentiseringsapp"
+
+msgid "Authenticator app support is unavailable because PHP openssl support is missing."
+msgstr "Stöd för autentiseringsapp är inte tillgängligt eftersom PHP saknar openssl-stöd."
+
+msgid "Authenticator app support is currently disabled for this site."
+msgstr "Stöd för autentiseringsapp är för närvarande inaktiverat för denna webbplats."
+
+msgid "Authenticator app is enabled for this account."
+msgstr "Autentiseringsapp är aktiverad för detta konto."
+
+msgid "Disable authenticator app and remove stored recovery codes"
+msgstr "Inaktivera autentiseringsapp och ta bort sparade återställningskoder"
+
+msgid "Authenticator app is not yet enabled for this account."
+msgstr "Autentiseringsapp är ännu inte aktiverad för detta konto."
+
+msgid "Add the below secret to your authenticator app as a time-based account, then enter the current six-digit code and update your profile."
+msgstr "Lägg till hemligheten nedan i din autentiseringsapp som ett tidsbaserat konto, ange sedan den aktuella sexsiffriga koden och uppdatera din profil."
+
+msgid "Manual setup key"
+msgstr "Manuell installationsnyckel"
+
+msgid "QR code setup"
+msgstr "QR-kod för konfigurering"
+
+msgid "Scan this QR code with your authenticator app to set up this account. If scanning is unavailable, use the manual setup key below."
+msgstr "Skanna denna QR-kod med din autentiseringsapp för att konfigurera detta konto. Om skanning inte är tillgänglig kan du använda den manuella installationsnyckeln nedan."
+
+msgid "Issuer"
+msgstr "Utfärdare"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "If your authenticator app cannot scan QR codes, enter the shared key manually as a time-based account."
+msgstr "Om din autentiseringsapp inte kan skanna QR-koder anger du den delade nyckeln manuellt som ett tidsbaserat konto."
+
+msgid "Authenticator setup"
+msgstr "Konfigurering av autentiseringsapp"
+
+msgid "Verification code"
+msgstr "Verifieringskod"
+
+msgid "Enter the current %d-digit code from your authenticator app and update your profile to enable it."
+msgstr "Ange den aktuella %d-siffriga koden från din autentiseringsapp och uppdatera din profil för att aktivera den."
+
+msgid "Enter the current six-digit code from your authenticator app and update your profile to enable it."
+msgstr "Ange den aktuella sexsiffriga koden från din autentiseringsapp och uppdatera din profil för att aktivera den."
+
+msgid "Recovery codes"
+msgstr "Återställningskoder"
+
+msgid "No recovery codes are currently stored for this account."
+msgstr "Det finns för närvarande inga återställningskoder sparade för detta konto."
+
+msgid "Store these recovery codes in a safe place. Each code can be used once if your authenticator app is unavailable."
+msgstr "Förvara dessa återställningskoder på en säker plats. Varje kod kan användas en gång om din autentiseringsapp inte är tillgänglig."
+
+msgid "Generate a new set of recovery codes"
+msgstr "Generera en ny uppsättning återställningskoder"
+
+msgid "Authenticator app has been disabled for this account."
+msgstr "Autentiseringsapp har inaktiverats för detta konto."
+
+msgid "Recovery codes have been regenerated."
+msgstr "Återställningskoderna har genererats på nytt."
+
+msgid "Unable to regenerate recovery codes."
+msgstr "Det gick inte att generera återställningskoder på nytt."
+
+msgid "The authenticator app code was invalid. Please check the setup key and try again."
+msgstr "Koden från autentiseringsappen var ogiltig. Kontrollera installationsnyckeln och försök igen."
+
+msgid "Unable to store the authenticator app secret for this account."
+msgstr "Det gick inte att spara hemligheten för autentiseringsappen för detta konto."
+
+msgid "Authenticator app was enabled, but recovery codes could not be generated."
+msgstr "Autentiseringsapp aktiverades, men återställningskoder kunde inte genereras."
+
+msgid "Authenticator app has been enabled and recovery codes have been generated."
+msgstr "Autentiseringsapp har aktiverats och återställningskoder har genererats."
+
+msgid "Authenticator apps"
+msgstr "Autentiseringsappar"
+
+msgid "Allow standards-based TOTP authenticator apps for this site. Each user enables and manages their own authenticator app from their WordPress profile page."
+msgstr "Tillåt standardbaserade TOTP-autentiseringsappar för denna webbplats. Varje användare aktiverar och hanterar sin egen autentiseringsapp från sin WordPress-profil."
+
+msgid "Login screen"
+msgstr "Inloggningsskärm"
+
+msgid "Configure helper text shown on the code entry screen after the user has passed their username and password check."
+msgstr "Konfigurera hjälptext som visas på kodinmatningsskärmen efter att användaren har klarat kontrollen av användarnamn och lösenord."
+
+msgid "Browser trust"
+msgstr "Webbläsartillit"
+
+msgid "Configure how long the optional remember-this-browser cookie should remain valid when a role is allowed to use it."
+msgstr "Ställ in hur länge den valfria kom ihåg-denna-webbläsare-kakan ska vara giltig när en roll får använda den."
+
+msgid "Configure the e-mail-based one-time code flow, including message behavior and helper text shown during login."
+msgstr "Konfigurera flödet för e-postbaserad engångskod, inklusive meddelandebeteende och hjälptext som visas vid inloggning."
+
+msgid "Maintenance"
+msgstr "Underhåll"
+
+msgid "This account is required to use two-factor authentication, but no login factor is available. Contact the site administrator."
+msgstr "Detta konto måste använda tvåfaktorsautentisering, men ingen inloggningsfaktor är tillgänglig. Kontakta webbplatsadministratören."
+
+msgid "Recovery code"
+msgstr "Återställningskod"
+
+msgid "E-mail code"
+msgstr "E-postkod"
+
+msgid "authenticator app"
+msgstr "autentiseringsapp"
+
+msgid "recovery code"
+msgstr "återställningskod"
+
+msgid "e-mail code"
+msgstr "e-postkod"
+
+msgid "Enter the current six-digit code from your authenticator app."
+msgstr "Ange den aktuella sexsiffriga koden från din autentiseringsapp."
+
+msgid "Enter one of your recovery codes. Each code can be used once."
+msgstr "Ange en av dina återställningskoder. Varje kod kan användas en gång."
+
+msgid "Use %s"
+msgstr "Använd %s"
+
+msgid "If you need to start over, you may return to the WordPress login screen by clicking on the below link"
+msgstr "Om du behöver börja om kan du återgå till WordPress inloggningsskärm genom att klicka på länken nedan"
+
+msgid "Unable to determine login user, please try again"
+msgstr "Det gick inte att avgöra inloggningsanvändaren, vänligen försök igen"
+
+msgid "Too many incorrect codes, please start over from the WordPress login page"
+msgstr "För många felaktiga koder, börja om från WordPress inloggningssida"
+
+msgid "Please enter the code from your authenticator app"
+msgstr "Vänligen ange koden från din autentiseringsapp"
+
+msgid "Please enter one of your recovery codes"
+msgstr "Vänligen ange en av dina återställningskoder"
+
+msgid "Emergency bypass"
+msgstr "Nödundantag"
+
+msgid "Cloudbridge 2FA bypass is currently enabled for this account."
+msgstr "Cloudbridge 2FA-undantag är för närvarande aktiverat för detta konto."
+
+msgid "Use this only when the normal Cloudbridge 2FA login path is unavailable for a specific account."
+msgstr "Använd detta endast när den normala Cloudbridge 2FA-inloggningen inte är tillgänglig för ett visst konto."
+
+msgid "Temporarily bypass Cloudbridge 2FA for this account"
+msgstr "Bypassa Cloudbridge 2FA tillfälligt för detta konto"
+
+msgid "Only plugin administrators should change this. When enabled, this account can log in with password only even if its role normally requires Cloudbridge 2FA."
+msgstr "Endast tilläggsadministratörer bör ändra detta. När det är aktiverat kan detta konto logga in med enbart lösenord även om dess roll normalt kräver Cloudbridge 2FA."
+
+msgid "This bypass can only be changed by a plugin administrator."
+msgstr "Detta undantag kan endast ändras av en tilläggsadministratör."
+
+msgid "Cloudbridge 2FA bypass has been enabled for this account."
+msgstr "Cloudbridge 2FA-undantag har aktiverats för detta konto."
+
+msgid "Cloudbridge 2FA bypass has been disabled for this account."
+msgstr "Cloudbridge 2FA-undantag har inaktiverats för detta konto."
+
+msgid "No role"
+msgstr "Ingen roll"
+
+msgid "unknown users"
+msgstr "okända användare"
+
+msgid "Emergency bypass is currently enabled for %1$d account: %2$s."
+msgid_plural "Emergency bypass is currently enabled for %1$d accounts: %2$s."
+msgstr[0] "Nödundantag är för närvarande aktiverat för %1$d konto: %2$s."
+msgstr[1] "Nödundantag är för närvarande aktiverat för %1$d konton: %2$s."
+
+msgid "Review this on the Bypass 2FA tab."
+msgstr "Granska detta på fliken Bypass 2FA."
+
+msgid "Unable to save bypass settings because the security check failed. Please try again."
+msgstr "Det gick inte att spara undantagsinställningarna eftersom säkerhetskontrollen misslyckades. Försök igen."
+
+msgid "No bypass settings needed to be changed."
+msgstr "Inga undantagsinställningar behövde ändras."
+
+msgid "Saved bypass settings for %d account."
+msgid_plural "Saved bypass settings for %d accounts."
+msgstr[0] "Sparade undantagsinställningar för %d konto."
+msgstr[1] "Sparade undantagsinställningar för %d konton."
+
+msgid "Your login verification expired. Please sign in again."
+msgstr "Din inloggningsverifiering gick ut. Logga in igen."
+
+msgid "Bypass 2FA"
+msgstr "Bypass 2FA"
+
+msgid "Emergency bypass should only be enabled for accounts that temporarily cannot complete the normal Cloudbridge 2FA login flow. Review and remove bypasses again as soon as they are no longer needed."
+msgstr "Nödundantag ska endast aktiveras för konton som tillfälligt inte kan slutföra den normala Cloudbridge 2FA-inloggningen. Granska och ta bort undantag igen så snart de inte längre behövs."
+
+msgid "Bypass 2FA for %s"
+msgstr "Bypass 2FA för %s"
+
+msgid "Save bypass settings"
+msgstr "Spara undantagsinställningar"
+
+msgid "Emergency bypass is managed from Cloudbridge 2FA > Bypass 2FA."
+msgstr "Nödundantag hanteras från Cloudbridge 2FA > Bypass 2FA."

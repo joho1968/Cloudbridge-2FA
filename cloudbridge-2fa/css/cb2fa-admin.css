@@ -11,6 +11,9 @@
     font-size: 14px;
     font-weight: bold;
 }
+.cb2fa-inline-warning {
+    margin: 0 0 16px;
+}
 .cb2fa-notice-error {
     padding: 16px 8px 16px 8px;
     border-left: 3px #d9534f solid;
@@ -99,6 +102,20 @@ div.admingridcol-current-active {
     float: left;
     padding-right: 5px;
 }
+.cb2fa-setting-option {
+    display: block;
+    float: none;
+    padding-right: 0;
+}
+.cb2fa-setting-option label {
+    display: inline-block;
+    max-width: none;
+    line-height: 1.45;
+}
+.cb2fa-setting-option input[type="checkbox"] {
+    margin: 0 8px 0 0;
+    vertical-align: text-top;
+}
 .cb2fa-settings-checkboxes {
     display:flex;
     flex-direction:row;
@@ -120,6 +137,87 @@ div.admingridcol-current-active {
     padding: 25px 10px;
     color: #000;
     background: #fff;
+}
+.cb2fa-settings-group {
+    margin-top: 24px;
+}
+.cb2fa-settings-group:first-child {
+    margin-top: 0;
+}
+.cb2fa-settings-group h2 {
+    margin-bottom: 6px;
+}
+.cb2fa-settings-group .form-table {
+    margin-top: 12px;
+}
+.cb2fa-tab-submit {
+    margin-top: 24px;
+}
+.cb2fa-section-intro {
+    margin: 0 0 12px;
+    max-width: none;
+    line-height: 1.55;
+    color: #50575e;
+}
+.cb2fa-profile-panel {
+    margin-top: 28px;
+    padding-top: 18px;
+}
+.cb2fa-profile-panel-header h2 {
+    margin: 0 0 6px;
+}
+.cb2fa-profile-panel-header {
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #c3c4c7;
+}
+.cb2fa-profile-panel-intro {
+    margin: 0;
+    max-width: none;
+    line-height: 1.55;
+    color: #50575e;
+}
+.cb2fa-profile-table {
+    margin-top: 0;
+}
+.cb2fa-profile-table th {
+    width: 190px;
+}
+.cb2fa-bypass-table {
+    margin-top: 12px;
+}
+.cb2fa-bypass-table th:last-child,
+.cb2fa-bypass-table td:last-child {
+    width: 140px;
+}
+.cb2fa-bypass-table td {
+    vertical-align: middle;
+}
+.cb2fa-bypass-table .description {
+    margin-top: 4px;
+}
+.cb2fa-totp-qr {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 184px;
+    min-height: 184px;
+    padding: 12px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background: #fff;
+}
+.cb2fa-totp-qr svg {
+    display: block;
+    width: 168px;
+    height: 168px;
+}
+.cb2fa-totp-qr:not(.cb2fa-totp-qr-is-ready)::before {
+    content: "QR";
+    color: #8c8f94;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
 }
 .cb2fa-ext-link {
     color: #007bff;

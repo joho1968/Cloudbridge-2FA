@@ -2,7 +2,7 @@
 
 # Cloudbridge 2FA
 
-Uncomplicated 2FA plugin for WordPress. Tested with WordPress 5.5+ and PHP 7.4+.
+Uncomplicated 2FA for WordPress with e-mail OTP and authenticator app support.
 
 ## Description
 ![Cloudbridge 2FA banner](/banner/Cloudbridge-2FA-banner-1544x500.png?raw=true "Cloudbridge 2FA banner")
@@ -11,14 +11,22 @@ This plugin provides uncomplicated 2FA functionality for WordPress. It will allo
 you to require a second, one time password or OTP, code to be entered when certain
 (or all) users attempt to log in to WordPress.
 
-It will send a six-digit code via e-mail to the user attempting to log in. The
-code has a limited lifetime (defaults to 15 minutes). Once a code has been
-consumed, it is considered invalid.
+It supports two factor methods:
+
+* six-digit codes sent by e-mail
+* standards-based authenticator apps using TOTP
+
+The e-mail code has a limited lifetime (defaults to 15 minutes). Once a code has
+been consumed, it is considered invalid.
+
+Authenticator app setup is handled from the user's own profile page. The plugin
+provides a QR code, a manual setup key, and recovery codes for when the
+authenticator app is not available.
 
 You may configure that only certain roles are required to use 2FA, and it is
-recommended that you enable 2FA for those user with privileged access.
+recommended that you enable 2FA for those users with privileged access.
 
-You may also configure the plugin to allow certain roles to enable a OTP code
+You may also configure the plugin to allow certain roles to enable an OTP code
 bypass, which will set a cookie in that user's web browser. The cookies are
 partially based on the username, so several users can share the same browser,
 but still be required to always enter the OTP code, or bypass it if the cookie
@@ -52,6 +60,15 @@ This is a hard question to answer. There are no known incompatibilities.
 
 ## Changelog
 
+### 2.0.0
+* Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4
+* Added authenticator app support using standards-based TOTP
+* Added recovery codes for authenticator-enabled accounts
+* Added QR code and manual setup key support to the user profile
+* Reworked the admin settings so authenticator-app and e-mail OTP settings are easier to find
+* Hardened redirect handling in login and OTP completion flows
+* Added CSRF protection to configuration import
+
 ### 1.0.5
 * Verified with WordPress 6.8 and 6.9
 
@@ -81,7 +98,7 @@ This is a hard question to answer. There are no known incompatibilities.
 
 Please see [LICENSE](LICENSE) for a full copy of GPLv2
 
-Copyright (C) 2024, 2025 [Joaquim Homrighausen](https://github.com/joho1968).
+Copyright (C) 2024-2026 [Joaquim Homrighausen](https://github.com/joho1968).
 
 This file is part of Cloudbridge 2FA (CB2FA). Cloudbridge 2FA is free software.
 
@@ -120,5 +137,6 @@ These links are not here for any sort of endorsement or marketing, they're purel
 * me; :monkey: https://joho.se and https://github.com/joho1968
 * WebbPlatsen; https://webbplatsen.se and https://code.webbplatsen.net
 * Kudos to Kev Quirk for [Simple CSS](https://simplecss.org/)
+* QR code setup on the authenticated profile page uses QR Code Generator for JavaScript by Kazuhiko Arase (MIT license)
 
 Stay safe!

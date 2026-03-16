@@ -1,0 +1,13 @@
+Cloudbridge 2FA third-party notices
+===================================
+
+This plugin bundles the following third-party code:
+
+1. QR Code Generator for JavaScript
+   Path: js/vendor/qrcode-generator.js
+   Upstream: https://github.com/kazuhikoarase/qrcode-generator
+   License: MIT
+   Copyright: (c) 2009 Kazuhiko Arase
+
+   The bundled file is the upstream browser distribution used only to render
+   a QR code on the authenticated WordPress profile page for TOTP setup.

@@ -1,7 +1,7 @@
 'use strict';
 /**
  * cb2fa-admin.js
- * Copyright (C) 2024, 2025 Joaquim Homrighausen <joho@webbplatsen.se>
+ * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *
  * This file is part of Cloudbridge 2FA. Cloudbridge 2FA is free software.
@@ -21,9 +21,8 @@
  *  51 Franklin Street, Fifth Floor
  *  Boston, MA  02110-1301, USA.
  */
-var formTabE = null;
-
 var cb2faAllTabs, cb2faAllTabContent;
+var cb2faTabStorageKey = 'cb2fa_active_tab';
 
 /* Used to create event handlers with better context (for strict)*/
 function cb2faPartial(fn, arg) {
@@ -49,9 +48,7 @@ function cb2faSettingTabClick(e) {
         if (visibleBlock !== null) {
             visibleBlock.classList.add('cb2fa-is-visible-block');
             visibleBlock.classList.remove('cb2fa-is-hidden');
-            if (formTabE !== null ) {
-                formTabE.value = e.href.substring(e.href.indexOf("#")+1);
-            }
+            window.localStorage.setItem(cb2faTabStorageKey, e.hash);
         } else {
             console.log('Unable to fetch ID for '+e.getAttribute('data-toggle'));
         }
@@ -108,31 +105,42 @@ function copyTextToClipboard(e) {
     }
 }
 
+function cb2faRenderTotpQr() {
+    let qrTarget = document.getElementById('cb2fa-totp-qr');
+    if (!qrTarget || typeof qrcode !== 'function') {
+        return;
+    }
+    let otpauthUri = qrTarget.getAttribute('data-cb2fa-otpauth');
+    if (!otpauthUri) {
+        return;
+    }
+    let qrCode = qrcode(0, 'M');
+    qrCode.addData(otpauthUri, 'Byte');
+    qrCode.make();
+    qrTarget.innerHTML = qrCode.createSvgTag(4, 8, 'Authenticator app setup QR code', 'Authenticator app setup QR code');
+    qrTarget.classList.add('cb2fa-totp-qr-is-ready');
+}
+
 /* Initialize stuff when DOM is ready*/
 var cb2faSetup = function(){
     cb2faAllTabs = document.getElementsByClassName('cb2fa-tab');
     cb2faAllTabContent = document.getElementsByClassName('cb2fa-tab-content');
-    formTabE = document.getElementById('cb2fa-form-tab');//Allow form override
     let isFirstTab = true;
     let firstElement = null;
-    let formTabV = '';
-    if (formTabE !== null) {
-        formTabV = formTabE.value;
-    }
+    let savedTabHash = window.localStorage.getItem(cb2faTabStorageKey) || '';
     /*console.log(window.location);*/
     Array.from(cb2faAllTabs).forEach(function(e) {
         if (firstElement === null) {
             firstElement = e;
         }
         e.addEventListener('click', cb2faPartial(cb2faSettingTabClick, e));
-        if (formTabE !== null) {
-            if (isFirstTab) {
-                if (('#' + formTabV) === e.hash) {
-                    cb2faShowTab(e);
-                    isFirstTab = false;
-                }
+        if (! window.location.hash) {
+            if (isFirstTab && savedTabHash === e.hash) {
+                cb2faShowTab(e);
+                isFirstTab = false;
             }
-        } else if (! window.location.hash) {
+        }
+        if (! window.location.hash) {
             if (isFirstTab) {
                 cb2faShowTab(e);
                 isFirstTab = false;
@@ -158,6 +166,7 @@ var cb2faSetup = function(){
     if (e) {
         e.addEventListener('click', copyTextToClipboard);
     }
+    cb2faRenderTotpQr();
 };
 
 /* Make sure we are ready */

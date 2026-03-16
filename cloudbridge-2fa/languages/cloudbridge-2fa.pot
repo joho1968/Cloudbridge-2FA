@@ -3,10 +3,9 @@
 # This file is distributed under the same license as the Cloudbridge 2FA package.
 # Joaquim Homrighausen <joho@webbplatsen.se>, 2023.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: cloudbridge-2fa 1.0.0\n"
+"Project-Id-Version: cloudbridge-2fa 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-18 09:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
