@@ -1,4 +1,4 @@
-[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![PHP 8.1\+](https://img.shields.io/badge/PHP-8.1-blue?style=flat-square)](https://php.net) [![PHP 8.2\+](https://img.shields.io/badge/PHP-8.2-blue?style=flat-square)](https://php.net) [![PHP 8.3\+](https://img.shields.io/badge/PHP-8.3-blue?style=flat-square)](https://php.net) [![PHP 8.4\+](https://img.shields.io/badge/PHP-8.4-blue?style=flat-square)](https://php.net) [![WordPress 5.5](https://img.shields.io/badge/WordPress-5.5-orange?style=flat-square)](https://wordpress.org) [![WordPress 6](https://img.shields.io/badge/WordPress-6.9-orange?style=flat-square)](https://wordpress.org)
+[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![PHP 8.1\+](https://img.shields.io/badge/PHP-8.1-blue?style=flat-square)](https://php.net) [![PHP 8.2\+](https://img.shields.io/badge/PHP-8.2-blue?style=flat-square)](https://php.net) [![PHP 8.3\+](https://img.shields.io/badge/PHP-8.3-blue?style=flat-square)](https://php.net) [![PHP 8.4\+](https://img.shields.io/badge/PHP-8.4-blue?style=flat-square)](https://php.net) [![WordPress 5.5](https://img.shields.io/badge/WordPress-5.5-orange?style=flat-square)](https://wordpress.org) [![WordPress 6](https://img.shields.io/badge/WordPress-6.9-orange?style=flat-square)](https://wordpress.org) [![WordPress 7](https://img.shields.io/badge/WordPress-7.0-orange?style=flat-square)](https://wordpress.org)
 
 # Cloudbridge 2FA
 
@@ -65,6 +65,7 @@ This is a hard question to answer. There are no known incompatibilities.
 * Fixed the Bypass 2FA tab layout after the recent admin UI changes
 * Restored returning to the active settings tab after saving
 * Sent expired or stale login verification attempts back to the WordPress login screen so the user can start over cleanly
+* Verified with WordPress 7.0
 
 ### 2.0.0
 * Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4
