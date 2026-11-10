@@ -24,6 +24,22 @@
 var cb2faAllTabs, cb2faAllTabContent;
 var cb2faTabStorageKey = 'cb2fa_active_tab';
 
+function cb2faReadTab() {
+    try {
+        return window.localStorage.getItem(cb2faTabStorageKey) || '';
+    } catch (e) {
+        return '';
+    }
+}
+
+function cb2faWriteTab(value) {
+    try {
+        window.localStorage.setItem(cb2faTabStorageKey, value);
+    } catch (e) {
+        /* Tabs and QR setup also work when browser storage is unavailable. */
+    }
+}
+
 /* Used to create event handlers with better context (for strict)*/
 function cb2faPartial(fn, arg) {
     return function() {
@@ -48,7 +64,7 @@ function cb2faSettingTabClick(e) {
         if (visibleBlock !== null) {
             visibleBlock.classList.add('cb2fa-is-visible-block');
             visibleBlock.classList.remove('cb2fa-is-hidden');
-            window.localStorage.setItem(cb2faTabStorageKey, e.hash);
+            cb2faWriteTab(e.hash);
         } else {
             console.log('Unable to fetch ID for '+e.getAttribute('data-toggle'));
         }
@@ -66,7 +82,7 @@ function cb2faGetActiveTabHash() {
 function cb2faPersistActiveTab() {
     let activeHash = cb2faGetActiveTabHash();
     if (activeHash) {
-        window.localStorage.setItem(cb2faTabStorageKey, activeHash);
+        cb2faWriteTab(activeHash);
     }
 }
 
@@ -148,7 +164,7 @@ var cb2faSetup = function(){
     let firstElement = null;
     let savedElement = null;
     let hashElement = null;
-    let savedTabHash = window.localStorage.getItem(cb2faTabStorageKey) || '';
+    let savedTabHash = cb2faReadTab();
     /*console.log(window.location);*/
     Array.from(cb2faAllTabs).forEach(function(e) {
         if (firstElement === null) {

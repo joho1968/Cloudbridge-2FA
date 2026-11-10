@@ -67,8 +67,8 @@ if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'delete_plugi
 */
 
 
-require_once( 'include/class_cb2fa_options.inc.php' );
-require_once( 'include/class_cb2fa_totp.inc.php' );
+require_once( __DIR__ . '/include/class_cb2fa_options.inc.php' );
+require_once( __DIR__ . '/include/class_cb2fa_totp.inc.php' );
 
 //  define( 'CB2FA_UNINSTALL_TRACE', true );
 

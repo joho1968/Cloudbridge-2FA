@@ -1,400 +1,758 @@
-# Cloudbridge 2FA WordPress plugin <LANGUAGE> translation
-# Copyright (C) 2023 Joaquim Homrighausen
-# This file is distributed under the same license as the Cloudbridge 2FA package.
-# Joaquim Homrighausen <joho@webbplatsen.se>, 2023.
-#
+# Copyright (C) 2026 WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
+# This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: cloudbridge-2fa 2.0.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-18 09:15+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Joaquim Homrighausen <joho@webbplatsen.se>\n"
+"Project-Id-Version: Cloudbridge 2FA 2.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cloudbridge-2fa\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-20T14:04:24+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: cloudbridge-2fa\n"
 
-#: include/class_cb2fa_login.inc.php:273
-msgid "OTP code"
+#. Plugin Name of the plugin
+#: cloudbridge-2fa.php
+#: cloudbridge-2fa.php:1646
+msgid "Cloudbridge 2FA"
 msgstr ""
 
-#: include/class_cb2fa_login.inc.php:293
-msgid "Login OTP code"
+#. Plugin URI of the plugin
+#: cloudbridge-2fa.php
+msgid "https://code.webbplatsen.net/wordpress/cloudbridge-2fa/"
 msgstr ""
 
-#: include/class_cb2fa_login.inc.php:304
-msgid ""
-"Someone has requested that an OTP code be sent to the e-mail address "
-"associated with an account on this WordPress site. If this was not you, you "
-"should change your password on this site as soon as possible"
+#. Description of the plugin
+#: cloudbridge-2fa.php
+msgid "Uncomplicated 2FA plugin for WordPress"
 msgstr ""
-""
 
-#: include/class_cb2fa_login.inc.php:310
-msgid "The OTP code is valid for"
+#. Author of the plugin
+#: cloudbridge-2fa.php
+msgid "WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>"
 msgstr ""
 
-#: include/class_cb2fa_login.inc.php:312
-msgid "minutes"
+#. Author URI of the plugin
+#: cloudbridge-2fa.php
+msgid "https://webbplatsen.se/"
 msgstr ""
 
-#: include/class_cb2fa_login.inc.php:318
-msgid "2FA provided by"
+#: cb2fa-passthru.php:92
+#: cloudbridge-2fa.php:2146
+msgid "Login verification is busy. Please try again."
 msgstr ""
 
-msgid "WordPress Login"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:447
-msgid "An error occurred, please try again"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:454
-msgid ""
-"An OTP code has been sent to the e-mail address associated with the account"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:455
-msgid "The code is valid for"
-msgstr ""
-msgid "minute(s)"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:466
-msgid "Code"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:473
-msgid "Enable checkbox to avoid having to enter an OTP code for future logins"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:475
-msgid "Remember me in this browser"
-msgstr ""
-
-#: include/class_cb2fa_login.inc.php:486
-msgid ""
-"If the e-mail message with the code does not arrive, you may attempt to "
-"login again by clicking on the below link"
-msgstr ""
-
-#: cloudbridge-2fa.php:247
-msgid "Settings "
-msgstr ""
-
-#: cloudbridge-2fa.php:283
-msgid ""
-"mbstring-extensions are missing, contact server administrator to enable them"
-msgstr ""
-
-#: cloudbridge-2fa.php:292
-msgid "Plugin activated, please take a moment and go through the"
-msgstr ""
-
-#: cloudbridge-2fa.php:294
-msgid "settings"
-msgstr ""
-
-#: cloudbridge-2fa.php:430
-msgid "Settings"
-msgstr ""
-
-#: cloudbridge-2fa.php:436
-msgid "Export various data"
-msgstr ""
-
-#: cloudbridge-2fa.php:437 cloudbridge-2fa.php:1035 cloudbridge-2fa.php:1058
-msgid "Export"
-msgstr ""
-
-#: cloudbridge-2fa.php:442
-msgid "Import external data"
-msgstr ""
-
-#: cloudbridge-2fa.php:443 cloudbridge-2fa.php:1195 cloudbridge-2fa.php:1208
-msgid "Import"
-msgstr ""
-
-#: cloudbridge-2fa.php:479 cloudbridge-2fa.php:484
-msgid "Unknown role"
-msgstr ""
-
-#: cloudbridge-2fa.php:626
-msgid "These settings allow general configuration of Cloudbridge 2FA"
-msgstr ""
-
-#: cloudbridge-2fa.php:628
-msgid "General"
-msgstr ""
-
-#: cloudbridge-2fa.php:629
-msgid "Roles"
-msgstr ""
-
-#: cloudbridge-2fa.php:630
-msgid "Access"
-msgstr ""
-
-#: cloudbridge-2fa.php:631
-msgid "About"
-msgstr ""
-
-#: cloudbridge-2fa.php:649
-msgid ""
-"This page allows you to configure how 2FA should be enforced for different "
-"WordPress user roles"
-msgstr ""
-
-#: cloudbridge-2fa.php:650
-msgid ""
-"It is recommended that you enable 2FA at least for all roles with elevated "
-"privileges"
-msgstr ""
-
-#: cloudbridge-2fa.php:654
-msgid "No roles currently have 2FA enabled"
-msgstr ""
-
-#: cloudbridge-2fa.php:661
-msgid "Unable to fetch WordPress user roles"
-msgstr ""
-
-#: cloudbridge-2fa.php:687
-msgid "Role"
-msgstr ""
-
-#: cloudbridge-2fa.php:689
-msgid "2FA enabled"
-msgstr ""
-
-#: cloudbridge-2fa.php:691
-msgid "Allow cookie"
-msgstr ""
-
-#: cloudbridge-2fa.php:723
-msgid "Unable to locate any users with \"admininistrator\" permissions"
-msgstr ""
-
-#: cloudbridge-2fa.php:728
-msgid ""
-"All users with \"administrator\" permissions can currently manage this plugin"
-msgstr ""
-
-#: cloudbridge-2fa.php:733
-msgid "Unable to determine current user"
-msgstr ""
-
-#: cloudbridge-2fa.php:737
-msgid "Current user is"
-msgstr ""
-
-#: cloudbridge-2fa.php:738
-msgid "Unknown"
-msgstr ""
-
-#: cloudbridge-2fa.php:744
-msgid "User"
-msgstr ""
-
-#: cloudbridge-2fa.php:746
-msgid "Manage plugin"
-msgstr ""
-
-#: cloudbridge-2fa.php:771
-msgid "Thank you for installing"
-msgstr ""
-
-#: cloudbridge-2fa.php:772
-msgid ""
-"This WordPress plugin provides simple two factor authentication services for "
-"WordPress"
-msgstr ""
-
-#: cloudbridge-2fa.php:775
-msgid "Commercial support and customizations for this plugin is available from"
-msgstr ""
-
-#: cloudbridge-2fa.php:777
-msgid "in Stockholm, Sweden. We speak Swedish and English"
-msgstr ""
-
-#: cloudbridge-2fa.php:779
-msgid ""
-"The plugin is written by Joaquim Homrighausen and sponsored by WebbPlatsen i "
-"Sverige AB."
-msgstr ""
-
-#: cloudbridge-2fa.php:781
-msgid ""
-"If you find this plugin useful, the author is happy to receive a donation, "
-"good review, or just a kind word."
-msgstr ""
-
-#: cloudbridge-2fa.php:782
-msgid ""
-"If there is something you feel to be missing from this plugin, or if you "
-"have found a problem with the code or a feature, please do not hesitate to "
-"reach out to"
-msgstr ""
-
-#: cloudbridge-2fa.php:784
-msgid "There is more documentation available at"
-msgstr ""
-
-#: cloudbridge-2fa.php:789
-msgid "Other plugins"
-msgstr ""
-
-#: cloudbridge-2fa.php:793
-msgid ""
-"Security plugin that provides integration with fail2ban and many other "
-"security features for WordPress"
-msgstr ""
-
-#: cloudbridge-2fa.php:798
-msgid ""
-"Plugin that provides integration with Mattermost, including notifications "
-"and OAuth2 authentication"
-msgstr ""
-
-#: cloudbridge-2fa.php:803
-msgid "Plugin that provides uncomplicated map functionality"
-msgstr ""
-
-#: cloudbridge-2fa.php:850
-msgid "OTP code lifetime"
-msgstr ""
-
-msgid "OTP code in e-mail subject"
-msgstr ""
-
-msgid "Include OTP (one time password) in e-mail subject"
-msgstr ""
-
-#: cloudbridge-2fa.php:851 cloudbridge-2fa.php:852
-msgid "OTP code entry text"
-msgstr ""
-
-msgid "OTP code e-mail text"
-msgstr ""
-
-#: cloudbridge-2fa.php:853
-msgid "Cookie lifetime"
-msgstr ""
-
-#: cloudbridge-2fa.php:854
-msgid "Remove settings"
-msgstr ""
-
-#: cloudbridge-2fa.php:988
-msgid ""
-"Lifetime, in minutes, of the OTP (one time password) code sent to user by e-"
-"mail"
-msgstr ""
-
-#: cloudbridge-2fa.php:995
-msgid "Additional text to display on OTP (one time password) code input form"
-msgstr ""
-
-#: cloudbridge-2fa.php:1002
-msgid ""
-"Additional text to include in OTP (one time password) code e-mail, no HTML"
-msgstr ""
-
-#: cloudbridge-2fa.php:1008
-msgid "Lifetime, in days, of 2FA bypass cookie. 0=Until browser is closed."
-msgstr ""
-
-#: cloudbridge-2fa.php:1016
-msgid "Remove all plugin settings and data when plugin is uninstalled"
-msgstr ""
-
-#: cloudbridge-2fa.php:1036
-msgid "Export configuration data"
-msgstr ""
-
-#: cloudbridge-2fa.php:1038 cloudbridge-2fa.php:1198
-msgid "Configuration"
-msgstr ""
-
-#: cloudbridge-2fa.php:1049
-msgid "Unable to fetch plugin configuration from the WordPress database"
-msgstr ""
-
-#: cloudbridge-2fa.php:1052
-msgid ""
-"Copy and paste this Base64 data into another Cloudbridge 2FA installation"
-msgstr ""
-
-#: cloudbridge-2fa.php:1059
-msgid "Successfully copied to clipboard"
-msgstr ""
-
-#: cloudbridge-2fa.php:1060
-msgid "Unable to copy to clipboard, please select and copy manually"
-msgstr ""
-
-#: cloudbridge-2fa.php:1094
-msgid "Please enter a valid Base64 encoded string"
-msgstr ""
-
-#: cloudbridge-2fa.php:1103 cloudbridge-2fa.php:1117
-msgid ""
-"The specified import data does not seem to contain an exported configuration"
-msgstr ""
-
-#: cloudbridge-2fa.php:1123
-msgid "Unable to fetch current username"
-msgstr ""
-
-#: cloudbridge-2fa.php:1143
-msgid "One or more unrecognized options were ignored"
-msgstr ""
-
-#: cloudbridge-2fa.php:1160
-msgid ""
-"The currently logged in user has been added as an administrator, please "
-"check your settings"
-msgstr ""
-
-#: cloudbridge-2fa.php:1183
-msgid "configuration setting(s) imported"
-msgstr ""
-
-#: cloudbridge-2fa.php:1196
-msgid "Import data"
-msgstr ""
-
-#: cloudbridge-2fa.php:1205
-msgid "This will replace plugin configuration data"
-msgstr ""
-
-#: cloudbridge-2fa.php:1207
-msgid "Paste previously exported Base64 configuration data into this field"
-msgstr ""
-
-#: cloudbridge-2fa.php:1334
-msgid "Missing e-mail address for user, please try again"
-msgstr ""
-
-#: cloudbridge-2fa.php:1340
-msgid "Invalid form token, please try again"
-msgstr ""
-
-#: cloudbridge-2fa.php:1360
-msgid "No active roles found for this user on this website, please try again"
-msgstr ""
-
-#: cb2fa-passthru.php:98
-msgid "Unable to fetch WordPress user"
-msgstr ""
-
-#: cb2fa-passthru.php:158 cb2fa-passthru.php:164 cb2fa-passthru.php:170
+#: cb2fa-passthru.php:101
+#: cb2fa-passthru.php:146
 msgid "Incorrect code, or code has expired"
 msgstr ""
 
-#: cb2fa-passthru.php:191
-msgid "Please enter the code received by e-mail"
+#: cb2fa-passthru.php:106
+msgid "Too many incorrect codes, please start over from the WordPress login page"
+msgstr ""
+
+#: cb2fa-passthru.php:110
+#: include/class_cb2fa_login.inc.php:634
+msgid "An error occurred, please try again"
+msgstr ""
+
+#: cb2fa-passthru.php:114
+#: cb2fa-passthru.php:147
+#: cb2fa-passthru.php:149
+#: cloudbridge-2fa.php:2162
+msgid "Unable to save login verification. Please try again."
+msgstr ""
+
+#: cb2fa-passthru.php:118
+#: cloudbridge-2fa.php:2166
+msgid "Unable to send a new code. Please wait one minute before trying again."
+msgstr ""
+
+#: cloudbridge-2fa.php:363
+msgid "No role"
+msgstr ""
+
+#: cloudbridge-2fa.php:382
+msgid "unknown users"
+msgstr ""
+
+#. translators: 1: account count, 2: comma-separated usernames.
+#: cloudbridge-2fa.php:389
+#, php-format
+msgid "Emergency bypass is currently enabled for %1$d account: %2$s."
+msgid_plural "Emergency bypass is currently enabled for %1$d accounts: %2$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: cloudbridge-2fa.php:400
+msgid "Review this on the Bypass 2FA tab."
+msgstr ""
+
+#: cloudbridge-2fa.php:417
+msgid "Unable to save bypass settings because the security check failed. Please try again."
+msgstr ""
+
+#: cloudbridge-2fa.php:448
+msgid "No bypass settings needed to be changed."
+msgstr ""
+
+#. translators: %d: number of accounts.
+#: cloudbridge-2fa.php:455
+#, php-format
+msgid "Saved bypass settings for %d account."
+msgid_plural "Saved bypass settings for %d accounts."
+msgstr[0] ""
+msgstr[1] ""
+
+#: cloudbridge-2fa.php:645
+msgid "This account is required to use two-factor authentication, but no login factor is available. Contact the site administrator."
+msgstr ""
+
+#: cloudbridge-2fa.php:699
+msgid "Settings "
+msgstr ""
+
+#: cloudbridge-2fa.php:735
+msgid "mbstring-extensions are missing, contact server administrator to enable them"
+msgstr ""
+
+#: cloudbridge-2fa.php:743
+msgid "Authenticator app support requires the PHP extension openssl. Contact the server administrator to enable it."
+msgstr ""
+
+#: cloudbridge-2fa.php:751
+msgid "Plugin activated, please take a moment and go through the"
+msgstr ""
+
+#: cloudbridge-2fa.php:753
+msgid "settings"
+msgstr ""
+
+#: cloudbridge-2fa.php:897
+msgid "Settings"
+msgstr ""
+
+#: cloudbridge-2fa.php:903
+msgid "Export various data"
+msgstr ""
+
+#: cloudbridge-2fa.php:904
+#: cloudbridge-2fa.php:1838
+#: cloudbridge-2fa.php:1865
+msgid "Export"
+msgstr ""
+
+#: cloudbridge-2fa.php:909
+msgid "Import external data"
+msgstr ""
+
+#: cloudbridge-2fa.php:910
+#: cloudbridge-2fa.php:2015
+#: cloudbridge-2fa.php:2030
+msgid "Import"
+msgstr ""
+
+#: cloudbridge-2fa.php:946
+#: cloudbridge-2fa.php:951
+msgid "Unknown role"
+msgstr ""
+
+#: cloudbridge-2fa.php:1093
+msgid "These settings allow general configuration of Cloudbridge 2FA"
+msgstr ""
+
+#: cloudbridge-2fa.php:1096
+msgid "General"
+msgstr ""
+
+#: cloudbridge-2fa.php:1097
+#: cloudbridge-2fa.php:1151
+#: cloudbridge-2fa.php:1666
+msgid "E-mail OTP"
+msgstr ""
+
+#: cloudbridge-2fa.php:1098
+msgid "Roles"
+msgstr ""
+
+#: cloudbridge-2fa.php:1099
+msgid "Access"
+msgstr ""
+
+#: cloudbridge-2fa.php:1100
+#: cloudbridge-2fa.php:1301
+#: cloudbridge-2fa.php:1313
+msgid "Bypass 2FA"
+msgstr ""
+
+#: cloudbridge-2fa.php:1101
+msgid "About"
+msgstr ""
+
+#: cloudbridge-2fa.php:1118
+msgid "Authenticator apps"
+msgstr ""
+
+#: cloudbridge-2fa.php:1119
+msgid "Allow standards-based TOTP authenticator apps for this site. Each user enables and manages their own authenticator app from their WordPress profile page."
+msgstr ""
+
+#: cloudbridge-2fa.php:1125
+msgid "Login screen"
+msgstr ""
+
+#: cloudbridge-2fa.php:1126
+msgid "Configure helper text shown on the code entry screen after the user has passed their username and password check."
+msgstr ""
+
+#: cloudbridge-2fa.php:1132
+msgid "Browser trust"
+msgstr ""
+
+#: cloudbridge-2fa.php:1133
+msgid "Configure how long the optional remember-this-browser cookie should remain valid when a role is allowed to use it."
+msgstr ""
+
+#: cloudbridge-2fa.php:1139
+msgid "Maintenance"
+msgstr ""
+
+#: cloudbridge-2fa.php:1152
+msgid "Configure the e-mail-based one-time code flow, including message behavior and helper text shown during login."
+msgstr ""
+
+#: cloudbridge-2fa.php:1164
+msgid "This page allows you to configure how 2FA should be enforced for different WordPress user roles"
+msgstr ""
+
+#: cloudbridge-2fa.php:1165
+msgid "It is recommended that you enable 2FA at least for all roles with elevated privileges"
+msgstr ""
+
+#: cloudbridge-2fa.php:1169
+msgid "No roles currently have 2FA enabled"
+msgstr ""
+
+#: cloudbridge-2fa.php:1175
+msgid "Unable to fetch WordPress user roles"
+msgstr ""
+
+#: cloudbridge-2fa.php:1205
+msgid "2FA enabled"
+msgstr ""
+
+#: cloudbridge-2fa.php:1207
+msgid "Allow cookie"
+msgstr ""
+
+#: cloudbridge-2fa.php:1245
+msgid "Unable to locate any users with \"admininistrator\" permissions"
+msgstr ""
+
+#: cloudbridge-2fa.php:1250
+msgid "All users with \"administrator\" permissions can currently manage this plugin"
+msgstr ""
+
+#: cloudbridge-2fa.php:1255
+msgid "Unable to determine current user"
+msgstr ""
+
+#: cloudbridge-2fa.php:1259
+msgid "Current user is"
+msgstr ""
+
+#: cloudbridge-2fa.php:1260
+msgid "Unknown"
+msgstr ""
+
+#: cloudbridge-2fa.php:1267
+#: cloudbridge-2fa.php:1311
+msgid "User"
+msgstr ""
+
+#: cloudbridge-2fa.php:1269
+msgid "Manage plugin"
+msgstr ""
+
+#: cloudbridge-2fa.php:1302
+msgid "Emergency bypass should only be enabled for accounts that temporarily cannot complete the normal Cloudbridge 2FA login flow. Review and remove bypasses again as soon as they are no longer needed."
+msgstr ""
+
+#: cloudbridge-2fa.php:1312
+msgid "Role"
+msgstr ""
+
+#. translators: %s: username.
+#: cloudbridge-2fa.php:1331
+#, php-format
+msgid "Bypass 2FA for %s"
+msgstr ""
+
+#: cloudbridge-2fa.php:1348
+msgid "Thank you for installing"
+msgstr ""
+
+#: cloudbridge-2fa.php:1349
+msgid "This WordPress plugin provides two-factor authentication for WordPress, with support for e-mail OTP and authenticator app TOTP"
+msgstr ""
+
+#: cloudbridge-2fa.php:1352
+msgid "Commercial support and customizations for this plugin is available from"
+msgstr ""
+
+#: cloudbridge-2fa.php:1354
+msgid "in Stockholm, Sweden. We speak Swedish and English"
+msgstr ""
+
+#: cloudbridge-2fa.php:1356
+msgid "The plugin is written by Joaquim Homrighausen and sponsored by WebbPlatsen i Sverige AB."
+msgstr ""
+
+#: cloudbridge-2fa.php:1358
+msgid "If you find this plugin useful, the author is happy to receive a donation, good review, or just a kind word."
+msgstr ""
+
+#: cloudbridge-2fa.php:1359
+msgid "If there is something you feel to be missing from this plugin, or if you have found a problem with the code or a feature, please do not hesitate to reach out to"
+msgstr ""
+
+#: cloudbridge-2fa.php:1361
+msgid "There is more documentation available at"
+msgstr ""
+
+#: cloudbridge-2fa.php:1366
+msgid "Other plugins"
+msgstr ""
+
+#: cloudbridge-2fa.php:1370
+msgid "Security plugin that provides integration with fail2ban and many other security features for WordPress"
+msgstr ""
+
+#: cloudbridge-2fa.php:1375
+msgid "Plugin that provides integration with Mattermost, including notifications and OAuth2 authentication"
+msgstr ""
+
+#: cloudbridge-2fa.php:1380
+msgid "Plugin that provides uncomplicated map functionality"
+msgstr ""
+
+#: cloudbridge-2fa.php:1414
+msgid "Allow authenticator apps"
+msgstr ""
+
+#: cloudbridge-2fa.php:1416
+msgid "OTP code entry text"
+msgstr ""
+
+#: cloudbridge-2fa.php:1418
+msgid "Cookie lifetime"
+msgstr ""
+
+#: cloudbridge-2fa.php:1420
+msgid "Allow e-mail OTP"
+msgstr ""
+
+#: cloudbridge-2fa.php:1421
+msgid "OTP code lifetime"
+msgstr ""
+
+#: cloudbridge-2fa.php:1422
+msgid "OTP code in e-mail subject"
+msgstr ""
+
+#: cloudbridge-2fa.php:1423
+msgid "OTP code e-mail text"
+msgstr ""
+
+#: cloudbridge-2fa.php:1425
+msgid "Remove settings"
+msgstr ""
+
+#: cloudbridge-2fa.php:1564
+msgid "Send a one-time code by e-mail when e-mail is available for the user"
+msgstr ""
+
+#: cloudbridge-2fa.php:1566
+msgid "Recommended to keep enabled as a fallback while authenticator apps are being rolled out."
+msgstr ""
+
+#: cloudbridge-2fa.php:1573
+msgid "Allow users to set up an authenticator app on their WordPress profile page"
+msgstr ""
+
+#: cloudbridge-2fa.php:1575
+msgid "Cloudbridge 2FA currently provisions authenticator apps using a manual setup key and recovery codes."
+msgstr ""
+
+#: cloudbridge-2fa.php:1580
+msgid "Lifetime, in minutes, of the OTP (one time password) code sent to user by e-mail"
+msgstr ""
+
+#: cloudbridge-2fa.php:1587
+msgid "Additional text to display on OTP (one time password) code input form"
+msgstr ""
+
+#: cloudbridge-2fa.php:1594
+msgid "Additional text to include in OTP (one time password) code e-mail, no HTML"
+msgstr ""
+
+#: cloudbridge-2fa.php:1600
+msgid "Lifetime, in days, of 2FA bypass cookie. 0=Until browser is closed."
+msgstr ""
+
+#: cloudbridge-2fa.php:1609
+msgid "Include OTP (one time password) in e-mail subject"
+msgstr ""
+
+#: cloudbridge-2fa.php:1617
+msgid "Remove all plugin settings and data when plugin is uninstalled"
+msgstr ""
+
+#: cloudbridge-2fa.php:1647
+msgid "Manage authenticator app setup, recovery codes, and factor availability for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1664
+msgid "Available factors"
+msgstr ""
+
+#: cloudbridge-2fa.php:1666
+#: cloudbridge-2fa.php:1667
+msgid "enabled"
+msgstr ""
+
+#: cloudbridge-2fa.php:1666
+#: cloudbridge-2fa.php:1667
+msgid "disabled"
+msgstr ""
+
+#: cloudbridge-2fa.php:1667
+#: include/class_cb2fa_login.inc.php:146
+msgid "Authenticator app"
+msgstr ""
+
+#: cloudbridge-2fa.php:1669
+msgid "Authenticator app setup works with standards-based TOTP apps such as Google Authenticator, Microsoft Authenticator, Bitwarden, 2FAS, Authy, Ente Auth, and Apple Passwords."
+msgstr ""
+
+#: cloudbridge-2fa.php:1676
+msgid "Emergency bypass"
+msgstr ""
+
+#: cloudbridge-2fa.php:1679
+msgid "Cloudbridge 2FA bypass is currently enabled for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1681
+msgid "Use this only when the normal Cloudbridge 2FA login path is unavailable for a specific account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1684
+msgid "Emergency bypass is managed from Cloudbridge 2FA > Bypass 2FA."
+msgstr ""
+
+#: cloudbridge-2fa.php:1685
+msgid "Only plugin administrators should change this. When enabled, this account can log in with password only even if its role normally requires Cloudbridge 2FA."
+msgstr ""
+
+#: cloudbridge-2fa.php:1687
+msgid "This bypass can only be changed by a plugin administrator."
+msgstr ""
+
+#: cloudbridge-2fa.php:1694
+msgid "Authenticator status"
+msgstr ""
+
+#: cloudbridge-2fa.php:1697
+msgid "Authenticator app support is unavailable because PHP openssl support is missing."
+msgstr ""
+
+#: cloudbridge-2fa.php:1699
+msgid "Authenticator app support is currently disabled for this site."
+msgstr ""
+
+#: cloudbridge-2fa.php:1701
+msgid "Authenticator app is enabled for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1705
+msgid "Disable authenticator app and remove stored recovery codes"
+msgstr ""
+
+#: cloudbridge-2fa.php:1708
+msgid "Authenticator app is not yet enabled for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1710
+msgid "Add the below secret to your authenticator app as a time-based account, then enter the current six-digit code and update your profile."
+msgstr ""
+
+#: cloudbridge-2fa.php:1720
+msgid "QR code setup"
+msgstr ""
+
+#: cloudbridge-2fa.php:1723
+msgid "Scan this QR code with your authenticator app to set up this account. If scanning is unavailable, use the manual setup key below."
+msgstr ""
+
+#: cloudbridge-2fa.php:1728
+msgid "Manual setup key"
+msgstr ""
+
+#: cloudbridge-2fa.php:1731
+msgid "Issuer"
+msgstr ""
+
+#: cloudbridge-2fa.php:1732
+msgid "Account"
+msgstr ""
+
+#: cloudbridge-2fa.php:1733
+msgid "If your authenticator app cannot scan QR codes, enter the shared key manually as a time-based account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1738
+msgid "Authenticator setup"
+msgstr ""
+
+#: cloudbridge-2fa.php:1740
+msgid "Verification code"
+msgstr ""
+
+#. translators: %d: number of digits.
+#: cloudbridge-2fa.php:1742
+#, php-format
+msgid "Enter the current %d-digit code from your authenticator app and update your profile to enable it."
+msgstr ""
+
+#: cloudbridge-2fa.php:1749
+msgid "Recovery codes"
+msgstr ""
+
+#: cloudbridge-2fa.php:1752
+msgid "No recovery codes are currently stored for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1756
+msgid "Store these recovery codes in a safe place. Each code can be used once if your authenticator app is unavailable."
+msgstr ""
+
+#: cloudbridge-2fa.php:1760
+msgid "Generate a new set of recovery codes"
+msgstr ""
+
+#: cloudbridge-2fa.php:1783
+msgid "Unable to save authenticator settings. Please try again."
+msgstr ""
+
+#: cloudbridge-2fa.php:1786
+msgid "Authenticator app has been disabled for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1792
+msgid "Recovery codes have been regenerated."
+msgstr ""
+
+#: cloudbridge-2fa.php:1794
+msgid "Unable to regenerate recovery codes."
+msgstr ""
+
+#: cloudbridge-2fa.php:1810
+msgid "The authenticator app code was invalid. Please check the setup key and try again."
+msgstr ""
+
+#: cloudbridge-2fa.php:1814
+msgid "Unable to store the authenticator app secret for this account."
+msgstr ""
+
+#: cloudbridge-2fa.php:1819
+msgid "Authenticator app was enabled, but recovery codes could not be generated."
+msgstr ""
+
+#: cloudbridge-2fa.php:1822
+msgid "Authenticator app has been enabled and recovery codes have been generated."
+msgstr ""
+
+#: cloudbridge-2fa.php:1839
+msgid "Export configuration data"
+msgstr ""
+
+#: cloudbridge-2fa.php:1841
+#: cloudbridge-2fa.php:2019
+msgid "Configuration"
+msgstr ""
+
+#: cloudbridge-2fa.php:1856
+msgid "Unable to fetch plugin configuration from the WordPress database"
+msgstr ""
+
+#: cloudbridge-2fa.php:1859
+msgid "Copy and paste this Base64 data into another Cloudbridge 2FA installation"
+msgstr ""
+
+#: cloudbridge-2fa.php:1866
+msgid "Successfully copied to clipboard"
+msgstr ""
+
+#: cloudbridge-2fa.php:1867
+msgid "Unable to copy to clipboard, please select and copy manually"
+msgstr ""
+
+#: cloudbridge-2fa.php:1896
+msgid "Security check failed, please try again"
+msgstr ""
+
+#: cloudbridge-2fa.php:1906
+msgid "Please enter a valid Base64 encoded string"
+msgstr ""
+
+#: cloudbridge-2fa.php:1915
+#: cloudbridge-2fa.php:1928
+msgid "The specified import data does not seem to contain an exported configuration"
+msgstr ""
+
+#: cloudbridge-2fa.php:1934
+msgid "Unable to fetch current username"
+msgstr ""
+
+#: cloudbridge-2fa.php:1956
+msgid "One or more unrecognized options were ignored"
+msgstr ""
+
+#: cloudbridge-2fa.php:1973
+msgid "The currently logged in user has been added as an administrator, please check your settings"
+msgstr ""
+
+#: cloudbridge-2fa.php:1999
+msgid "configuration setting(s) imported"
+msgstr ""
+
+#: cloudbridge-2fa.php:2017
+msgid "Import data"
+msgstr ""
+
+#: cloudbridge-2fa.php:2027
+msgid "This will replace plugin configuration data"
+msgstr ""
+
+#: cloudbridge-2fa.php:2029
+msgid "Paste previously exported Base64 configuration data into this field"
+msgstr ""
+
+#: cloudbridge-2fa.php:2139
+msgid "Please sign in through the WordPress login page to complete two-factor authentication."
+msgstr ""
+
+#: cloudbridge-2fa.php:2143
+msgid "Invalid form token, please try again"
+msgstr ""
+
+#: cloudbridge-2fa.php:2157
+#: cloudbridge-2fa.php:2170
+msgid "Unable to create login verification. Please try again."
+msgstr ""
+
+#: cloudbridge-2fa.php:2189
+msgid "Your login verification expired. Please sign in again."
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:148
+msgid "Recovery code"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:151
+msgid "E-mail code"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:158
+msgid "authenticator app"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:160
+msgid "recovery code"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:163
+msgid "e-mail code"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:366
+msgid "OTP code"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:370
+msgid "Login OTP code"
+msgstr ""
+
+#. translators: %s: login verification reference.
+#: include/class_cb2fa_login.inc.php:374
+#: include/class_cb2fa_login.inc.php:667
+#, php-format
+msgid "Verification reference: %s"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:376
+msgid "Someone has requested that an OTP code be sent to the e-mail address associated with an account on this WordPress site. If this was not you, you should change your password on this site as soon as possible"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:377
+msgid "The OTP code is valid for"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:377
+msgid "minutes"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:378
+msgid "2FA provided by"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:635
+#: include/class_cb2fa_login.inc.php:735
+msgid "WordPress Login"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:645
+msgid "Enter the current six-digit code from your authenticator app."
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:648
+msgid "Enter one of your recovery codes. Each code can be used once."
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:652
+msgid "An OTP code has been sent to the e-mail address associated with the account"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:653
+msgid "The code is valid for"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:655
+msgid "minute(s)"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:705
+msgid "Enable checkbox to avoid having to enter an OTP code for future logins"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:707
+msgid "Remember me in this browser"
+msgstr ""
+
+#. translators: %s: authentication method.
+#: include/class_cb2fa_login.inc.php:717
+#, php-format
+msgid "Use %s"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:731
+msgid "If the e-mail message with the code does not arrive, you may attempt to login again by clicking on the below link"
+msgstr ""
+
+#: include/class_cb2fa_login.inc.php:732
+msgid "If you need to start over, you may return to the WordPress login screen by clicking on the below link"
 msgstr ""

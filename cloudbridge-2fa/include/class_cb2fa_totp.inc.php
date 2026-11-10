@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     error_log( basename( __FILE__ ) . ': ABSPATH not defined, exiting' );
     die( '-1' );
 }
-if ( ! defined( 'CB2FA_WORDPRESS_PLUGIN' ) ) {
+if ( ! defined( 'CB2FA_WORDPRESS_PLUGIN' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     error_log( basename( __FILE__ ) . ': CB2FA_WORDPRESS_PLUGIN not defined, exiting' );
     die( '-1' );
 }
@@ -188,7 +188,7 @@ class Cloudbridge_2FA_TOTP {
 
     protected function cb2fa_base32_decode( string $secret ) {
         static $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        $secret = strtoupper( preg_replace( '/[^A-Z2-7]/', '', $secret ) );
+        $secret = preg_replace( '/[^A-Z2-7]/', '', strtoupper( $secret ) );
         if ( empty( $secret ) ) {
             return( false );
         }
@@ -265,6 +265,17 @@ class Cloudbridge_2FA_TOTP {
     }
 
     public function cb2fa_verify_totp_for_user( int $user_id, string $secret, string $code, int $window = 1 ) : bool {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( false );
+        }
+        try {
+            return( $this->cb2fa_verify_totp_for_user_locked( $user_id, $secret, $code, $window ) );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
+    }
+
+    protected function cb2fa_verify_totp_for_user_locked( int $user_id, string $secret, string $code, int $window = 1 ) : bool {
         $matching_timeslice = $this->cb2fa_get_matching_timeslice( $secret, $code, $window );
         if ( $matching_timeslice === false ) {
             return( false );
@@ -272,8 +283,7 @@ class Cloudbridge_2FA_TOTP {
         if ( $matching_timeslice <= $this->cb2fa_get_last_verified_timeslice( $user_id ) ) {
             return( false );
         }
-        update_user_meta( $user_id, self::META_TOTP_LAST_TIMESLICE, (int)$matching_timeslice );
-        return( true );
+        return( (bool)update_user_meta( $user_id, self::META_TOTP_LAST_TIMESLICE, (int)$matching_timeslice ) );
     }
 
     protected function cb2fa_save_user_secret( int $user_id, string $meta_key, string $secret ) : bool {
@@ -309,6 +319,17 @@ class Cloudbridge_2FA_TOTP {
     }
 
     public function cb2fa_ensure_pending_secret( int $user_id ) : string {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( '' );
+        }
+        try {
+            return( $this->cb2fa_ensure_pending_secret_locked( $user_id ) );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
+    }
+
+    protected function cb2fa_ensure_pending_secret_locked( int $user_id ) : string {
         $secret = $this->cb2fa_get_pending_secret( $user_id );
         if ( ! empty( $secret ) ) {
             return( $secret );
@@ -321,6 +342,17 @@ class Cloudbridge_2FA_TOTP {
     }
 
     public function cb2fa_enable_secret( int $user_id, string $secret ) : bool {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( false );
+        }
+        try {
+            return( $this->cb2fa_enable_secret_locked( $user_id, $secret ) );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
+    }
+
+    protected function cb2fa_enable_secret_locked( int $user_id, string $secret ) : bool {
         if ( empty( $secret ) ) {
             return( false );
         }
@@ -331,11 +363,20 @@ class Cloudbridge_2FA_TOTP {
         return( true );
     }
 
-    public function cb2fa_disable_totp( int $user_id ) : void {
-        delete_user_meta( $user_id, self::META_TOTP_SECRET );
-        delete_user_meta( $user_id, self::META_TOTP_PENDING_SECRET );
-        delete_user_meta( $user_id, self::META_RECOVERY_CODES );
-        delete_user_meta( $user_id, self::META_TOTP_LAST_TIMESLICE );
+    public function cb2fa_disable_totp( int $user_id ) : bool {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( false );
+        }
+        try {
+            foreach ( self::cb2fa_user_meta_keys() as $key ) {
+                if ( get_user_meta( $user_id, $key, true ) !== '' && ! delete_user_meta( $user_id, $key ) ) {
+                    return( false );
+                }
+            }
+            return( true );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
     }
 
     public function cb2fa_get_issuer_name() : string {
@@ -387,7 +428,7 @@ class Cloudbridge_2FA_TOTP {
     }
 
     public function cb2fa_format_recovery_code( string $code ) : string {
-        $code = strtoupper( preg_replace( '/[^A-Z0-9]/', '', $code ) );
+        $code = preg_replace( '/[^A-Z0-9]/', '', strtoupper( $code ) );
         if ( empty( $code ) ) {
             return( '' );
         }
@@ -395,10 +436,21 @@ class Cloudbridge_2FA_TOTP {
     }
 
     protected function cb2fa_normalize_recovery_code( string $code ) : string {
-        return( strtoupper( preg_replace( '/[^A-Z0-9]/', '', $code ) ) );
+        return( preg_replace( '/[^A-Z0-9]/', '', strtoupper( $code ) ) );
     }
 
     public function cb2fa_regenerate_recovery_codes( int $user_id, int $count = 8 ) : array {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( [] );
+        }
+        try {
+            return( $this->cb2fa_regenerate_recovery_codes_locked( $user_id, $count ) );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
+    }
+
+    protected function cb2fa_regenerate_recovery_codes_locked( int $user_id, int $count = 8 ) : array {
         $codes = [];
         for ( $i = 0; $i < $count; $i++ ) {
             $codes[] = $this->cb2fa_generate_recovery_code_value();
@@ -407,7 +459,9 @@ class Cloudbridge_2FA_TOTP {
         if ( $encrypted_codes === false ) {
             return( [] );
         }
-        update_user_meta( $user_id, self::META_RECOVERY_CODES, $encrypted_codes );
+        if ( ! update_user_meta( $user_id, self::META_RECOVERY_CODES, $encrypted_codes ) ) {
+            return( [] );
+        }
         return( $codes );
     }
 
@@ -432,6 +486,17 @@ class Cloudbridge_2FA_TOTP {
     }
 
     public function cb2fa_consume_recovery_code( int $user_id, string $code ) : bool {
+        if ( ! Cloudbridge_2FA_State::lock( $user_id ) ) {
+            return( false );
+        }
+        try {
+            return( $this->cb2fa_consume_recovery_code_locked( $user_id, $code ) );
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user_id );
+        }
+    }
+
+    protected function cb2fa_consume_recovery_code_locked( int $user_id, string $code ) : bool {
         $normalized_code = $this->cb2fa_normalize_recovery_code( $code );
         if ( empty( $normalized_code ) ) {
             return( false );
@@ -447,8 +512,7 @@ class Cloudbridge_2FA_TOTP {
                 if ( $encrypted_codes === false ) {
                     return( false );
                 }
-                update_user_meta( $user_id, self::META_RECOVERY_CODES, $encrypted_codes );
-                return( true );
+                return( (bool)update_user_meta( $user_id, self::META_RECOVERY_CODES, $encrypted_codes ) );
             }
         }
         return( false );

@@ -2,10 +2,10 @@
 Contributors: joho68, webbplatsen
 Donate link: https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
 Tags: security, 2fa, passwords
-Requires at least: 5.4.0
-Tested up to: 7.0
+Requires at least: 5.4
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,13 +33,15 @@ You may configure that only certain roles are required to use 2FA, and it is
 recommended that you enable 2FA for those users with privileged access.
 
 You may also configure the plugin to allow certain roles to enable an OTP code
-bypass, which will set a cookie in that user's web browser. The cookies are
-partially based on the username, so several users can share the same browser,
-but still be required to always enter the OTP code, or bypass it if the cookie
-is present.
+bypass, which sets an account-specific cookie in that user's web browser.
+Several users can share a browser while keeping separate trust settings.
+Trusted-browser tokens expire on the server and are invalidated when the
+account password changes.
 
 You can add custom text to the OTP code entry form, and you can add custom text
 to the OTP code e-mail message.
+OTP e-mails include HTML and plain-text versions with the same code, verification
+reference, expiry information, and custom text.
 
 The plugin can be configured to allow it to be handled/managed only by specific
 users, thus making it harder for someone to accidentally or intentionally
@@ -47,6 +49,17 @@ deactivate it. The implemented solution for this is by no means waterproof. If
 someone, for example, has access to your WordPress installation by means of FTP
 or similar, the plugin files can be physically removed (or moved out of your
 WordPress installation), which basically deactivates the plugin as well.
+
+
+After upgrading to 2.0.2, users must complete 2FA once to trust a browser again.
+Existing pending login attempts must be restarted. Protected interactive logins
+must use the WordPress login page. Custom forms and XML-RPC password logins
+cannot complete CB2FA challenges. REST application-password authentication
+continues to be handled separately by WordPress.
+E-mail codes use the verification reference shown on the login screen. New
+messages are limited to one per account per minute until 2FA succeeds. Successful
+verification clears the mail cooldown. Existing codes keep their original expiry
+time when switching factors.
 
 == Installation ==
 
@@ -62,14 +75,27 @@ Cloudbridge 2FA uses standard WordPress functionality to handle localization/loc
 
 = Are there any incompatibilities =
 
-This is a hard question to answer. There are no known incompatibilities.
-
-== Screenshots ==
-
-1. Sample e-mail content with OTP from Cloudbridge 2FA
-2. Sample OTP code entry form when logging into WordPress
+Protected password logins must use the WordPress login page. Custom forms and
+XML-RPC password logins cannot complete CB2FA challenges. REST application-password
+authentication is handled separately by WordPress.
 
 == Changelog ==
+
+= 2.0.2 =
+* Fixed overlapping login attempts invalidating e-mail codes; each attempt now has a separate browser-bound challenge
+* Fixed e-mail cooldown renewal after expiry and cleared the cooldown after successful 2FA
+* Added PHP log diagnostics for e-mail cooldown, storage, and sending failures
+* Added a plain-text alternative to HTML OTP e-mails
+* Fixed large OTP digits overflowing narrow e-mail layouts
+* Preserved delivered e-mail codes when switching factors and added matching verification references
+* Enforced fixed challenge expiry, resend limits, and server-side trusted-browser expiry
+* Prevented concurrent OTP/recovery-code reuse and rejected verification when state cannot be saved
+* Ran factor handling after normal WordPress and third-party authentication checks
+* Preserved WordPress Remember me, corrected recovery-code case handling, and hardened login input handling
+* Fixed uninstall cleanup, restricted-browser storage handling, and Swedish plural translations
+* Removed credential and sensitive option-value debug logging
+* Handled malformed import entries without PHP warnings and limited configuration import diagnostics
+* Made existing verification endpoint access guards detectable by Plugin Check without changing login behavior
 
 = 2.0.1 =
 * Fixed a settings-page regression where saving one tab could unset values on another tab

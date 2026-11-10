@@ -7,7 +7,7 @@
  * @subpackage cloudbridge-2fa/include
  * @author     Joaquim Homrighausen <joho@webbplatsen.se>
  *
- * class_2b2fa_util.inc.php
+ * class_cb2fa_util.inc.php
  * Copyright (C) 2024-2026 Joaquim Homrighausen; all rights reserved.
  * Development sponsored by WebbPlatsen i Sverige AB, www.webbplatsen.se
  *

@@ -11,7 +11,9 @@
  * Plugin Name:       Cloudbridge 2FA
  * Plugin URI:        https://code.webbplatsen.net/wordpress/cloudbridge-2fa/
  * Description:       Uncomplicated 2FA plugin for WordPress
- * Version:           2.0.1
+ * Version:           2.0.2
+ * Requires at least: 5.4
+ * Requires PHP:      7.4
  * Author:            WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>
  * Author URI:        https://webbplatsen.se/
  * License:           GPL-2.0+
@@ -52,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'CB2FA_WORDPRESS_PLUGIN',         true                    );
-define( 'CB2FA_VERSION',                  '2.0.1'                 );
+define( 'CB2FA_VERSION',                  '2.0.2'                 );
 define( 'CB2FA_REV',                      2                       );
 define( 'CB2FA_PLUGINNAME_HUMAN',         'Cloudbridge 2FA'       );
 define( 'CB2FA_DEFAULT_PREFIX',           'cloudbridge2fa'        );
@@ -70,6 +72,7 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'include/class_cb2fa_util.inc.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'include/class_cb2fa_login.inc.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'include/class_cb2fa_options.inc.php' );
+require_once( plugin_dir_path( __FILE__ ) . 'include/class_cb2fa_state.inc.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'include/class_cb2fa_totp.inc.php' );
 
 /**
@@ -259,7 +262,7 @@ class Cloudbridge_2FA {
         if ( empty( $redirect_to ) ) {
             return( $fallback_url );
         }
-        $redirect_to = sanitize_url( $redirect_to, ['http', 'https'] );
+        $redirect_to = esc_url_raw( $redirect_to, ['http', 'https'] );
         $redirect_to = wp_validate_redirect( $redirect_to, $fallback_url );
         if ( empty( $redirect_to ) ) {
             return( $fallback_url );
@@ -382,6 +385,7 @@ class Cloudbridge_2FA {
         $warning  = '<div class="notice notice-warning inline cb2fa-inline-warning"><p><strong>';
         $warning .= esc_html(
             sprintf(
+                /* translators: 1: account count, 2: comma-separated usernames. */
                 _n(
                     'Emergency bypass is currently enabled for %1$d account: %2$s.',
                     'Emergency bypass is currently enabled for %1$d accounts: %2$s.',
@@ -447,6 +451,7 @@ class Cloudbridge_2FA {
                 'cloudbridge-2fa',
                 'cb2fa-bypass-updated',
                 sprintf(
+                    /* translators: %d: number of accounts. */
                     _n(
                         'Saved bypass settings for %d account.',
                         'Saved bypass settings for %d accounts.',
@@ -467,8 +472,67 @@ class Cloudbridge_2FA {
         return( empty( $input ) ? 0 : 1 );
     }
 
-    protected function cb2fa_get_challenge_key( string $username, string $nonce ) : string {
-        return( CB2FA_TRANSIENT_PREFIX . $username . $nonce );
+    protected function cb2fa_get_challenge_key( string $token ) : string {
+        return( CB2FA_TRANSIENT_PREFIX . '_v2_' . hash( 'sha256', $token ) );
+    }
+
+    public function cb2fa_challenge_cookie_name( string $token ) : string {
+        return( 'cb2fa_challenge_' . substr( hash( 'sha256', $token ), 0, 24 ) );
+    }
+
+    public function cb2fa_challenge_matches_browser( string $token, array $challenge ) : bool {
+        $cookie = $_COOKIE[$this->cb2fa_challenge_cookie_name( $token )] ?? '';
+        return( is_string( $cookie ) && preg_match( '/^[a-f0-9]{64}$/D', $cookie )
+            && ! empty( $challenge['browser_hash'] )
+            && hash_equals( $challenge['browser_hash'], hash( 'sha256', $cookie ) ) );
+    }
+
+    public function cb2fa_password_fingerprint( \WP_User $user ) : string {
+        // Core may rehash a valid password during authentication while the
+        // filter's original WP_User still contains the previous password hash.
+        $current = get_user_by( 'id', $user->ID );
+        return( $current instanceof \WP_User ? hash( 'sha256', $current->user_pass ) : '' );
+    }
+
+    protected function cb2fa_trust_cookie_name( \WP_User $user ) : string {
+        return( 'cb2fa_trust_' . $user->ID );
+    }
+
+    public function cb2fa_has_browser_trust( \WP_User $user ) : bool {
+        $token = $_COOKIE[$this->cb2fa_trust_cookie_name( $user )] ?? '';
+        if ( ! is_string( $token ) || ! preg_match( '/^[a-f0-9]{64}$/D', $token ) ) {
+            return( false );
+        }
+        $record = Cloudbridge_2FA_State::get( 'cb2fa_trust_' . hash( 'sha256', $token ) );
+        return( is_array( $record ) && (int)$record['user_id'] === (int)$user->ID
+            && (int)$record['expires_at'] > time()
+            && hash_equals( $record['password_hash'], $this->cb2fa_password_fingerprint( $user ) ) );
+    }
+
+    public function cb2fa_update_browser_trust( \WP_User $user, bool $remember ) : bool {
+        $name = $this->cb2fa_trust_cookie_name( $user );
+        $old_token = $_COOKIE[$name] ?? '';
+        if ( is_string( $old_token ) && preg_match( '/^[a-f0-9]{64}$/D', $old_token ) ) {
+            delete_transient( 'cb2fa_trust_' . hash( 'sha256', $old_token ) );
+        }
+        if ( ! $remember || $this->cb2fa_cookie_lifetime < 1 ) {
+            return( Cloudbridge_2FA_State::set_cookie( $name, '', time() - DAY_IN_SECONDS ) );
+        }
+        try {
+            $token = bin2hex( random_bytes( 32 ) );
+        } catch ( \Exception $e ) {
+            return( false );
+        }
+        $lifetime = (int)$this->cb2fa_cookie_lifetime * DAY_IN_SECONDS;
+        $expires_at = time() + $lifetime;
+        if ( ! set_transient( 'cb2fa_trust_' . hash( 'sha256', $token ), [
+            'user_id' => (int)$user->ID,
+            'expires_at' => $expires_at,
+            'password_hash' => $this->cb2fa_password_fingerprint( $user ),
+        ], $lifetime ) ) {
+            return( false );
+        }
+        return( Cloudbridge_2FA_State::set_cookie( $name, $token, $expires_at ) );
     }
 
     protected function cb2fa_get_user_available_factors( \WP_User $user ) : array {
@@ -509,32 +573,31 @@ class Cloudbridge_2FA {
         return( $code );
     }
 
-    public function cb2fa_get_challenge( string $username, string $nonce ) {
-        $challenge = get_transient( $this->cb2fa_get_challenge_key( $username, $nonce ) );
-        if ( ! is_array( $challenge ) ) {
+    public function cb2fa_get_challenge( string $token ) {
+        if ( ! preg_match( '/^[a-f0-9]{64}$/D', $token ) ) {
+            return( false );
+        }
+        $challenge = Cloudbridge_2FA_State::get( $this->cb2fa_get_challenge_key( $token ) );
+        if ( ! is_array( $challenge ) || empty( $challenge['expires_at'] ) || (int)$challenge['expires_at'] <= time() ) {
             return( false );
         }
         return( $challenge );
     }
 
-    public function cb2fa_store_challenge( string $username, string $nonce, array $challenge ) : bool {
-        return(
-            set_transient(
-                $this->cb2fa_get_challenge_key( $username, $nonce ),
-                $challenge,
-                ( $this->cb2fa_code_lifetime * 60 )
-            )
-        );
+    public function cb2fa_store_challenge( string $token, array $challenge ) : bool {
+        $remaining = (int)$challenge['expires_at'] - time();
+        if ( $remaining < 1 ) {
+            return( false );
+        }
+        // Only the digest is persisted; the plaintext code is used by the mailer.
+        unset( $challenge['email_code'] );
+        return( set_transient( $this->cb2fa_get_challenge_key( $token ), $challenge, $remaining ) );
     }
 
-    public function cb2fa_mark_challenge_consumed( string $username, string $nonce ) : bool {
-        return(
-            set_transient(
-                $this->cb2fa_get_challenge_key( $username, $nonce ),
-                ['status' => 'consumed'],
-                MINUTE_IN_SECONDS
-            )
-        );
+    public function cb2fa_mark_challenge_consumed( string $token, array $challenge ) : bool {
+        $challenge['status'] = 'consumed';
+        $challenge['email_code_hash'] = '';
+        return( $this->cb2fa_store_challenge( $token, $challenge ) );
     }
 
     public function cb2fa_prepare_challenge_factor( array $challenge, string $factor ) : array {
@@ -542,12 +605,35 @@ class Cloudbridge_2FA {
             return( $challenge );
         }
         $challenge['active_factor'] = $factor;
-        if ( $factor === 'email' ) {
+        // Returning to e-mail keeps the already delivered code valid.
+        if ( $factor === 'email' && empty( $challenge['email_code_hash'] ) ) {
             $challenge['email_code'] = $this->cb2fa_generate_email_code();
-        } else {
-            $challenge['email_code'] = '';
+            $challenge['email_code_hash'] = wp_hash( $challenge['email_code'], 'auth' );
         }
         return( $challenge );
+    }
+
+    public function cb2fa_send_challenge_email( \WP_User $user, array $challenge ) : bool {
+        $key = 'cb2fa_mail_' . $user->ID;
+        if ( Cloudbridge_2FA_State::get( $key ) !== false ) {
+            error_log( '[CB2FA] E-mail code not sent: cooldown active; user_id=' . (int)$user->ID );
+            return( false );
+        }
+        // Remove expired state so an unchanged value cannot report a failed renewal.
+        delete_transient( $key );
+        // Reserve before sending to enforce limits even when sending fails.
+        if ( ! set_transient( $key, 1, MINUTE_IN_SECONDS ) ) {
+            error_log( '[CB2FA] E-mail code not sent: unable to save cooldown; user_id=' . (int)$user->ID );
+            return( false );
+        }
+        $login = Cloudbridge_2FA_Login::getInstance( $this->cb2fa_nonce );
+        $login->setUser( $user, $user->user_login );
+        $login->setChallenge( $challenge );
+        $sent = $login->send_2fa_code( $challenge['email_code'] ) === true;
+        if ( ! $sent ) {
+            error_log( '[CB2FA] E-mail code not sent: mail sending failed; user_id=' . (int)$user->ID );
+        }
+        return( $sent );
     }
 
     protected function cb2fa_create_login_challenge( \WP_User $user, string $username, bool $allow_cookie = false ) {
@@ -564,11 +650,16 @@ class Cloudbridge_2FA {
         $challenge = [
             'status'            => 'pending',
             'created_at'        => time(),
+            'expires_at'        => time() + ( (int)$this->cb2fa_code_lifetime * MINUTE_IN_SECONDS ),
+            'password_hash'     => $this->cb2fa_password_fingerprint( $user ),
+            'rememberme'        => ( ! empty( $_POST['rememberme'] ) && is_string( $_POST['rememberme'] ) && wp_unslash( $_POST['rememberme'] ) === 'forever' ),
+            'redirect_to'       => $this->cb2fa_validate_redirect_url( isset( $_POST['redirect_to'] ) && is_string( $_POST['redirect_to'] ) ? wp_unslash( $_POST['redirect_to'] ) : '', admin_url() ),
             'user_id'           => (int)$user->ID,
             'allow_cookie'      => ( $allow_cookie ? 'Y' : 'N' ),
             'available_factors' => $available_factors,
             'active_factor'     => '',
             'email_code'        => '',
+            'email_code_hash'   => '',
             'attempts'          => 0,
             'max_attempts'      => 5,
         ];
@@ -628,7 +719,7 @@ class Cloudbridge_2FA {
         if ( $this->_cb2fa_is_plugin_admin === false ) {
             unset( $plugins['cloudbridge-2fa/' . basename(__FILE__ )] );
         }
-        unset( $_GET );
+        // Leave the shared request state intact for WordPress and other plugins.
         return( $plugins );
     }
     /**
@@ -688,7 +779,10 @@ class Cloudbridge_2FA {
      *
      * @since 1.0.0
      */
-    public function cb2fa_setup_admin_css() : void {
+    public function cb2fa_setup_admin_css( string $hook = '' ) : void {
+        if ( ! in_array( $hook, ['toplevel_page_cloudbridge-2fa', 'cloudbridge-2fa_page_cloudbridge-2fa-export', 'cloudbridge-2fa_page_cloudbridge-2fa-import', 'profile.php', 'user-edit.php'], true ) ) {
+            return;
+        }
         wp_enqueue_style( 'cloudbridge-2fa', plugin_dir_url( __FILE__ ) . 'css/cb2fa-admin.css',
                           array(),
                           $this->cb2fa_resource_mtime( dirname(__FILE__) . '/css/cb2fa-admin.css' ), 'all' );
@@ -969,8 +1063,7 @@ class Cloudbridge_2FA {
         }
         if ( ! in_array( $current_user->data->user_login, $this->cb2fa_admin_users ) ) {
             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( basename(__FILE__) . ' (' . __FUNCTION__ . ') "' . $current_user->data->user_login . '" is not allowed to manage CB2FA' );
-                error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Configured admin users ' . print_r( $this->cb2fa_admin_users, true ) );
+                error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Current user is not allowed to manage CB2FA' );
             }
             $this->_cb2fa_is_plugin_admin = false;
             return( false );
@@ -1107,7 +1200,7 @@ class Cloudbridge_2FA {
             $html .= '<input type="hidden" name="cloudbridge2fa-cookies-config[]" value="" />';
             $html .= '<div class="rolegridrow">';
             $html .= '<div class="rolegridheader">' .
-                          esc_html__( 'Role', 'default' ) .
+                          esc_html__( 'Role', 'default' ) . // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Reuse the WordPress core translation.
                      '</div><div class="rolegridheader">' .
                           esc_html__( '2FA enabled', 'cloudbridge-2fa' ) .
                      '</div><div class="rolegridheader">' .
@@ -1235,7 +1328,7 @@ class Cloudbridge_2FA {
                 $html .= '<td class="cb2fa-center">';
                 $html .= '<label>';
                 $html .= '<input type="checkbox" name="cb2fa_bypass_users[]" value="' . esc_attr( (string)$cb2fa_user->ID ) . '" ' . checked( $this->cb2fa_user_has_bypass( (int)$cb2fa_user->ID ), true, false ) . '/> ';
-                $html .= '<span class="screen-reader-text">' . esc_html( sprintf( __( 'Bypass 2FA for %s', 'cloudbridge-2fa' ), $cb2fa_user->user_login ) ) . '</span>';
+                $html .= '<span class="screen-reader-text">' . esc_html( sprintf( /* translators: %s: username. */ __( 'Bypass 2FA for %s', 'cloudbridge-2fa' ), $cb2fa_user->user_login ) ) . '</span>';
                 $html .= '</label>';
                 $html .= '</td>';
                 $html .= '</tr>';
@@ -1293,6 +1386,7 @@ class Cloudbridge_2FA {
             $html .= '</div>'; // tab-content
         $html .= '</div>'; // wrap
         //
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted form markup; dynamic values are escaped while building the fragments.
         echo $tab_header . $html;
     }
     /**
@@ -1645,7 +1739,7 @@ class Cloudbridge_2FA {
             echo '<td>';
             echo '<label for="cb2fa_totp_code">' . esc_html__( 'Verification code', 'cloudbridge-2fa' ) . '</label><br/>';
             echo '<input type="text" name="cb2fa_totp_code" id="cb2fa_totp_code" class="regular-text code" maxlength="' . esc_attr( $totp_digits ) . '" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" />';
-            echo '<p class="description">' . esc_html( sprintf( __( 'Enter the current %d-digit code from your authenticator app and update your profile to enable it.', 'cloudbridge-2fa' ), $totp_digits ) ) . '</p>';
+            echo '<p class="description">' . esc_html( sprintf( /* translators: %d: number of digits. */ __( 'Enter the current %d-digit code from your authenticator app and update your profile to enable it.', 'cloudbridge-2fa' ), $totp_digits ) ) . '</p>';
             echo '</td>';
             echo '</tr>';
         }
@@ -1685,7 +1779,10 @@ class Cloudbridge_2FA {
             return;
         }
         if ( ! empty( $_POST['cb2fa_totp_disable'] ) ) {
-            $this->TOTP->cb2fa_disable_totp( $user_id );
+            if ( ! $this->TOTP->cb2fa_disable_totp( $user_id ) ) {
+                $this->cb2fa_set_profile_notice( $user_id, 'error', __( 'Unable to save authenticator settings. Please try again.', 'cloudbridge-2fa' ) );
+                return;
+            }
             $this->cb2fa_set_profile_notice( $user_id, 'success', __( 'Authenticator app has been disabled for this account.', 'cloudbridge-2fa' ) );
             return;
         }
@@ -1776,6 +1873,7 @@ class Cloudbridge_2FA {
             $html .= '</div>';//tab-content
         $html .= '</div>'; // wrap
         //
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted form markup; dynamic values are escaped while building the fragments.
         echo $tab_header . $html;
         // echo wp_kses_post( $tab_header . $html );
     }
@@ -1826,7 +1924,6 @@ class Cloudbridge_2FA {
                         if ( ! $found_signature ) {
                             if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
                                 error_log( '[CB2FA_DEBUG] ' . basename(__FILE__) . ' (' . __FUNCTION__ . '): json data doest not contain "' . 'cloudbridge-2fa' . '"' );
-                                error_log( print_r( $json_data, true ) );
                             }
                             $form_error_message = __( 'The specified import data does not seem to contain an exported configuration', 'cloudbridge-2fa' );
                         }
@@ -1848,18 +1945,20 @@ class Cloudbridge_2FA {
                                 foreach( $v as $cfg_option => $cfg_value ) {
                                     $option[$cfg_option] = $cfg_value;
                                 }
-                                if ( empty( $option['option_name'] ) || ! isset( $option['option_value'] ) || ! Cloudbridge_2FA_Options::cb2fa_is_our_option( $option['option_name'] )  ) {
+                                // Exported values are scalars (including JSON strings
+                                // for lists). Reject malformed rows before typed calls.
+                                $option_name = isset( $option['option_name'] ) && is_string( $option['option_name'] ) ? $option['option_name'] : '';
+                                if ( $option_name === '' || ! isset( $option['option_value'] ) || ! is_scalar( $option['option_value'] ) || ! Cloudbridge_2FA_Options::cb2fa_is_our_option( $option_name ) ) {
                                     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                                        error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): Skipped unknown option "' . $option['option_name'] . '"' );
-                                        error_log( print_r( $json_data, true ) );
+                                        error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): Skipped an unknown or malformed option' );
                                     }
                                     if ( empty( $form_error_message ) ) {
                                         $form_error_message = __( 'One or more unrecognized options were ignored', 'cloudbridge-2fa' ) . ':';
                                     }
-                                    $skipped_options .= esc_html( $option['option_name'] ) . '<br/>';
+                                    $skipped_options .= esc_html( $option_name ) . '<br/>';
                                 } elseif ( $option['option_name'] != 'cloudbridge-2fa' . '-form-tab' ) {
                                     if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                                        error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Imported "' . $option['option_name'] . '" with value "' . print_r( $option['option_value'], true ) . '"' );
+                                        error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Imported "' . $option_name . '"' );
                                     }
                                     if ( $option['option_name'] == 'cloudbridge2fa-admin-users' ) {
                                         // Make sure we add current user login to admin users, if configured
@@ -1867,7 +1966,7 @@ class Cloudbridge_2FA {
                                         if ( is_array( $admin_users_json ) && ! empty( $admin_users_json ) ) {
                                             if ( ! in_array( $current_user_login, $admin_users_json ) ) {
                                                 if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                                                    error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Automatically added "' . $current_user_login . '" to CB2FA admins' );
+                                                    error_log( basename(__FILE__) . ' (' . __FUNCTION__ . '): Automatically added current user to CB2FA admins' );
                                                 }
                                                 $this->_cb2fa_is_plugin_admin = true;
                                                 $admin_users_json[] = $current_user_login;
@@ -1909,7 +2008,7 @@ class Cloudbridge_2FA {
         //
         echo '<div class="wrap">' . wp_kses_post( $form_error_message );
         echo '<h1>' .
-             $this->cb2fa_make_icon_html( 'appicon' ) .
+             $this->cb2fa_make_icon_html( 'appicon' ) . // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Fixed icon markup from the local renderer.
              '&nbsp;&nbsp;' .
              esc_html( CB2FA_PLUGINNAME_HUMAN ) .
              ': <small>' .
@@ -1961,7 +2060,6 @@ class Cloudbridge_2FA {
             error_log( '--- ADD' );
             error_log( basename(__FILE__) . ' (' . __FUNCTION__ . ')' );
             error_log( 'option="' . $option . '"' );
-            error_log( 'value="' . var_export( $value, true) . '"' );
         }
         return( $value );
     }
@@ -1976,8 +2074,6 @@ class Cloudbridge_2FA {
                 error_log( '--- UPDATE' );
                 error_log( basename( __FILE__ ) . ' (' . __FUNCTION__ . ')' );
                 error_log( 'option="' . $option . '"' );
-                error_log( 'value="' . var_export( $value, true ) . '"' );
-                error_log( 'old value="' . var_export( $old_value, true ) . '"' );
             }
         }
         return( true );
@@ -1993,8 +2089,6 @@ class Cloudbridge_2FA {
                 error_log( '--- UPDATED' );
                 error_log( basename(__FILE__) . ' (' . __FUNCTION__ . ')' );
                 error_log( 'option="' . $option . '"' );
-                error_log( 'value="' . var_export( $value, true) . '"' );
-                error_log( 'old value="' . var_export( $old_value, true) . '"' );
             }
         }
     }
@@ -2020,124 +2114,67 @@ class Cloudbridge_2FA {
      * password validation.
      */
     public function cb2fa_post_wp_authenticate( $user, $username, $password ) {
-        if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-            error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . ')' );
-        }
-        // This should never happen, but ... :-)
-        if ( ! $this->cb2fa_active_roles() ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): No active roles, bailing' );
-            }
-            return ( $user );
-        }
-        // It's an error and not a user object, bail
-        if ( $user instanceof \WP_Error ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): $user object is WP_Error, bailing' );
-            }
-            return ( $user );
-        }
-        // It's not a user object, bail
-        if ( ! $user instanceof \WP_User ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                if ( $user === null ) {
-                    error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): $user object is null, bailing' );
-                } else {
-                    error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): $user object is not WP_User, bailing' );
-                }
-            }
-            return ( $user );
-        }
-        // Check for missing or invalid nonce
-        $request_nonce = '';
-        if ( ! empty( $_REQUEST['cb2fa_nonce'] ) ) {
-            $request_nonce = sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_nonce'] ) );
-        }
-        if ( ! $this->cb2fa_verify_runtime_nonce( $request_nonce ) ) {
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' Nonce verification failed' );
-            $user = new \WP_Error( 'CB2FA', __( 'Invalid form token, please try again', 'cloudbridge-2fa' ), 'This is CB2FA data' );
-            return ( $user );
-        }
-        if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ );
-            error_log( '[CB2FA_DEBUG] username="' . $username . '"' );
-            error_log( '[CB2FA_DEBUG] password="' . $password . '"' );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' Our nonce is "' . $this->cb2fa_nonce . '"' );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' REQUEST is ' . print_r( $_REQUEST, true ) );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' ' . print_r( $user->to_array(), true ) );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' ' . print_r( $user->get_role_caps(), true ) );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' ' . print_r( $user->roles, true ) );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' ' . print_r( $this->cb2fa_roles_configuration, true ) );
-            error_log( '[CB2FA_DEBUG] ' . __FUNCTION__ . ' ' . print_r( $this->cb2fa_cookies_configuration, true ) );
-        }
-        // Make sure user has roles
-        if ( ! is_array( $user->roles ) || empty( $user->roles ) ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): No roles for user "' . $user->data->user_email . '"' );
-            }
-            $user = new \WP_Error( 'CB2FA', __( 'No active roles found for this user on this website, please try again', 'cloudbridge-2fa' ), 'This is CB2FA data' );
-            return ( $user );
-        }
-        if ( $this->cb2fa_user_has_bypass( $user->ID ) ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): per-user bypass enabled for "' . $user->data->user_login . '"' );
-            }
+        if ( ! $this->cb2fa_active_roles() || ! $user instanceof \WP_User ) {
             return( $user );
         }
-        // Check if 2FA (and possibly cookie) is enabled for this user's role(s)
+        if ( $this->cb2fa_user_has_bypass( $user->ID ) ) {
+            return( $user );
+        }
         $require_2fa = false;
         $allow_cookie = false;
         foreach ( $user->roles as $role ) {
             if ( in_array( $role, $this->cb2fa_roles_configuration, true ) ) {
-                if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                    error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): ' . $role . ' is active, 2FA required' );
-                }
                 $require_2fa = true;
                 if ( in_array( $role, $this->cb2fa_cookies_configuration, true ) ) {
-                    if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                        error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): ' . $role . ' cookie may be used' );
-                    }
                     $allow_cookie = true;
                 }
-                break;
             }
-        }// foreach
-        if ( ! $require_2fa ) {
-            if ( $this->cb2fa_is_plugin_admin() ) {
-                remove_action( 'admin_enqueue_scripts', [ $this, 'cb2fa_setup_admin_css' ] );
-                remove_action( 'admin_menu', [ $this, 'cb2fa_menu' ] );
-                remove_action( 'admin_init', [ $this, 'cb2fa_settings' ] );
-            }
+        }
+        $allow_cookie = $allow_cookie && $this->cb2fa_cookie_lifetime > 0;
+        if ( ! $require_2fa || ( $allow_cookie && $this->cb2fa_has_browser_trust( $user ) ) ) {
             return( $user );
         }
-        // Check if bypass cookie is allowed, and if so, if one is present
-        if ( $allow_cookie ) {
-            $cb2fa_login = Cloudbridge_2FA_Login::getInstance( $this->cb2fa_nonce, $allow_cookie );
-            $cb2fa_login->setFromWordPress( true );
-            $cb2fa_login->setUser( $user, $username );
-            $cookie_hash = $cb2fa_login->getCookieHash();
-            if ( ! empty( $_COOKIE['cb2fa_' . $cookie_hash] ) && $_COOKIE['cb2fa_' . $cookie_hash] == 'cb2fa_cookie' ) {
-                if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                    error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): "cb2fa_' . $cookie_hash . '" is set, bailing' );
-                }
-                return( $user );
+        // Protected custom/API logins must use the interactive core login page.
+        if ( ( $GLOBALS['pagenow'] ?? '' ) !== 'wp-login.php' ) {
+            return( new \WP_Error( 'CB2FA', __( 'Please sign in through the WordPress login page to complete two-factor authentication.', 'cloudbridge-2fa' ) ) );
+        }
+        $request_nonce = isset( $_POST['cb2fa_nonce'] ) && is_string( $_POST['cb2fa_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['cb2fa_nonce'] ) ) : '';
+        if ( ! $this->cb2fa_verify_runtime_nonce( $request_nonce ) ) {
+            return( new \WP_Error( 'CB2FA', __( 'Invalid form token, please try again', 'cloudbridge-2fa' ) ) );
+        }
+        if ( ! Cloudbridge_2FA_State::lock( $user->ID ) ) {
+            return( new \WP_Error( 'CB2FA', __( 'Login verification is busy. Please try again.', 'cloudbridge-2fa' ) ) );
+        }
+        try {
+            $challenge = $this->cb2fa_create_login_challenge( $user, $username, $allow_cookie );
+            if ( $challenge instanceof \WP_Error ) {
+                return( $challenge );
             }
+            try {
+                $token = bin2hex( random_bytes( 32 ) );
+                $browser_token = bin2hex( random_bytes( 32 ) );
+            } catch ( \Exception $e ) {
+                return( new \WP_Error( 'CB2FA', __( 'Unable to create login verification. Please try again.', 'cloudbridge-2fa' ) ) );
+            }
+            $challenge['token'] = $token;
+            $challenge['browser_hash'] = hash( 'sha256', $browser_token );
+            if ( ! $this->cb2fa_store_challenge( $token, $challenge ) ) {
+                return( new \WP_Error( 'CB2FA', __( 'Unable to save login verification. Please try again.', 'cloudbridge-2fa' ) ) );
+            }
+            if ( $challenge['active_factor'] === 'email' && ! $this->cb2fa_send_challenge_email( $user, $challenge ) ) {
+                delete_transient( $this->cb2fa_get_challenge_key( $token ) );
+                return( new \WP_Error( 'CB2FA', __( 'Unable to send a new code. Please wait one minute before trying again.', 'cloudbridge-2fa' ) ) );
+            }
+            if ( ! Cloudbridge_2FA_State::set_cookie( $this->cb2fa_challenge_cookie_name( $token ), $browser_token, $challenge['expires_at'] ) ) {
+                delete_transient( $this->cb2fa_get_challenge_key( $token ) );
+                return( new \WP_Error( 'CB2FA', __( 'Unable to create login verification. Please try again.', 'cloudbridge-2fa' ) ) );
+            }
+        } finally {
+            Cloudbridge_2FA_State::unlock( $user->ID );
         }
-        // Clean nonce, probably not needed, but it is external data
-        $the_nonce = $request_nonce;
-        $challenge = $this->cb2fa_create_login_challenge( $user, $username, $allow_cookie );
-        if ( $challenge instanceof \WP_Error ) {
-            return( $challenge );
-        }
-        $this->cb2fa_store_challenge( $username, $the_nonce, $challenge );
-        if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-            error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): Created challenge transient for factor "' . $challenge['active_factor'] . '"' );
-        }
-        // Clear previous output from WordPress and display our form instead
-        ob_end_clean();
         nocache_headers();
         $this->cb2fa_auth_form( $user, $username, $challenge, $allow_cookie );
-        die();
+        exit;
     }
 
     /**
@@ -2147,31 +2184,12 @@ class Cloudbridge_2FA {
         if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
             error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . ')' );
         }
-        if ( isset( $_REQUEST['cb2fa_notice'] ) && sanitize_key( wp_unslash( $_REQUEST['cb2fa_notice'] ) ) === 'restart' ) {
+        if ( isset( $_REQUEST['cb2fa_notice'] ) && is_string( $_REQUEST['cb2fa_notice'] ) && sanitize_key( wp_unslash( $_REQUEST['cb2fa_notice'] ) ) === 'restart' ) {
             echo '<div id="login_error"><strong>' .
                  esc_html__( 'Your login verification expired. Please sign in again.', 'cloudbridge-2fa' ) .
                  '</strong></div>';
         }
-        if ( ! empty( $_REQUEST['cb2fa_timer'] ) && $_REQUEST['cb2fa_timer'] <= time()
-                && ! empty( $_REQUEST['cb2fa_nonce'] )
-                && $this->cb2fa_verify_runtime_nonce( sanitize_text_field( wp_unslash( $_REQUEST['cb2fa_nonce'] ) ) ) ) {
-            if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-                error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): We may be re-directing' );
-            }
-            if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-                $redirect_to = $this->cb2fa_validate_redirect_url(
-                    sanitize_url( wp_unslash( $_REQUEST['redirect_to'] ), ['http', 'https'] ),
-                    wp_login_url()
-                );
-                ob_end_clean();
-                wp_safe_redirect( $redirect_to );
-                die();
-            }
-        }
         echo '<input type="hidden" name="cb2fa_nonce" value="' . esc_html( $this->cb2fa_nonce ) . '" />';
-        if ( defined( 'CB2FA_DEBUG' ) && CB2FA_DEBUG ) {
-            error_log( '[CB2FA_DEBUG] ' . basename( __FILE__ ) . ' (' . __FUNCTION__ . '): Our nonce is "' . $this->cb2fa_nonce );
-        }
     }
 
     /**
@@ -2194,9 +2212,6 @@ class Cloudbridge_2FA {
         $cb2fa_login->setFromWordPress( true );
         $cb2fa_login->setUser( $user, $username );
         $cb2fa_login->setChallenge( $challenge );
-        if ( ! empty( $challenge['active_factor'] ) && $challenge['active_factor'] === 'email' && ! empty( $challenge['email_code'] ) ) {
-            $cb2fa_login->send_2fa_code( $challenge['email_code'] );
-        }
         $cb2fa_login->drawForm();
     }
 
@@ -2214,7 +2229,7 @@ class Cloudbridge_2FA {
 
         if ( $this->cb2fa_active_roles() ) {
             // Only activate hooks if we need to
-            add_filter( 'authenticate',          [$this, 'cb2fa_post_wp_authenticate'], 21, 3 );
+            add_filter( 'authenticate',          [$this, 'cb2fa_post_wp_authenticate'], PHP_INT_MAX, 3 );
             add_action( 'login_form',            [$this, 'cb2fa_login_form'],   10, 0 );
         }
         // Admin setup

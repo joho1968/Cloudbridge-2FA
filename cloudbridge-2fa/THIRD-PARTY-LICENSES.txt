@@ -11,3 +11,12 @@ This plugin bundles the following third-party code:
 
    The bundled file is the upstream browser distribution used only to render
    a QR code on the authenticated WordPress profile page for TOTP setup.
+
+2. Simple.css
+   Paths: css/simple.css and css/simple.min.css
+   Upstream: https://github.com/kevquirk/simple.css
+   License: MIT (see css/LICENSE)
+   Copyright: (c) 2020 Simple.css (Kev Quirk)
+
+   Simple.css provides base styles for the OTP browser screen and HTML e-mail.
+   Cloudbridge 2FA uses adapted rendering and CSS rules with these styles.

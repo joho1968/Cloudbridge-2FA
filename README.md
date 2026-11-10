@@ -1,12 +1,10 @@
-[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](LICENSE) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![PHP 8.1\+](https://img.shields.io/badge/PHP-8.1-blue?style=flat-square)](https://php.net) [![PHP 8.2\+](https://img.shields.io/badge/PHP-8.2-blue?style=flat-square)](https://php.net) [![PHP 8.3\+](https://img.shields.io/badge/PHP-8.3-blue?style=flat-square)](https://php.net) [![PHP 8.4\+](https://img.shields.io/badge/PHP-8.4-blue?style=flat-square)](https://php.net) [![WordPress 5.5](https://img.shields.io/badge/WordPress-5.5-orange?style=flat-square)](https://wordpress.org) [![WordPress 6](https://img.shields.io/badge/WordPress-6.9-orange?style=flat-square)](https://wordpress.org) [![WordPress 7](https://img.shields.io/badge/WordPress-7.0-orange?style=flat-square)](https://wordpress.org)
+[![Software License](https://img.shields.io/badge/License-GPL%20v2-green.svg?style=flat-square)](cloudbridge-2fa/LICENSE.txt) [![PHP 7.4\+](https://img.shields.io/badge/PHP-7.4-blue?style=flat-square)](https://php.net) [![PHP 8.1\+](https://img.shields.io/badge/PHP-8.1-blue?style=flat-square)](https://php.net) [![PHP 8.2\+](https://img.shields.io/badge/PHP-8.2-blue?style=flat-square)](https://php.net) [![PHP 8.3\+](https://img.shields.io/badge/PHP-8.3-blue?style=flat-square)](https://php.net) [![PHP 8.4\+](https://img.shields.io/badge/PHP-8.4-blue?style=flat-square)](https://php.net) [![WordPress 5.4](https://img.shields.io/badge/WordPress-5.4-orange?style=flat-square)](https://wordpress.org) [![WordPress 7.1](https://img.shields.io/badge/WordPress-7.1-orange?style=flat-square)](https://wordpress.org)
 
 # Cloudbridge 2FA
 
 Uncomplicated 2FA for WordPress with e-mail OTP and authenticator app support.
 
 ## Description
-![Cloudbridge 2FA banner](/banner/Cloudbridge-2FA-banner-1544x500.png?raw=true "Cloudbridge 2FA banner")
-
 This plugin provides uncomplicated 2FA functionality for WordPress. It will allow
 you to require a second, one time password or OTP, code to be entered when certain
 (or all) users attempt to log in to WordPress.
@@ -27,13 +25,15 @@ You may configure that only certain roles are required to use 2FA, and it is
 recommended that you enable 2FA for those users with privileged access.
 
 You may also configure the plugin to allow certain roles to enable an OTP code
-bypass, which will set a cookie in that user's web browser. The cookies are
-partially based on the username, so several users can share the same browser,
-but still be required to always enter the OTP code, or bypass it if the cookie
-is present.
+bypass, which sets an account-specific cookie in that user's web browser.
+Several users can share a browser while keeping separate trust settings.
+Trusted-browser tokens expire on the server and are invalidated when the
+account password changes.
 
 You can add custom text to the OTP code entry form, and you can add custom text
 to the OTP code e-mail message.
+OTP e-mails include HTML and plain-text versions with the same code, verification
+reference, expiry information, and custom text.
 
 The plugin can be configured to allow it to be handled/managed only by specific
 users, thus making it harder for someone to accidentally or intentionally
@@ -41,6 +41,18 @@ deactivate it. The implemented solution for this is by no means waterproof. If
 someone, for example, has access to your WordPress installation by means of FTP
 or similar, the plugin files can be physically removed (or moved out of your
 WordPress installation), which basically deactivates the plugin as well.
+
+## Upgrade notes
+
+After upgrading to 2.0.2, users must complete 2FA once to trust a browser again.
+Existing pending login attempts must be restarted. Protected interactive logins
+must use the WordPress login page. Custom forms and XML-RPC password logins
+cannot complete CB2FA challenges. REST application-password authentication
+continues to be handled separately by WordPress.
+E-mail codes use the verification reference shown on the login screen. New
+messages are limited to one per account per minute until 2FA succeeds. Successful
+verification clears the mail cooldown. Existing codes keep their original expiry
+time when switching factors.
 
 ## Installation
 
@@ -56,16 +68,33 @@ Cloudbridge 2FA uses standard WordPress functionality to handle localization/loc
 
 ## Are there any incompatibilities
 
-This is a hard question to answer. There are no known incompatibilities.
+Protected password logins must use the WordPress login page. Custom forms and
+XML-RPC password logins cannot complete CB2FA challenges. REST application-password
+authentication is handled separately by WordPress.
 
 ## Changelog
+
+### 2.0.2
+* Fixed overlapping login attempts invalidating e-mail codes; each attempt now has a separate browser-bound challenge
+* Fixed e-mail cooldown renewal after expiry and cleared the cooldown after successful 2FA
+* Added PHP log diagnostics for e-mail cooldown, storage, and sending failures
+* Added a plain-text alternative to HTML OTP e-mails
+* Fixed large OTP digits overflowing narrow e-mail layouts
+* Preserved delivered e-mail codes when switching factors and added matching verification references
+* Enforced fixed challenge expiry, resend limits, and server-side trusted-browser expiry
+* Prevented concurrent OTP/recovery-code reuse and rejected verification when state cannot be saved
+* Ran factor handling after normal WordPress and third-party authentication checks
+* Preserved WordPress Remember me, corrected recovery-code case handling, and hardened login input handling
+* Fixed uninstall cleanup, restricted-browser storage handling, and Swedish plural translations
+* Removed credential and sensitive option-value debug logging
+* Handled malformed import entries without PHP warnings and limited configuration import diagnostics
+* Made existing verification endpoint access guards detectable by Plugin Check without changing login behavior
 
 ### 2.0.1
 * Fixed a settings-page regression where saving one tab could unset values on another tab
 * Fixed the Bypass 2FA tab layout after the recent admin UI changes
 * Restored returning to the active settings tab after saving
 * Sent expired or stale login verification attempts back to the WordPress login screen so the user can start over cleanly
-* Verified with WordPress 7.0
 
 ### 2.0.0
 * Verified with PHP 7.4, 8.1, 8.2, 8.3, and 8.4
@@ -96,14 +125,9 @@ This is a hard question to answer. There are no known incompatibilities.
 ### 1.0.0
 * Initial release
 
-## Screenshots
-![Cloudbridge 2FA login screen](/screenshots/cloudbridge-2fa-screenshot-login.png?raw=true "Cloudbridge 2FA login screen")
-
-![Cloudbridge 2FA OTP code e-mail](/screenshots/cloudbridge-2fa-screenshot-email.png?raw=true "Cloudbridge 2FA OTP e-mail")
-
 ## License
 
-Please see [LICENSE](LICENSE) for a full copy of GPLv2
+Please see [LICENSE](cloudbridge-2fa/LICENSE.txt) for a full copy of GPLv2
 
 Copyright (C) 2024-2026 [Joaquim Homrighausen](https://github.com/joho1968).
 
@@ -113,7 +137,7 @@ You may redistribute it and/or modify it under the terms of the GNU General Publ
 
 Cloudbridge 2FA is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with the SCFA package. If not, write to:
+You should have received a copy of the GNU General Public License along with the Cloudbridge 2FA package. If not, write to:
 
 ```
 The Free Software Foundation, Inc.,
@@ -141,8 +165,8 @@ More detailed documentation is available at [code.webbplatsen.net/documentation/
 
 These links are not here for any sort of endorsement or marketing, they're purely for informational purposes.
 
-* me; :monkey: https://joho.se and https://github.com/joho1968
-* WebbPlatsen; https://webbplatsen.se and https://code.webbplatsen.net
+* me; :monkey: [code.joho.se](https://code.joho.se)
+* WebbPlatsen; [webbplatsen.se](https://webbplatsen.se) and [code.webbplatsen.net](https://code.webbplatsen.net)
 * Kudos to Kev Quirk for [Simple CSS](https://simplecss.org/)
 * QR code setup on the authenticated profile page uses QR Code Generator for JavaScript by Kazuhiko Arase (MIT license)
 
