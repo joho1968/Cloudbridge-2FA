@@ -1,7 +1,7 @@
-# Swedish translations for Cloudbridge 2FA 2.0.2
+# Swedish translations for Cloudbridge 2FA 2.1.0
 
 - Locale: `sv_SE` (Swedish).
-- Current catalogue: **174 active messages**, all translated; no fuzzy entries.
+- Current catalogue: **171 active messages**, all translated; no fuzzy entries.
 
 ## Files
 
@@ -11,7 +11,7 @@
 
 ## WordPress.org translations
 
-1. Open the plugin's translation project on [Translate WordPress](https://translate.wordpress.org/), choose Swedish and the code branch containing the 2.0.2 English messages.
+1. Open the plugin's translation project on [Translate WordPress](https://translate.wordpress.org/), choose Swedish and the code branch containing the 2.1.0 English messages.
 2. Search for the exact English text below, review the Swedish suggestion, and paste it into the matching field. Preserve placeholders such as `%s` and `%d`, punctuation, and any markup.
 3. Alternatively, use **Import Translations** with the complete Swedish PO linked above. Review the full catalogue before importing; it includes existing translations as well as the entries below. Any WordPress.org account can import plugin translations as waiting suggestions; translation editors can also import as current. English messages absent from that branch are ignored. See the [Polyglots import instructions](https://make.wordpress.org/polyglots/handbook/translating/glotpress-translate-wordpress-org/#importing-external-files).
 
@@ -33,21 +33,7 @@ Swedish:
 Okomplicerat tillägg för tvåfaktorsautentisering i WordPress
 ```
 
-### 2. Login verification is busy. Please try again.
-
-English:
-
-```text
-Login verification is busy. Please try again.
-```
-
-Swedish:
-
-```text
-Inloggningsverifieringen är upptagen. Försök igen.
-```
-
-### 3. Unable to save login verification. Please try again.
+### 2. Unable to save login verification. Please try again.
 
 English:
 
@@ -61,21 +47,7 @@ Swedish:
 Det gick inte att spara inloggningsverifieringen. Försök igen.
 ```
 
-### 4. Unable to send a new code. Please wait one minute before trying again.
-
-English:
-
-```text
-Unable to send a new code. Please wait one minute before trying again.
-```
-
-Swedish:
-
-```text
-Det gick inte att skicka en ny kod. Vänta en minut innan du försöker igen.
-```
-
-### 5. Authenticator app support requires the PHP extension openssl. Contact the server administrator to enable it.
+### 3. Authenticator app support requires the PHP extension openssl. Contact the server administrator to enable it.
 
 English:
 
@@ -89,7 +61,7 @@ Swedish:
 Stöd för autentiseringsappar kräver PHP-tillägget openssl. Kontakta serveradministratören för att aktivera det.
 ```
 
-### 6. It is recommended that you enable 2FA at least for all roles with elevated privileges
+### 4. It is recommended that you enable 2FA at least for all roles with elevated privileges
 
 English:
 
@@ -103,7 +75,7 @@ Swedish:
 Det är rekommenderat att du aktiverar 2FA för åtminstone alla roller som har högre behörighet
 ```
 
-### 7. This WordPress plugin provides two-factor authentication for WordPress, with support for e-mail OTP and authenticator app TOTP
+### 5. This WordPress plugin provides two-factor authentication for WordPress, with support for e-mail OTP and authenticator app TOTP
 
 English:
 
@@ -117,7 +89,7 @@ Swedish:
 Det här WordPress-tillägget ger tvåfaktorsautentisering för WordPress, med stöd för OTP via e-post och TOTP via autentiseringsapp
 ```
 
-### 8. The plugin is written by Joaquim Homrighausen and sponsored by WebbPlatsen i Sverige AB.
+### 6. The plugin is written by Joaquim Homrighausen and sponsored by WebbPlatsen i Sverige AB.
 
 English:
 
@@ -131,7 +103,7 @@ Swedish:
 Tillägget är utvecklat av Joaquim Homrighausen och sponsrat av WebbPlatsen i Sverige AB.
 ```
 
-### 9. Unable to save authenticator settings. Please try again.
+### 7. Unable to save authenticator settings. Please try again.
 
 English:
 
@@ -145,7 +117,7 @@ Swedish:
 Det gick inte att spara inställningarna för autentiseringsappen. Försök igen.
 ```
 
-### 10. Security check failed, please try again
+### 8. Security check failed, please try again
 
 English:
 
@@ -159,7 +131,7 @@ Swedish:
 Säkerhetskontrollen misslyckades, försök igen
 ```
 
-### 11. Please sign in through the WordPress login page to complete two-factor authentication.
+### 9. Please sign in through the WordPress login page to complete two-factor authentication.
 
 English:
 
@@ -173,7 +145,7 @@ Swedish:
 Logga in via WordPress inloggningssida för att slutföra tvåfaktorsautentiseringen.
 ```
 
-### 12. Unable to create login verification. Please try again.
+### 10. Unable to create login verification. Please try again.
 
 English:
 
@@ -187,7 +159,7 @@ Swedish:
 Det gick inte att skapa inloggningsverifieringen. Försök igen.
 ```
 
-### 13. Verification reference: %s
+### 11. Verification reference: %s
 
 English:
 
@@ -201,7 +173,7 @@ Swedish:
 Verifieringsreferens: %s
 ```
 
-### 14. The code is valid for
+### 12. The code is valid for
 
 English:
 

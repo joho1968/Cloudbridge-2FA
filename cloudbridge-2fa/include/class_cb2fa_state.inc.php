@@ -36,7 +36,7 @@ class Cloudbridge_2FA_State {
     private static array $locks = [];
 
     /** Serialize factor consumption across workers, including with Redis enabled. */
-    public static function lock( int $user_id ) : bool {
+    public static function lock( int $user_id, int $wait_seconds = 0 ) : bool {
         global $wpdb;
         $name = 'cb2fa_' . hash( 'sha256', $wpdb->usermeta . ':' . $user_id );
         $name = substr( $name, 0, 64 );
@@ -45,7 +45,7 @@ class Cloudbridge_2FA_State {
             return( true );
         }
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- A database advisory lock must execute on this connection.
-        if ( (string)$wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', $name ) ) !== '1' ) {
+        if ( (string)$wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $name, max( 0, min( 1, $wait_seconds ) ) ) ) !== '1' ) {
             return( false );
         }
         self::$locks[$name] = 1;

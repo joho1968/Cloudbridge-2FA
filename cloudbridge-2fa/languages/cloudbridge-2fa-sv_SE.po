@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cloudbridge-2fa 2.0.2\n"
+"Project-Id-Version: cloudbridge-2fa 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cloudbridge-2fa\n"
-"POT-Creation-Date: 2026-10-20T14:04:24+00:00\n"
+"POT-Creation-Date: 2026-11-18T14:05:21+00:00\n"
 "PO-Revision-Date: 2026-10-19 18:51+0000\n"
 "Last-Translator: Joaquim Homrighausen <joho@webbplatsen.se>\n"
 "Language-Team: SWEDISH <LL@li.org>\n"
@@ -18,8 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Plugin Name of the plugin
-#: cloudbridge-2fa.php
-#: cloudbridge-2fa.php:1646
+#: cloudbridge-2fa.php cloudbridge-2fa.php:1687
 msgid "Cloudbridge 2FA"
 msgstr "Cloudbridge 2FA"
 
@@ -43,60 +42,32 @@ msgstr "WebbPlatsen, Joaquim Homrighausen <joho@webbplatsen.se>"
 msgid "https://webbplatsen.se/"
 msgstr "https://webbplatsen.se/"
 
-#: cb2fa-passthru.php:92
-#: cloudbridge-2fa.php:2146
-msgid "Login verification is busy. Please try again."
-msgstr "Inloggningsverifieringen är upptagen. Försök igen."
+#: cb2fa-passthru.php:84 include/trait_cb2fa_external_login.inc.php:25
+#: include/trait_cb2fa_interactive_login.inc.php:303
+msgid "Your login verification expired. Please sign in again."
+msgstr "Din inloggningsverifiering gick ut. Logga in igen."
 
-#: cb2fa-passthru.php:101
-#: cb2fa-passthru.php:146
-msgid "Incorrect code, or code has expired"
-msgstr "Ogiltig engångskod"
-
-#: cb2fa-passthru.php:106
-msgid ""
-"Too many incorrect codes, please start over from the WordPress login page"
-msgstr "För många felaktiga koder, börja om från WordPress inloggningssida"
-
-#: cb2fa-passthru.php:110
-#: include/class_cb2fa_login.inc.php:634
-msgid "An error occurred, please try again"
-msgstr "Ett fel uppstod, vänligen försök igen"
-
-#: cb2fa-passthru.php:114
-#: cb2fa-passthru.php:147
-#: cb2fa-passthru.php:149
-#: cloudbridge-2fa.php:2162
-msgid "Unable to save login verification. Please try again."
-msgstr "Det gick inte att spara inloggningsverifieringen. Försök igen."
-
-#: cb2fa-passthru.php:118
-#: cloudbridge-2fa.php:2166
-msgid "Unable to send a new code. Please wait one minute before trying again."
-msgstr ""
-"Det gick inte att skicka en ny kod. Vänta en minut innan du försöker igen."
-
-#: cloudbridge-2fa.php:363
+#: cloudbridge-2fa.php:367
 msgid "No role"
 msgstr "Ingen roll"
 
-#: cloudbridge-2fa.php:382
+#: cloudbridge-2fa.php:386
 msgid "unknown users"
 msgstr "okända användare"
 
 #. translators: 1: account count, 2: comma-separated usernames.
-#: cloudbridge-2fa.php:389
+#: cloudbridge-2fa.php:393
 #, php-format
 msgid "Emergency bypass is currently enabled for %1$d account: %2$s."
 msgid_plural "Emergency bypass is currently enabled for %1$d accounts: %2$s."
 msgstr[0] "Nödundantag är för närvarande aktiverat för %1$d konto: %2$s."
 msgstr[1] "Nödundantag är för närvarande aktiverat för %1$d konton: %2$s."
 
-#: cloudbridge-2fa.php:400
+#: cloudbridge-2fa.php:404
 msgid "Review this on the Bypass 2FA tab."
 msgstr "Granska detta på fliken Hoppa över 2FA."
 
-#: cloudbridge-2fa.php:417
+#: cloudbridge-2fa.php:421
 msgid ""
 "Unable to save bypass settings because the security check failed. Please try "
 "again."
@@ -104,19 +75,19 @@ msgstr ""
 "Det gick inte att spara undantagsinställningarna eftersom "
 "säkerhetskontrollen misslyckades. Försök igen."
 
-#: cloudbridge-2fa.php:448
+#: cloudbridge-2fa.php:452
 msgid "No bypass settings needed to be changed."
 msgstr "Inga undantagsinställningar behövde ändras."
 
 #. translators: %d: number of accounts.
-#: cloudbridge-2fa.php:455
+#: cloudbridge-2fa.php:459
 #, php-format
 msgid "Saved bypass settings for %d account."
 msgid_plural "Saved bypass settings for %d accounts."
 msgstr[0] "Sparade undantagsinställningar för %d konto."
 msgstr[1] "Sparade undantagsinställningar för %d konton."
 
-#: cloudbridge-2fa.php:645
+#: cloudbridge-2fa.php:653
 msgid ""
 "This account is required to use two-factor authentication, but no login "
 "factor is available. Contact the site administrator."
@@ -124,18 +95,26 @@ msgstr ""
 "Detta konto måste använda tvåfaktorsautentisering, men ingen "
 "inloggningsfaktor är tillgänglig. Kontakta webbplatsadministratören."
 
-#: cloudbridge-2fa.php:699
+#: cloudbridge-2fa.php:694 cloudbridge-2fa.php:705
+msgid "Unable to create login verification. Please try again."
+msgstr "Det gick inte att skapa inloggningsverifieringen. Försök igen."
+
+#: cloudbridge-2fa.php:701
+msgid "Unable to save login verification. Please try again."
+msgstr "Det gick inte att spara inloggningsverifieringen. Försök igen."
+
+#: cloudbridge-2fa.php:740
 msgid "Settings "
 msgstr "Inställningar "
 
-#: cloudbridge-2fa.php:735
+#: cloudbridge-2fa.php:776
 msgid ""
 "mbstring-extensions are missing, contact server administrator to enable them"
 msgstr ""
 "mbstring-tillägget saknas i PHP, kontakta serveradministratören för att "
 "aktivera dem"
 
-#: cloudbridge-2fa.php:743
+#: cloudbridge-2fa.php:784
 msgid ""
 "Authenticator app support requires the PHP extension openssl. Contact the "
 "server administrator to enable it."
@@ -143,80 +122,71 @@ msgstr ""
 "Stöd för autentiseringsappar kräver PHP-tillägget openssl. Kontakta "
 "serveradministratören för att aktivera det."
 
-#: cloudbridge-2fa.php:751
+#: cloudbridge-2fa.php:792
 msgid "Plugin activated, please take a moment and go through the"
 msgstr "Tillägget är aktiverat, vänligen gå igenom"
 
-#: cloudbridge-2fa.php:753
+#: cloudbridge-2fa.php:794
 msgid "settings"
 msgstr "inställningarna"
 
-#: cloudbridge-2fa.php:897
+#: cloudbridge-2fa.php:938
 msgid "Settings"
 msgstr "Inställningar"
 
-#: cloudbridge-2fa.php:903
+#: cloudbridge-2fa.php:944
 msgid "Export various data"
 msgstr "Exportera data"
 
-#: cloudbridge-2fa.php:904
-#: cloudbridge-2fa.php:1838
-#: cloudbridge-2fa.php:1865
+#: cloudbridge-2fa.php:945 cloudbridge-2fa.php:1879 cloudbridge-2fa.php:1906
 msgid "Export"
 msgstr "Exportera"
 
-#: cloudbridge-2fa.php:909
+#: cloudbridge-2fa.php:950
 msgid "Import external data"
 msgstr "Importera externt data"
 
-#: cloudbridge-2fa.php:910
-#: cloudbridge-2fa.php:2015
-#: cloudbridge-2fa.php:2030
+#: cloudbridge-2fa.php:951 cloudbridge-2fa.php:2056 cloudbridge-2fa.php:2071
 msgid "Import"
 msgstr "Importera"
 
-#: cloudbridge-2fa.php:946
-#: cloudbridge-2fa.php:951
+#: cloudbridge-2fa.php:987 cloudbridge-2fa.php:992
 msgid "Unknown role"
 msgstr "Okänd roll"
 
-#: cloudbridge-2fa.php:1093
+#: cloudbridge-2fa.php:1134
 msgid "These settings allow general configuration of Cloudbridge 2FA"
 msgstr "Dessa inställningar konfigurerar Cloudbridge 2FA"
 
-#: cloudbridge-2fa.php:1096
+#: cloudbridge-2fa.php:1137
 msgid "General"
 msgstr "Allmänt"
 
-#: cloudbridge-2fa.php:1097
-#: cloudbridge-2fa.php:1151
-#: cloudbridge-2fa.php:1666
+#: cloudbridge-2fa.php:1138 cloudbridge-2fa.php:1192 cloudbridge-2fa.php:1707
 msgid "E-mail OTP"
 msgstr "E-post-OTP"
 
-#: cloudbridge-2fa.php:1098
+#: cloudbridge-2fa.php:1139
 msgid "Roles"
 msgstr "Roller"
 
-#: cloudbridge-2fa.php:1099
+#: cloudbridge-2fa.php:1140
 msgid "Access"
 msgstr "Åtkomst"
 
-#: cloudbridge-2fa.php:1100
-#: cloudbridge-2fa.php:1301
-#: cloudbridge-2fa.php:1313
+#: cloudbridge-2fa.php:1141 cloudbridge-2fa.php:1342 cloudbridge-2fa.php:1354
 msgid "Bypass 2FA"
 msgstr "Hoppa över 2FA"
 
-#: cloudbridge-2fa.php:1101
+#: cloudbridge-2fa.php:1142
 msgid "About"
 msgstr "Om"
 
-#: cloudbridge-2fa.php:1118
+#: cloudbridge-2fa.php:1159
 msgid "Authenticator apps"
 msgstr "Autentiseringsappar"
 
-#: cloudbridge-2fa.php:1119
+#: cloudbridge-2fa.php:1160
 msgid ""
 "Allow standards-based TOTP authenticator apps for this site. Each user "
 "enables and manages their own authenticator app from their WordPress profile "
@@ -226,11 +196,11 @@ msgstr ""
 "användare aktiverar och hanterar sin egen autentiseringsapp från sin "
 "WordPress-profil."
 
-#: cloudbridge-2fa.php:1125
+#: cloudbridge-2fa.php:1166
 msgid "Login screen"
 msgstr "Inloggningsskärm"
 
-#: cloudbridge-2fa.php:1126
+#: cloudbridge-2fa.php:1167
 msgid ""
 "Configure helper text shown on the code entry screen after the user has "
 "passed their username and password check."
@@ -238,11 +208,11 @@ msgstr ""
 "Konfigurera hjälptext som visas på kodinmatningsskärmen efter att användaren "
 "har klarat kontrollen av användarnamn och lösenord."
 
-#: cloudbridge-2fa.php:1132
+#: cloudbridge-2fa.php:1173
 msgid "Browser trust"
 msgstr "Webbläsartillit"
 
-#: cloudbridge-2fa.php:1133
+#: cloudbridge-2fa.php:1174
 msgid ""
 "Configure how long the optional remember-this-browser cookie should remain "
 "valid when a role is allowed to use it."
@@ -250,11 +220,11 @@ msgstr ""
 "Ställ in hur länge den valfria kom ihåg-denna-webbläsare-kakan ska vara "
 "giltig när en roll får använda den."
 
-#: cloudbridge-2fa.php:1139
+#: cloudbridge-2fa.php:1180
 msgid "Maintenance"
 msgstr "Underhåll"
 
-#: cloudbridge-2fa.php:1152
+#: cloudbridge-2fa.php:1193
 msgid ""
 "Configure the e-mail-based one-time code flow, including message behavior "
 "and helper text shown during login."
@@ -262,14 +232,14 @@ msgstr ""
 "Konfigurera flödet för e-postbaserad engångskod, inklusive "
 "meddelandebeteende och hjälptext som visas vid inloggning."
 
-#: cloudbridge-2fa.php:1164
+#: cloudbridge-2fa.php:1205
 msgid ""
 "This page allows you to configure how 2FA should be enforced for different "
 "WordPress user roles"
 msgstr ""
 "Denna sida möjliggör konfiguration av 2FA för olika WordPress användarroller"
 
-#: cloudbridge-2fa.php:1165
+#: cloudbridge-2fa.php:1206
 msgid ""
 "It is recommended that you enable 2FA at least for all roles with elevated "
 "privileges"
@@ -277,55 +247,54 @@ msgstr ""
 "Det är rekommenderat att du aktiverar 2FA för åtminstone alla roller som har "
 "högre behörighet"
 
-#: cloudbridge-2fa.php:1169
+#: cloudbridge-2fa.php:1210
 msgid "No roles currently have 2FA enabled"
 msgstr "Inga roller har för närvarande 2FA aktiverat"
 
-#: cloudbridge-2fa.php:1175
+#: cloudbridge-2fa.php:1216
 msgid "Unable to fetch WordPress user roles"
 msgstr "Det gick inte att hämta roller från WordPress"
 
-#: cloudbridge-2fa.php:1205
+#: cloudbridge-2fa.php:1246
 msgid "2FA enabled"
 msgstr "2FA aktiverat"
 
-#: cloudbridge-2fa.php:1207
+#: cloudbridge-2fa.php:1248
 msgid "Allow cookie"
 msgstr "Tillåt kaka"
 
-#: cloudbridge-2fa.php:1245
+#: cloudbridge-2fa.php:1286
 msgid "Unable to locate any users with \"admininistrator\" permissions"
 msgstr "Kan inte hitta några användare med \"administratör\"-behörighet"
 
-#: cloudbridge-2fa.php:1250
+#: cloudbridge-2fa.php:1291
 msgid ""
 "All users with \"administrator\" permissions can currently manage this plugin"
 msgstr ""
 "Alla användare med \"administratör\"-behörighet kan för närvarande hantera "
 "detta tillägg"
 
-#: cloudbridge-2fa.php:1255
+#: cloudbridge-2fa.php:1296
 msgid "Unable to determine current user"
 msgstr "Det gick inte att utläsa aktuell användare"
 
-#: cloudbridge-2fa.php:1259
+#: cloudbridge-2fa.php:1300
 msgid "Current user is"
 msgstr "Nuvarande användare är"
 
-#: cloudbridge-2fa.php:1260
+#: cloudbridge-2fa.php:1301
 msgid "Unknown"
 msgstr "Okänd"
 
-#: cloudbridge-2fa.php:1267
-#: cloudbridge-2fa.php:1311
+#: cloudbridge-2fa.php:1308 cloudbridge-2fa.php:1352
 msgid "User"
 msgstr "Användare"
 
-#: cloudbridge-2fa.php:1269
+#: cloudbridge-2fa.php:1310
 msgid "Manage plugin"
 msgstr "Hantera tillägg"
 
-#: cloudbridge-2fa.php:1302
+#: cloudbridge-2fa.php:1343
 msgid ""
 "Emergency bypass should only be enabled for accounts that temporarily cannot "
 "complete the normal Cloudbridge 2FA login flow. Review and remove bypasses "
@@ -335,21 +304,21 @@ msgstr ""
 "slutföra den normala Cloudbridge 2FA-inloggningen. Granska och ta bort "
 "undantag igen så snart de inte längre behövs."
 
-#: cloudbridge-2fa.php:1312
+#: cloudbridge-2fa.php:1353
 msgid "Role"
 msgstr "Roll"
 
 #. translators: %s: username.
-#: cloudbridge-2fa.php:1331
+#: cloudbridge-2fa.php:1372
 #, php-format
 msgid "Bypass 2FA for %s"
 msgstr "Bypass 2FA för %s"
 
-#: cloudbridge-2fa.php:1348
+#: cloudbridge-2fa.php:1389
 msgid "Thank you for installing"
 msgstr "Tack för att du installerat"
 
-#: cloudbridge-2fa.php:1349
+#: cloudbridge-2fa.php:1390
 msgid ""
 "This WordPress plugin provides two-factor authentication for WordPress, with "
 "support for e-mail OTP and authenticator app TOTP"
@@ -357,15 +326,15 @@ msgstr ""
 "Det här WordPress-tillägget ger tvåfaktorsautentisering för WordPress, med "
 "stöd för OTP via e-post och TOTP via autentiseringsapp"
 
-#: cloudbridge-2fa.php:1352
+#: cloudbridge-2fa.php:1393
 msgid "Commercial support and customizations for this plugin is available from"
 msgstr "Kommersiell support och anpassningar av tillägget är tillgängligt från"
 
-#: cloudbridge-2fa.php:1354
+#: cloudbridge-2fa.php:1395
 msgid "in Stockholm, Sweden. We speak Swedish and English"
 msgstr "i Stockholm, Sverige. Vi pratar svenska och engelska"
 
-#: cloudbridge-2fa.php:1356
+#: cloudbridge-2fa.php:1397
 msgid ""
 "The plugin is written by Joaquim Homrighausen and sponsored by WebbPlatsen i "
 "Sverige AB."
@@ -373,7 +342,7 @@ msgstr ""
 "Tillägget är utvecklat av Joaquim Homrighausen och sponsrat av WebbPlatsen i "
 "Sverige AB."
 
-#: cloudbridge-2fa.php:1358
+#: cloudbridge-2fa.php:1399
 msgid ""
 "If you find this plugin useful, the author is happy to receive a donation, "
 "good review, or just a kind word."
@@ -381,7 +350,7 @@ msgstr ""
 "Om du tycker detta tillägg är användbart så uppskattar utvecklaren en "
 "donation, bra omdöme och/eller positiv kommentar."
 
-#: cloudbridge-2fa.php:1359
+#: cloudbridge-2fa.php:1400
 msgid ""
 "If there is something you feel to be missing from this plugin, or if you "
 "have found a problem with the code or a feature, please do not hesitate to "
@@ -390,15 +359,15 @@ msgstr ""
 "Om du anser att något saknas i detta tillägg eller om du har hittat ett fel "
 "i koden eller en funktion, tveka inte att höra av dig till"
 
-#: cloudbridge-2fa.php:1361
+#: cloudbridge-2fa.php:1402
 msgid "There is more documentation available at"
 msgstr "Det finns mer dokumentation tillgängligt på"
 
-#: cloudbridge-2fa.php:1366
+#: cloudbridge-2fa.php:1407
 msgid "Other plugins"
 msgstr "Andra tillägg"
 
-#: cloudbridge-2fa.php:1370
+#: cloudbridge-2fa.php:1411
 msgid ""
 "Security plugin that provides integration with fail2ban and many other "
 "security features for WordPress"
@@ -406,7 +375,7 @@ msgstr ""
 "Säkerhetstillägg som tillhandahåller integration med fail2ban och många "
 "säkerhetsfunktioner för WordPress"
 
-#: cloudbridge-2fa.php:1375
+#: cloudbridge-2fa.php:1416
 msgid ""
 "Plugin that provides integration with Mattermost, including notifications "
 "and OAuth2 authentication"
@@ -414,47 +383,47 @@ msgstr ""
 "Ett tillägg som integrerar WordPress med Mattermost, inklusive aviseringar "
 "och OAuth2-autentisering"
 
-#: cloudbridge-2fa.php:1380
+#: cloudbridge-2fa.php:1421
 msgid "Plugin that provides uncomplicated map functionality"
 msgstr "Ett tillägg som tillhandahåller okomplicerad kartfunktionalitet"
 
-#: cloudbridge-2fa.php:1414
+#: cloudbridge-2fa.php:1455
 msgid "Allow authenticator apps"
 msgstr "Tillåt autentiseringsappar"
 
-#: cloudbridge-2fa.php:1416
+#: cloudbridge-2fa.php:1457
 msgid "OTP code entry text"
 msgstr "Text vid inmatningen av engångskoden"
 
-#: cloudbridge-2fa.php:1418
+#: cloudbridge-2fa.php:1459
 msgid "Cookie lifetime"
 msgstr "Giltighetstid för kaka"
 
-#: cloudbridge-2fa.php:1420
+#: cloudbridge-2fa.php:1461
 msgid "Allow e-mail OTP"
 msgstr "Tillåt e-post-OTP"
 
-#: cloudbridge-2fa.php:1421
+#: cloudbridge-2fa.php:1462
 msgid "OTP code lifetime"
 msgstr "Engångskod, giltighet"
 
-#: cloudbridge-2fa.php:1422
+#: cloudbridge-2fa.php:1463
 msgid "OTP code in e-mail subject"
 msgstr "Engångskod i ämnesrad"
 
-#: cloudbridge-2fa.php:1423
+#: cloudbridge-2fa.php:1464
 msgid "OTP code e-mail text"
 msgstr "Text i e-postmeddelandet med engångskoden"
 
-#: cloudbridge-2fa.php:1425
+#: cloudbridge-2fa.php:1466
 msgid "Remove settings"
 msgstr "Radera inställningar"
 
-#: cloudbridge-2fa.php:1564
+#: cloudbridge-2fa.php:1605
 msgid "Send a one-time code by e-mail when e-mail is available for the user"
 msgstr "Skicka en engångskod via e-post när användaren har en e-postadress"
 
-#: cloudbridge-2fa.php:1566
+#: cloudbridge-2fa.php:1607
 msgid ""
 "Recommended to keep enabled as a fallback while authenticator apps are being "
 "rolled out."
@@ -462,13 +431,13 @@ msgstr ""
 "Rekommenderas att vara aktiverad som reservlösning medan autentiseringsappar "
 "införs."
 
-#: cloudbridge-2fa.php:1573
+#: cloudbridge-2fa.php:1614
 msgid ""
 "Allow users to set up an authenticator app on their WordPress profile page"
 msgstr ""
 "Tillåt användare att konfigurera en autentiseringsapp på sin WordPress-profil"
 
-#: cloudbridge-2fa.php:1575
+#: cloudbridge-2fa.php:1616
 msgid ""
 "Cloudbridge 2FA currently provisions authenticator apps using a manual setup "
 "key and recovery codes."
@@ -476,38 +445,38 @@ msgstr ""
 "Cloudbridge 2FA konfigurerar för närvarande autentiseringsappar med en "
 "manuell installationsnyckel och återställningskoder."
 
-#: cloudbridge-2fa.php:1580
+#: cloudbridge-2fa.php:1621
 msgid ""
 "Lifetime, in minutes, of the OTP (one time password) code sent to user by e-"
 "mail"
 msgstr "Hur länge en engåndskod skall vara giltig i minuter."
 
-#: cloudbridge-2fa.php:1587
+#: cloudbridge-2fa.php:1628
 msgid "Additional text to display on OTP (one time password) code input form"
 msgstr "Ytterligare text som visas vid inmatning av engångskod"
 
-#: cloudbridge-2fa.php:1594
+#: cloudbridge-2fa.php:1635
 msgid ""
 "Additional text to include in OTP (one time password) code e-mail, no HTML"
 msgstr ""
 "Ytterligare text som inkluderas i e-postmeddelandet med engångskoden, ingen "
 "HTML"
 
-#: cloudbridge-2fa.php:1600
+#: cloudbridge-2fa.php:1641
 msgid "Lifetime, in days, of 2FA bypass cookie. 0=Until browser is closed."
 msgstr ""
 "Giltighetstid, i dagar, för kaka, för att hoppa över 2FA. 0=Tills "
 "webbläsaren stängs."
 
-#: cloudbridge-2fa.php:1609
+#: cloudbridge-2fa.php:1650
 msgid "Include OTP (one time password) in e-mail subject"
 msgstr "Inkludera engångskoden i e-postmeddelandets ämnesrad"
 
-#: cloudbridge-2fa.php:1617
+#: cloudbridge-2fa.php:1658
 msgid "Remove all plugin settings and data when plugin is uninstalled"
 msgstr "Radera alla inställningar och konfigurationsdata vid avinstallation"
 
-#: cloudbridge-2fa.php:1647
+#: cloudbridge-2fa.php:1688
 msgid ""
 "Manage authenticator app setup, recovery codes, and factor availability for "
 "this account."
@@ -515,26 +484,23 @@ msgstr ""
 "Hantera konfigurering av autentiseringsapp, återställningskoder och "
 "tillgängliga faktorer för detta konto."
 
-#: cloudbridge-2fa.php:1664
+#: cloudbridge-2fa.php:1705
 msgid "Available factors"
 msgstr "Tillgängliga faktorer"
 
-#: cloudbridge-2fa.php:1666
-#: cloudbridge-2fa.php:1667
+#: cloudbridge-2fa.php:1707 cloudbridge-2fa.php:1708
 msgid "enabled"
 msgstr "aktiverad"
 
-#: cloudbridge-2fa.php:1666
-#: cloudbridge-2fa.php:1667
+#: cloudbridge-2fa.php:1707 cloudbridge-2fa.php:1708
 msgid "disabled"
 msgstr "inaktiverad"
 
-#: cloudbridge-2fa.php:1667
-#: include/class_cb2fa_login.inc.php:146
+#: cloudbridge-2fa.php:1708 include/class_cb2fa_login.inc.php:146
 msgid "Authenticator app"
 msgstr "Autentiseringsapp"
 
-#: cloudbridge-2fa.php:1669
+#: cloudbridge-2fa.php:1710
 msgid ""
 "Authenticator app setup works with standards-based TOTP apps such as Google "
 "Authenticator, Microsoft Authenticator, Bitwarden, 2FAS, Authy, Ente Auth, "
@@ -544,15 +510,15 @@ msgstr ""
 "som Google Authenticator, Microsoft Authenticator, Bitwarden, 2FAS, Authy, "
 "Ente Auth och Apple Passwords."
 
-#: cloudbridge-2fa.php:1676
+#: cloudbridge-2fa.php:1717
 msgid "Emergency bypass"
 msgstr "Nödundantag"
 
-#: cloudbridge-2fa.php:1679
+#: cloudbridge-2fa.php:1720
 msgid "Cloudbridge 2FA bypass is currently enabled for this account."
 msgstr "Cloudbridge 2FA-undantag är för närvarande aktiverat för detta konto."
 
-#: cloudbridge-2fa.php:1681
+#: cloudbridge-2fa.php:1722
 msgid ""
 "Use this only when the normal Cloudbridge 2FA login path is unavailable for "
 "a specific account."
@@ -560,11 +526,11 @@ msgstr ""
 "Använd detta endast när den normala Cloudbridge 2FA-inloggningen inte är "
 "tillgänglig för ett visst konto."
 
-#: cloudbridge-2fa.php:1684
+#: cloudbridge-2fa.php:1725
 msgid "Emergency bypass is managed from Cloudbridge 2FA > Bypass 2FA."
 msgstr "Nödundantag hanteras från Cloudbridge 2FA > Bypass 2FA."
 
-#: cloudbridge-2fa.php:1685
+#: cloudbridge-2fa.php:1726
 msgid ""
 "Only plugin administrators should change this. When enabled, this account "
 "can log in with password only even if its role normally requires Cloudbridge "
@@ -574,15 +540,15 @@ msgstr ""
 "detta konto logga in med enbart lösenord även om dess roll normalt kräver "
 "Cloudbridge 2FA."
 
-#: cloudbridge-2fa.php:1687
+#: cloudbridge-2fa.php:1728
 msgid "This bypass can only be changed by a plugin administrator."
 msgstr "Detta undantag kan endast ändras av en tilläggsadministratör."
 
-#: cloudbridge-2fa.php:1694
+#: cloudbridge-2fa.php:1735
 msgid "Authenticator status"
 msgstr "Status för autentiseringsapp"
 
-#: cloudbridge-2fa.php:1697
+#: cloudbridge-2fa.php:1738
 msgid ""
 "Authenticator app support is unavailable because PHP openssl support is "
 "missing."
@@ -590,24 +556,24 @@ msgstr ""
 "Stöd för autentiseringsapp är inte tillgängligt eftersom PHP saknar openssl-"
 "stöd."
 
-#: cloudbridge-2fa.php:1699
+#: cloudbridge-2fa.php:1740
 msgid "Authenticator app support is currently disabled for this site."
 msgstr ""
 "Stöd för autentiseringsapp är för närvarande inaktiverat för denna webbplats."
 
-#: cloudbridge-2fa.php:1701
+#: cloudbridge-2fa.php:1742
 msgid "Authenticator app is enabled for this account."
 msgstr "Autentiseringsapp är aktiverad för detta konto."
 
-#: cloudbridge-2fa.php:1705
+#: cloudbridge-2fa.php:1746
 msgid "Disable authenticator app and remove stored recovery codes"
 msgstr "Inaktivera autentiseringsapp och ta bort sparade återställningskoder"
 
-#: cloudbridge-2fa.php:1708
+#: cloudbridge-2fa.php:1749
 msgid "Authenticator app is not yet enabled for this account."
 msgstr "Autentiseringsapp är ännu inte aktiverad för detta konto."
 
-#: cloudbridge-2fa.php:1710
+#: cloudbridge-2fa.php:1751
 msgid ""
 "Add the below secret to your authenticator app as a time-based account, then "
 "enter the current six-digit code and update your profile."
@@ -615,11 +581,11 @@ msgstr ""
 "Lägg till hemligheten nedan i din autentiseringsapp som ett tidsbaserat "
 "konto, ange sedan den aktuella sexsiffriga koden och uppdatera din profil."
 
-#: cloudbridge-2fa.php:1720
+#: cloudbridge-2fa.php:1761
 msgid "QR code setup"
 msgstr "QR-kod för konfigurering"
 
-#: cloudbridge-2fa.php:1723
+#: cloudbridge-2fa.php:1764
 msgid ""
 "Scan this QR code with your authenticator app to set up this account. If "
 "scanning is unavailable, use the manual setup key below."
@@ -628,19 +594,19 @@ msgstr ""
 "konto. Om skanning inte är tillgänglig kan du använda den manuella "
 "installationsnyckeln nedan."
 
-#: cloudbridge-2fa.php:1728
+#: cloudbridge-2fa.php:1769
 msgid "Manual setup key"
 msgstr "Manuell installationsnyckel"
 
-#: cloudbridge-2fa.php:1731
+#: cloudbridge-2fa.php:1772
 msgid "Issuer"
 msgstr "Utfärdare"
 
-#: cloudbridge-2fa.php:1732
+#: cloudbridge-2fa.php:1773
 msgid "Account"
 msgstr "Konto"
 
-#: cloudbridge-2fa.php:1733
+#: cloudbridge-2fa.php:1774
 msgid ""
 "If your authenticator app cannot scan QR codes, enter the shared key "
 "manually as a time-based account."
@@ -648,16 +614,16 @@ msgstr ""
 "Om din autentiseringsapp inte kan skanna QR-koder anger du den delade "
 "nyckeln manuellt som ett tidsbaserat konto."
 
-#: cloudbridge-2fa.php:1738
+#: cloudbridge-2fa.php:1779
 msgid "Authenticator setup"
 msgstr "Konfigurering av autentiseringsapp"
 
-#: cloudbridge-2fa.php:1740
+#: cloudbridge-2fa.php:1781
 msgid "Verification code"
 msgstr "Verifieringskod"
 
 #. translators: %d: number of digits.
-#: cloudbridge-2fa.php:1742
+#: cloudbridge-2fa.php:1783
 #, php-format
 msgid ""
 "Enter the current %d-digit code from your authenticator app and update your "
@@ -666,16 +632,16 @@ msgstr ""
 "Ange den aktuella %d-siffriga koden från din autentiseringsapp och uppdatera "
 "din profil för att aktivera den."
 
-#: cloudbridge-2fa.php:1749
+#: cloudbridge-2fa.php:1790
 msgid "Recovery codes"
 msgstr "Återställningskoder"
 
-#: cloudbridge-2fa.php:1752
+#: cloudbridge-2fa.php:1793
 msgid "No recovery codes are currently stored for this account."
 msgstr ""
 "Det finns för närvarande inga återställningskoder sparade för detta konto."
 
-#: cloudbridge-2fa.php:1756
+#: cloudbridge-2fa.php:1797
 msgid ""
 "Store these recovery codes in a safe place. Each code can be used once if "
 "your authenticator app is unavailable."
@@ -683,28 +649,28 @@ msgstr ""
 "Förvara dessa återställningskoder på en säker plats. Varje kod kan användas "
 "en gång om din autentiseringsapp inte är tillgänglig."
 
-#: cloudbridge-2fa.php:1760
+#: cloudbridge-2fa.php:1801
 msgid "Generate a new set of recovery codes"
 msgstr "Generera en ny uppsättning återställningskoder"
 
-#: cloudbridge-2fa.php:1783
+#: cloudbridge-2fa.php:1824
 msgid "Unable to save authenticator settings. Please try again."
 msgstr ""
 "Det gick inte att spara inställningarna för autentiseringsappen. Försök igen."
 
-#: cloudbridge-2fa.php:1786
+#: cloudbridge-2fa.php:1827
 msgid "Authenticator app has been disabled for this account."
 msgstr "Autentiseringsapp har inaktiverats för detta konto."
 
-#: cloudbridge-2fa.php:1792
+#: cloudbridge-2fa.php:1833
 msgid "Recovery codes have been regenerated."
 msgstr "Återställningskoderna har genererats på nytt."
 
-#: cloudbridge-2fa.php:1794
+#: cloudbridge-2fa.php:1835
 msgid "Unable to regenerate recovery codes."
 msgstr "Det gick inte att generera återställningskoder på nytt."
 
-#: cloudbridge-2fa.php:1810
+#: cloudbridge-2fa.php:1851
 msgid ""
 "The authenticator app code was invalid. Please check the setup key and try "
 "again."
@@ -712,73 +678,71 @@ msgstr ""
 "Koden från autentiseringsappen var ogiltig. Kontrollera installationsnyckeln "
 "och försök igen."
 
-#: cloudbridge-2fa.php:1814
+#: cloudbridge-2fa.php:1855
 msgid "Unable to store the authenticator app secret for this account."
 msgstr ""
 "Det gick inte att spara hemligheten för autentiseringsappen för detta konto."
 
-#: cloudbridge-2fa.php:1819
+#: cloudbridge-2fa.php:1860
 msgid ""
 "Authenticator app was enabled, but recovery codes could not be generated."
 msgstr ""
 "Autentiseringsapp aktiverades, men återställningskoder kunde inte genereras."
 
-#: cloudbridge-2fa.php:1822
+#: cloudbridge-2fa.php:1863
 msgid ""
 "Authenticator app has been enabled and recovery codes have been generated."
 msgstr ""
 "Autentiseringsapp har aktiverats och återställningskoder har genererats."
 
-#: cloudbridge-2fa.php:1839
+#: cloudbridge-2fa.php:1880
 msgid "Export configuration data"
 msgstr "Exportera konfigurationsdata"
 
-#: cloudbridge-2fa.php:1841
-#: cloudbridge-2fa.php:2019
+#: cloudbridge-2fa.php:1882 cloudbridge-2fa.php:2060
 msgid "Configuration"
 msgstr "Konfigurationsdata"
 
-#: cloudbridge-2fa.php:1856
+#: cloudbridge-2fa.php:1897
 msgid "Unable to fetch plugin configuration from the WordPress database"
 msgstr "Det gick inte att hämta tilläggets konfigurationdata från WordPress"
 
-#: cloudbridge-2fa.php:1859
+#: cloudbridge-2fa.php:1900
 msgid ""
 "Copy and paste this Base64 data into another Cloudbridge 2FA installation"
 msgstr ""
 "Kopiera och klistra in denna text i en annan Cloudbridge 2FA-installation"
 
-#: cloudbridge-2fa.php:1866
+#: cloudbridge-2fa.php:1907
 msgid "Successfully copied to clipboard"
 msgstr "Kopierat till urklippshanteraren"
 
-#: cloudbridge-2fa.php:1867
+#: cloudbridge-2fa.php:1908
 msgid "Unable to copy to clipboard, please select and copy manually"
 msgstr "Det gick inte att kopiera till urklippshanteraren"
 
-#: cloudbridge-2fa.php:1896
+#: cloudbridge-2fa.php:1937
 msgid "Security check failed, please try again"
 msgstr "Säkerhetskontrollen misslyckades, försök igen"
 
-#: cloudbridge-2fa.php:1906
+#: cloudbridge-2fa.php:1947
 msgid "Please enter a valid Base64 encoded string"
 msgstr "Vänligen ange en giltig Base64-kodad sträng"
 
-#: cloudbridge-2fa.php:1915
-#: cloudbridge-2fa.php:1928
+#: cloudbridge-2fa.php:1956 cloudbridge-2fa.php:1969
 msgid ""
 "The specified import data does not seem to contain an exported configuration"
 msgstr "Konfigurationsdata verkar inte innehålla en exporterad konfiguration"
 
-#: cloudbridge-2fa.php:1934
+#: cloudbridge-2fa.php:1975
 msgid "Unable to fetch current username"
 msgstr "Det gick inte att hämta aktuellt användarnamn"
 
-#: cloudbridge-2fa.php:1956
+#: cloudbridge-2fa.php:1997
 msgid "One or more unrecognized options were ignored"
 msgstr "En eller flera inställningar ignorerades"
 
-#: cloudbridge-2fa.php:1973
+#: cloudbridge-2fa.php:2014
 msgid ""
 "The currently logged in user has been added as an administrator, please "
 "check your settings"
@@ -786,42 +750,29 @@ msgstr ""
 "Den nuvarande användaren har lagts till som administratör för tillägget. "
 "Vänligen kontrollera inställningarna."
 
-#: cloudbridge-2fa.php:1999
+#: cloudbridge-2fa.php:2040
 msgid "configuration setting(s) imported"
 msgstr "inställningar har importerats"
 
-#: cloudbridge-2fa.php:2017
+#: cloudbridge-2fa.php:2058
 msgid "Import data"
 msgstr "Importera"
 
-#: cloudbridge-2fa.php:2027
+#: cloudbridge-2fa.php:2068
 msgid "This will replace plugin configuration data"
 msgstr "Detta kommer att ersätta nuvarande konfiguration av tillägget"
 
-#: cloudbridge-2fa.php:2029
+#: cloudbridge-2fa.php:2070
 msgid "Paste previously exported Base64 configuration data into this field"
 msgstr "Klistra in exporterad Base64-kodad konfigurationsdata i detta fält"
 
-#: cloudbridge-2fa.php:2139
+#: cloudbridge-2fa.php:2181
 msgid ""
 "Please sign in through the WordPress login page to complete two-factor "
 "authentication."
 msgstr ""
 "Logga in via WordPress inloggningssida för att slutföra "
 "tvåfaktorsautentiseringen."
-
-#: cloudbridge-2fa.php:2143
-msgid "Invalid form token, please try again"
-msgstr "Ogiltig formulärkod, vänligen försök igen"
-
-#: cloudbridge-2fa.php:2157
-#: cloudbridge-2fa.php:2170
-msgid "Unable to create login verification. Please try again."
-msgstr "Det gick inte att skapa inloggningsverifieringen. Försök igen."
-
-#: cloudbridge-2fa.php:2189
-msgid "Your login verification expired. Please sign in again."
-msgstr "Din inloggningsverifiering gick ut. Logga in igen."
 
 #: include/class_cb2fa_login.inc.php:148
 msgid "Recovery code"
@@ -843,22 +794,21 @@ msgstr "återställningskod"
 msgid "e-mail code"
 msgstr "e-postkod"
 
-#: include/class_cb2fa_login.inc.php:366
+#: include/class_cb2fa_login.inc.php:370
 msgid "OTP code"
 msgstr "Engångskod"
 
-#: include/class_cb2fa_login.inc.php:370
+#: include/class_cb2fa_login.inc.php:374
 msgid "Login OTP code"
 msgstr "Engångskod för inloggning"
 
 #. translators: %s: login verification reference.
-#: include/class_cb2fa_login.inc.php:374
-#: include/class_cb2fa_login.inc.php:667
+#: include/class_cb2fa_login.inc.php:378 include/class_cb2fa_login.inc.php:671
 #, php-format
 msgid "Verification reference: %s"
 msgstr "Verifieringsreferens: %s"
 
-#: include/class_cb2fa_login.inc.php:376
+#: include/class_cb2fa_login.inc.php:380
 msgid ""
 "Someone has requested that an OTP code be sent to the e-mail address "
 "associated with an account on this WordPress site. If this was not you, you "
@@ -868,61 +818,64 @@ msgstr ""
 "kopplad till ett konto på denna WordPress webbplats. Om detta inte var du, "
 "så bör du ändra ditt lösenord på webbplatsen så fort som möjligt."
 
-#: include/class_cb2fa_login.inc.php:377
+#: include/class_cb2fa_login.inc.php:381
 msgid "The OTP code is valid for"
 msgstr "Engångskoden är giltig i"
 
-#: include/class_cb2fa_login.inc.php:377
+#: include/class_cb2fa_login.inc.php:381
 msgid "minutes"
 msgstr "minuter"
 
-#: include/class_cb2fa_login.inc.php:378
+#: include/class_cb2fa_login.inc.php:382
 msgid "2FA provided by"
 msgstr "2FA tillhandahållet av"
 
-#: include/class_cb2fa_login.inc.php:635
-#: include/class_cb2fa_login.inc.php:735
+#: include/class_cb2fa_login.inc.php:638
+msgid "An error occurred, please try again"
+msgstr "Ett fel uppstod, vänligen försök igen"
+
+#: include/class_cb2fa_login.inc.php:639 include/class_cb2fa_login.inc.php:739
 msgid "WordPress Login"
 msgstr "Inloggning WordPress"
 
-#: include/class_cb2fa_login.inc.php:645
+#: include/class_cb2fa_login.inc.php:649
 msgid "Enter the current six-digit code from your authenticator app."
 msgstr "Ange den aktuella sexsiffriga koden från din autentiseringsapp."
 
-#: include/class_cb2fa_login.inc.php:648
+#: include/class_cb2fa_login.inc.php:652
 msgid "Enter one of your recovery codes. Each code can be used once."
 msgstr "Ange en av dina återställningskoder. Varje kod kan användas en gång."
 
-#: include/class_cb2fa_login.inc.php:652
+#: include/class_cb2fa_login.inc.php:656
 msgid ""
 "An OTP code has been sent to the e-mail address associated with the account"
 msgstr "En engångskod har skickats till e-postadressen för kontot"
 
-#: include/class_cb2fa_login.inc.php:653
+#: include/class_cb2fa_login.inc.php:657
 msgid "The code is valid for"
 msgstr "Koden är giltig i"
 
-#: include/class_cb2fa_login.inc.php:655
+#: include/class_cb2fa_login.inc.php:659
 msgid "minute(s)"
 msgstr "minut(er)"
 
-#: include/class_cb2fa_login.inc.php:705
+#: include/class_cb2fa_login.inc.php:709
 msgid "Enable checkbox to avoid having to enter an OTP code for future logins"
 msgstr ""
 "Aktivera kryssruta som gör det möjligt att inte kräva engångskod för "
 "framtida inloggningar"
 
-#: include/class_cb2fa_login.inc.php:707
+#: include/class_cb2fa_login.inc.php:711
 msgid "Remember me in this browser"
 msgstr "Kom ihåg mig i denna webbläsare"
 
 #. translators: %s: authentication method.
-#: include/class_cb2fa_login.inc.php:717
+#: include/class_cb2fa_login.inc.php:721
 #, php-format
 msgid "Use %s"
 msgstr "Använd %s"
 
-#: include/class_cb2fa_login.inc.php:731
+#: include/class_cb2fa_login.inc.php:735
 msgid ""
 "If the e-mail message with the code does not arrive, you may attempt to "
 "login again by clicking on the below link"
@@ -930,7 +883,7 @@ msgstr ""
 "Om e-postmeddelandet med koden inte kommer fram, så kan du försöka logga in "
 "igen genom att klicka på länken nedanför"
 
-#: include/class_cb2fa_login.inc.php:732
+#: include/class_cb2fa_login.inc.php:736
 msgid ""
 "If you need to start over, you may return to the WordPress login screen by "
 "clicking on the below link"
@@ -938,48 +891,10 @@ msgstr ""
 "Om du behöver börja om kan du återgå till WordPress inloggningsskärm genom "
 "att klicka på länken nedan"
 
-#~ msgid "Code"
-#~ msgstr "Kod"
+#: include/trait_cb2fa_interactive_login.inc.php:182
+msgid "Invalid form token, please try again"
+msgstr "Ogiltig formulärkod, vänligen försök igen"
 
-#~ msgid "Missing e-mail address for user, please try again"
-#~ msgstr "E-postadress saknas för användaren, vänligen försök igen"
-
-#~ msgid ""
-#~ "No active roles found for this user on this website, please try again"
-#~ msgstr ""
-#~ "Inga aktiva roller för denna användare kunde hittas, vänligen försök igen"
-
-#~ msgid "Unable to fetch WordPress user"
-#~ msgstr "Det gick inte att hämta WordPress-användaren"
-
-#~ msgid "Please enter the code received by e-mail"
-#~ msgstr "Vänligen ange engångskoden från e-postmeddelandet"
-
-#~ msgid ""
-#~ "Enter the current six-digit code from your authenticator app and update "
-#~ "your profile to enable it."
-#~ msgstr ""
-#~ "Ange den aktuella sexsiffriga koden från din autentiseringsapp och "
-#~ "uppdatera din profil för att aktivera den."
-
-#~ msgid "Unable to determine login user, please try again"
-#~ msgstr ""
-#~ "Det gick inte att avgöra inloggningsanvändaren, vänligen försök igen"
-
-#~ msgid "Please enter the code from your authenticator app"
-#~ msgstr "Vänligen ange koden från din autentiseringsapp"
-
-#~ msgid "Please enter one of your recovery codes"
-#~ msgstr "Vänligen ange en av dina återställningskoder"
-
-#~ msgid "Temporarily bypass Cloudbridge 2FA for this account"
-#~ msgstr "Bypassa Cloudbridge 2FA tillfälligt för detta konto"
-
-#~ msgid "Cloudbridge 2FA bypass has been enabled for this account."
-#~ msgstr "Cloudbridge 2FA-undantag har aktiverats för detta konto."
-
-#~ msgid "Cloudbridge 2FA bypass has been disabled for this account."
-#~ msgstr "Cloudbridge 2FA-undantag har inaktiverats för detta konto."
-
-#~ msgid "Save bypass settings"
-#~ msgstr "Spara undantagsinställningar"
+#: include/trait_cb2fa_interactive_login.inc.php:425
+msgid "Incorrect code, or code has expired"
+msgstr "Ogiltig engångskod"

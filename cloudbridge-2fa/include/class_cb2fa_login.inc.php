@@ -225,6 +225,10 @@ class Cloudbridge_2FA_Login {
         if ( empty( $fallback_url ) ) {
             $fallback_url = site_url();
         }
+        if ( isset( $this->challenge['external_login'] ) ) {
+            $target = $this->challenge['redirect_to'] ?? '';
+            return( is_string( $target ) ? wp_validate_redirect( $target, $fallback_url ) : $fallback_url );
+        }
         if ( empty( $_REQUEST['redirect_to'] ) || ! is_string( $_REQUEST['redirect_to'] ) ) {
             return( $fallback_url );
         }
@@ -659,14 +663,14 @@ class Cloudbridge_2FA_Login {
                 echo '</div>';
             }
             echo '<div class="cb2fa-center">';
-            echo '<form id="cb2fa_form" method="post" action="' . esc_url( $this->our_url ) . '">';
+            echo '<form id="cb2fa_form" method="post" action="' . esc_url( $this->challenge['form_action'] ?? $this->our_url ) . '">';
             if ( ! empty( $redirect_to ) ) {
                 echo '<input type="hidden" name="redirect_to" value="' . esc_url( $redirect_to ) . '" />';
             }
             $challenge_token = $this->challenge['token'];
             echo '<p>' . esc_html( sprintf( /* translators: %s: login verification reference. */ __( 'Verification reference: %s', 'cloudbridge-2fa' ), strtoupper( substr( $challenge_token, 0, 8 ) ) ) ) . '</p>';
             echo '<input type="hidden" name="cb2fa_challenge" value="' . esc_attr( $challenge_token ) . '" />';
-            echo '<input type="hidden" name="cb2fa_nonce" value="' . esc_attr( wp_create_nonce( 'cb2fa-challenge-' . $challenge_token ) ) . '" />';
+            echo '<input type="hidden" name="cb2fa_request" value="' . esc_attr( $this->challenge['request_token'] ?? '' ) . '" />';
             echo '<input type="hidden" name="cb2fa_timer" value="' . esc_html( time() ) . '" />';
             echo '<input type="hidden" name="cb2fa_user" value="' . esc_html( $this->username ) . '" />';
             echo '<input type="hidden" name="cb2fa_factor" value="' . esc_attr( $active_factor ) . '" />';
